@@ -38,7 +38,7 @@
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
 		gsap.registerPlugin(ScrollTrigger);
 
-		// --- INTRO LINE ---
+		// --- Hero Intro Animations ---
 		if (introLine) {
 			const words = introLine.textContent
 				.split(' ')
@@ -47,11 +47,8 @@
 			introLine.innerHTML = words;
 
 			const wordSpans = introLine.querySelectorAll('.word');
-
-			// Timeline for sequential animations
 			const heroTl = gsap.timeline();
 
-			// Animate intro words
 			heroTl.from(wordSpans, {
 				y: 20,
 				opacity: 0,
@@ -60,7 +57,6 @@
 				ease: 'power2.out'
 			});
 
-			// --- HERO TITLE FADE IN SEQUENCE ---
 			if (heroTitle) {
 				const letters = heroTitle.querySelectorAll('span');
 				gsap.set(letters, { opacity: 0, scale: 0.8 });
@@ -78,7 +74,6 @@
 				);
 			}
 
-			// --- TAGLINE FADE IN ---
 			if (tagline) {
 				heroTl.from(
 					tagline,
@@ -91,50 +86,35 @@
 					'+=0.1'
 				);
 			}
-
-			// --- HERO TITLE EXPANSION ON SCROLL ---
-			if (heroTitle) {
-				const letters = heroTitle.querySelectorAll('span');
-				gsap.to(letters, {
-					scrollTrigger: {
-						trigger: heroTitle,
-						start: 'top 25%',
-						markers: true
-					},
-					x: (i) => (i - (letters.length - 1) / 2) * 160,
-					duration: 2,
-					ease: 'expo.out'
-				});
-			}
 		}
 
-		// --- FEATURE BLOCKS ---
+		// --- Feature Blocks Scroll Animations ---
 		const blocks = document.querySelectorAll('.feature-block');
 		blocks.forEach((block, i) => {
 			const text = block.querySelector('.feature-text');
 			const image = block.querySelector('.feature-image');
 
 			gsap.from(text, {
-				x: i % 2 === 0 ? -150 : 150,
+				x: i % 2 === 0 ? -200 : 200,
 				opacity: 0,
 				duration: 1.5,
 				ease: 'power3.out',
 				scrollTrigger: {
 					trigger: block,
-					start: 'top 55%',
+					start: 'top 80%',
 					toggleActions: 'play none none reverse'
 				}
 			});
 
 			gsap.from(image, {
-				x: i % 2 === 0 ? 150 : -150,
+				x: i % 2 === 0 ? 200 : -200,
 				opacity: 0,
 				duration: 1.5,
 				delay: 0.2,
 				ease: 'power3.out',
 				scrollTrigger: {
 					trigger: block,
-					start: 'top 55%',
+					start: 'top 80%',
 					toggleActions: 'play none none reverse'
 				}
 			});
@@ -144,7 +124,7 @@
 
 <div class="product-page">
 	<!-- Hero Section -->
-	<section class="hero-centered">
+	<section class="hero-centered scroll-section">
 		<p bind:this={introLine} class="intro-line">Introducing DiasporaJunxion’s flagship product…</p>
 
 		<h1 bind:this={heroTitle} class="logo">
@@ -156,6 +136,7 @@
 		</p>
 
 		<button class="cta-button">Pre-Order Now</button>
+
 		<div class="hero-image">
 			<img src="/images/speaker-hero.jpeg" alt="SPACE Speaker" />
 		</div>
@@ -163,7 +144,7 @@
 
 	<!-- Product Features -->
 	{#each productFeatures as feature, i}
-		<div class="feature-block">
+		<div class="feature-block scroll-section">
 			<div class="feature-text">
 				<h2>{feature.title}</h2>
 				<p>{feature.description}</p>
@@ -175,7 +156,7 @@
 	{/each}
 
 	<!-- CTA Section -->
-	<section class="cta">
+	<section class="cta scroll-section">
 		<h2>Ready to transform your sound experience?</h2>
 		<p>
 			Join thousands already upgrading their lifestyle with
@@ -195,9 +176,9 @@
 	.product-page {
 		display: flex;
 		flex-direction: column;
-		gap: 10rem;
+		gap: 12rem;
 		padding: 6rem 2rem;
-		max-width: 1200px;
+		max-width: 1400px;
 		margin: 0 auto;
 	}
 
@@ -241,8 +222,8 @@
 
 	.hero-image {
 		width: 100%;
-		max-width: 800px;
-		margin-top: 2rem;
+		max-width: 900px;
+		margin-top: 4rem;
 	}
 	.hero-image img {
 		width: 100%;
@@ -257,7 +238,7 @@
 		font-weight: bold;
 		padding: 1rem 2.5rem;
 		border-radius: 9999px;
-		margin-top: 1rem;
+		margin-top: 2rem;
 		transition:
 			transform 0.2s ease,
 			background 0.2s ease;
@@ -271,7 +252,8 @@
 	.feature-block {
 		display: flex;
 		align-items: center;
-		gap: 4rem;
+		gap: 6rem;
+		min-height: 80vh;
 	}
 	.feature-block:nth-child(even) {
 		flex-direction: row-reverse;
@@ -299,7 +281,7 @@
 	/* CTA Section */
 	.cta {
 		text-align: center;
-		padding: 6rem 2rem;
+		padding: 8rem 2rem;
 		background: linear-gradient(135deg, #d9042b, #038c25);
 		color: white;
 		border-radius: 1.5rem;
@@ -311,20 +293,5 @@
 	.cta p {
 		font-size: 1.25rem;
 		margin-bottom: 2rem;
-	}
-	.cta-button {
-		background: white;
-		color: #d9042b;
-		font-size: 1.25rem;
-		font-weight: bold;
-		padding: 1rem 2.5rem;
-		border-radius: 9999px;
-		transition:
-			transform 0.2s ease,
-			background 0.2s ease;
-	}
-	.cta-button:hover {
-		transform: scale(1.05);
-		background: #f0f0f0;
 	}
 </style>
