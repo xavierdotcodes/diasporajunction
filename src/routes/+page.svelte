@@ -46,7 +46,7 @@
 				ease: 'power3.out',
 				scrollTrigger: {
 					trigger: card,
-					start: 'top 80%',
+					start: 'top 85%',
 					toggleActions: 'play none none reverse'
 				}
 			});
@@ -59,7 +59,7 @@
 				ease: 'power3.out',
 				scrollTrigger: {
 					trigger: card,
-					start: 'top 80%',
+					start: 'top 85%',
 					toggleActions: 'play none none reverse'
 				}
 			});
@@ -80,16 +80,16 @@
 		<div class="absolute inset-0 bg-gradient-to-b from-black/60 to-black"></div>
 
 		<div class="relative z-10 max-w-5xl mx-auto">
-			<h1 class="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight mb-6">
+			<h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6">
 				Diaspora<span class="text-[#D9042B]">Junxion</span>
 			</h1>
 
-			<h2 class="text-xl sm:text-2xl md:text-3xl font-light mb-10 text-gray-200">
+			<h2 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-light mb-8 text-gray-200">
 				The Junction of <span class="font-semibold">Diaspora Power</span> and
 				<span class="font-semibold">African Innovation</span>
 			</h2>
 
-			<p class="text-lg sm:text-xl md:text-2xl leading-relaxed mb-12 text-gray-300">
+			<p class="text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed mb-10 text-gray-300">
 				<span class="font-bold">Diaspora</span> is more than a word — it’s a people.<br />
 				Africans at home and abroad, carrying the roots of the continent into every corner of the world.<br
 				/>
@@ -99,19 +99,19 @@
 	</section>
 
 	<!-- About DiasporaJunxion -->
-	<section class="py-20 px-6 bg-gradient-to-b from-black to-gray-900 text-center">
+	<section class="py-16 px-6 sm:py-20 bg-gradient-to-b from-black to-gray-900 text-center">
 		<div class="max-w-4xl mx-auto">
-			<h3 class="text-3xl font-bold mb-6">What is DiasporaJunxion?</h3>
-			<p class="text-lg mb-6">
+			<h3 class="text-2xl sm:text-3xl font-bold mb-6">What is DiasporaJunxion?</h3>
+			<p class="text-base sm:text-lg mb-4 sm:mb-6">
 				In Ghana, when you say <span class="font-semibold">“Diaspora”</span>, you mean the ones
 				coming back — brothers and sisters from the States, from Europe, from everywhere Africans
 				have built a life. People carrying new energy, new ideas, and new resources.
 			</p>
-			<p class="text-lg mb-6">
+			<p class="text-base sm:text-lg mb-4 sm:mb-6">
 				But <span class="font-semibold">Diaspora</span> is also bigger. It’s the name for Africans everywhere
 				— from the descendants of the slave trade to the returnees landing in Accra today.
 			</p>
-			<p class="text-lg">
+			<p class="text-base sm:text-lg">
 				<span class="font-bold">DiasporaJunxion</span> is where these meanings come together. A junction
 				where returnees meet locals, where Africans abroad connect with home, where culture, business,
 				and vision flow both ways.
@@ -120,10 +120,11 @@
 	</section>
 
 	<!-- Cards Section -->
-	<section class="py-20 px-6 max-w-6xl mx-auto">
+	<section class="py-16 sm:py-20 px-6 max-w-6xl mx-auto">
 		{#each cards as card, i}
 			<div
-				class="card flex flex-col md:flex-row items-center mb-16 gap-8 {i % 2 === 0
+				class="card flex flex-col md:flex-row items-center mb-12 sm:mb-16 gap-6 sm:gap-8 {i % 2 ===
+				0
 					? 'even'
 					: 'odd'}"
 			>
@@ -131,19 +132,19 @@
 					<img src={card.image} alt={card.title} />
 				</div>
 				<div class="card-text md:w-1/2 text-center md:text-left">
-					<div class="text-4xl mb-4">{card.icon}</div>
-					<h3 class="text-2xl font-bold mb-2">{card.title}</h3>
-					<p class="text-lg text-gray-300">{card.description}</p>
+					<div class="text-3xl sm:text-4xl mb-3 sm:mb-4">{card.icon}</div>
+					<h3 class="text-xl sm:text-2xl md:text-2xl font-bold mb-2">{card.title}</h3>
+					<p class="text-sm sm:text-base md:text-lg text-gray-300">{card.description}</p>
 				</div>
 			</div>
 		{/each}
 	</section>
 
 	<!-- Call to Action -->
-	<section class="py-20 px-6 text-center">
+	<section class="py-16 sm:py-20 px-6 text-center">
 		<div class="max-w-3xl mx-auto">
-			<h3 class="text-3xl font-bold mb-6">Join the Movement</h3>
-			<p class="text-lg mb-10">
+			<h3 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Join the Movement</h3>
+			<p class="text-base sm:text-lg mb-8 sm:mb-10">
 				DiasporaJunxion is just getting started. Be part of the first wave shaping the story.
 			</p>
 			<button class="cta-btn">Get Involved</button>
@@ -158,41 +159,31 @@
 		background-color: #000;
 		color: #fff;
 	}
-	html {
-		scroll-behavior: smooth;
-	}
+	html { scroll-behavior: smooth; }
 
-	img {
-		width: 100%;
-		border-radius: 1rem;
-	}
+	img { width: 100%; border-radius: 1rem; }
 
 	.card {
-		padding: 2rem;
+		padding: 1.5rem 1rem;
 		border-radius: 1rem;
 		background: rgba(255, 255, 255, 0.05);
 		backdrop-filter: blur(8px);
-		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-		transition:
-			transform 0.25s ease,
-			box-shadow 0.25s ease;
+		box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+		transition: transform 0.25s ease, box-shadow 0.25s ease;
 	}
 	.card:hover {
 		transform: translateY(-4px);
-		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+		box-shadow: 0 8px 24px rgba(0,0,0,0.6);
 	}
 
 	.cta-btn {
 		background: #d9042b;
 		color: #fff;
 		font-weight: 700;
-		font-size: 1.125rem;
-		padding: 1rem 2.5rem;
+		font-size: 1rem sm:1.125rem;
+		padding: 0.85rem 2rem sm:1rem 2.5rem;
 		border-radius: 9999px;
-		transition:
-			transform 0.25s ease,
-			box-shadow 0.25s ease,
-			background 0.25s ease;
+		transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
 	}
 	.cta-btn:hover {
 		background: #b50323;
@@ -201,17 +192,12 @@
 	}
 
 	/* Alternating layout for md screens */
-	.card.even {
-		flex-direction: row;
-	}
-	.card.odd {
-		flex-direction: row-reverse;
-	}
+	.card.even { flex-direction: row; }
+	.card.odd { flex-direction: row-reverse; }
 
 	@media (max-width: 768px) {
-		.card {
-			flex-direction: column;
-			text-align: center;
-		}
+		.card { flex-direction: column; text-align: center; }
+		.card-image, .card-text { width: 100% !important; }
+		.card-text { margin-top: 1rem; }
 	}
 </style>
