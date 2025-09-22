@@ -128,10 +128,10 @@
 					? 'even'
 					: 'odd'}"
 			>
-				<div class="card-image md:w-1/2">
+				<div class="card-image w-full md:w-1/2">
 					<img src={card.image} alt={card.title} />
 				</div>
-				<div class="card-text md:w-1/2 text-center md:text-left">
+				<div class="card-text w-full md:w-1/2 text-center md:text-left">
 					<div class="text-3xl sm:text-4xl mb-3 sm:mb-4">{card.icon}</div>
 					<h3 class="text-xl sm:text-2xl md:text-2xl font-bold mb-2">{card.title}</h3>
 					<p class="text-sm sm:text-base md:text-lg text-gray-300">{card.description}</p>
@@ -159,31 +159,42 @@
 		background-color: #000;
 		color: #fff;
 	}
-	html { scroll-behavior: smooth; }
+	html {
+		scroll-behavior: smooth;
+	}
 
-	img { width: 100%; border-radius: 1rem; }
+	img {
+		width: 100%;
+		border-radius: 1rem;
+		height: auto;
+	}
 
 	.card {
 		padding: 1.5rem 1rem;
 		border-radius: 1rem;
 		background: rgba(255, 255, 255, 0.05);
 		backdrop-filter: blur(8px);
-		box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-		transition: transform 0.25s ease, box-shadow 0.25s ease;
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+		transition:
+			transform 0.25s ease,
+			box-shadow 0.25s ease;
 	}
 	.card:hover {
 		transform: translateY(-4px);
-		box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
 	}
 
 	.cta-btn {
 		background: #d9042b;
 		color: #fff;
 		font-weight: 700;
-		font-size: 1rem sm:1.125rem;
-		padding: 0.85rem 2rem sm:1rem 2.5rem;
+		font-size: 1rem;
+		padding: 0.85rem 2rem;
 		border-radius: 9999px;
-		transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+		transition:
+			transform 0.25s ease,
+			box-shadow 0.25s ease,
+			background 0.25s ease;
 	}
 	.cta-btn:hover {
 		background: #b50323;
@@ -192,12 +203,24 @@
 	}
 
 	/* Alternating layout for md screens */
-	.card.even { flex-direction: row; }
-	.card.odd { flex-direction: row-reverse; }
+	.card.even {
+		flex-direction: row;
+	}
+	.card.odd {
+		flex-direction: row-reverse;
+	}
 
 	@media (max-width: 768px) {
-		.card { flex-direction: column; text-align: center; }
-		.card-image, .card-text { width: 100% !important; }
-		.card-text { margin-top: 1rem; }
+		.card {
+			flex-direction: column;
+			text-align: center;
+		}
+		.card-image,
+		.card-text {
+			width: 100%;
+		}
+		.card-text {
+			margin-top: 1rem;
+		}
 	}
 </style>
