@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';
+	import Footer from '$lib/Footer.svelte';
 
 	const cards = [
 		{
@@ -150,6 +151,7 @@
 			<button class="cta-btn">Get Involved</button>
 		</div>
 	</section>
+	<Footer />
 </div>
 
 <style>

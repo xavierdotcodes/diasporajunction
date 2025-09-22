@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';
 	import PreOrderModal from '$lib/PreOrderModal.svelte';
+	import Footer from '$lib/Footer.svelte';
 
 	const productFeatures = [
 		{
@@ -99,7 +100,7 @@
 					scrollTrigger: {
 						trigger: heroTitle,
 						start: 'top 25%',
-						markers: false
+						markers: true
 					},
 					x: (i) => (i - (letters.length - 1) / 2) * 160,
 					duration: 2,
@@ -121,7 +122,7 @@
 				ease: 'power3.out',
 				scrollTrigger: {
 					trigger: block,
-					start: 'top 55%',
+					start: 'top 35%',
 					toggleActions: 'play none none reverse'
 				}
 			});
@@ -155,7 +156,6 @@
 			Immersive sound. Futuristic design. Experience music like never before.
 		</p>
 
-		<button class="cta-button">Pre-Order Now</button>
 		<div class="hero-image">
 			<img src="/images/speaker-hero.jpeg" alt="SPACE Speaker" />
 		</div>
@@ -190,6 +190,8 @@
 		<PreOrderModal />
 	</section>
 </div>
+
+<Footer />
 
 <style>
 	.product-page {

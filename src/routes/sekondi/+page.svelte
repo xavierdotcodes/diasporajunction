@@ -79,4 +79,8 @@
 		border-radius: 1rem;
 		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 	}
+
+	.sekondi-section img {
+		border: 10px solid #ffcc00;
+	}
 </style>

@@ -2,6 +2,8 @@
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';
 	import TourRegistration from '$lib/TourRegistration.svelte';
+	import Footer from '$lib/Footer.svelte';
+	import TourCta from '$lib/TourCTA.svelte';
 
 	let showModal = false;
 	const openModal = () => (showModal = true);
@@ -104,33 +106,13 @@
 <section class="bg-white text-gray-900">
 	<div class="max-w-6xl mx-auto px-6 py-12">
 		<h1 class="text-4xl md:text-5xl font-extrabold text-center mb-4 text-[#038C25]">
-			Diaspora Junxion — 10-Day Ghana Immersion
+			10-Day Ghana Immersion
 		</h1>
 
 		<p class="intro text-center text-lg md:text-xl text-gray-700 max-w-3xl mx-auto mb-12">
 			An immersive, soul-forward 10-day experience across Accra, the Central Coast, Kakum, the
 			Volta, and community projects — curated for connection, culture, and meaning.
 		</p>
-
-		<div class="bg-[#F2B705] text-white p-6 rounded-xl shadow-lg mb-12">
-			<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-				<div>
-					<h2 class="text-2xl font-bold">🌍 10-Day Full Ghana Experience</h2>
-					<p class="mt-1">
-						Accommodations, transport, expert guides, meals, workshops, and curated cultural access.
-					</p>
-				</div>
-				<div class="flex gap-3 items-center">
-					<span class="text-3xl font-bold">$2499</span>
-					<button
-						on:click={openModal}
-						class="bg-[#D9042B] hover:bg-[#F27405] px-5 py-3 rounded-full font-semibold text-white"
-					>
-						Reserve Your Spot
-					</button>
-				</div>
-			</div>
-		</div>
 
 		<!-- Itinerary (long & scrollable) -->
 		<div class="space-y-28">
@@ -169,11 +151,18 @@
 				</div>
 			{/each}
 		</div>
+		<br />
+		<br />
+		<br />
+		<TourCta />
 
-		<!-- Extra spacer so the page feels long and gives room for ScrollTrigger to activate -->
+		<!-- Extra spacer so the page feels long and gives room for ScrollTrigger to activate 
 		<div class="itinerary-spacer"></div>
+        -->
 	</div>
 </section>
+
+<Footer />
 
 {#if showModal}
 	<TourRegistration on:close={closeModal} />

@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';
+	import Footer from '$lib/Footer.svelte';
 
 	onMount(() => {
 		gsap.from('.about-hero span', {
@@ -94,15 +95,7 @@
 	</a>
 </section>
 
-<!-- Footer -->
-<footer class="bg-[#F2B705] border-t-4 border-black py-6 px-8 text-center text-black">
-	<p class="text-sm">© 2025 DiasporaJunxion. All rights reserved.</p>
-	<div class="mt-2 space-x-4">
-		<a href="https://x.com/diasporajunxn" class="hover:underline">X</a>
-		<a href="https://youtube.com/@diasporajunxion" class="hover:underline">YouTube</a>
-		<a href="https://tiktok.com/@diasporajunxion" class="hover:underline">TikTok</a>
-	</div>
-</footer>
+<Footer />
 
 <style>
 	section {
