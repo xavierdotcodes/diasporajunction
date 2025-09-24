@@ -2,10 +2,29 @@
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';
 	import NDGORegistrationModal from '$lib/NDGORegistrationModal.svelte';
+	import Footer from '$lib/Footer.svelte';
 
 	let showModal = false;
 
 	onMount(async () => {
+		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
+		gsap.registerPlugin(ScrollTrigger);
+
+		gsap.utils.toArray('.how-item').forEach((item, i) => {
+			gsap.from(item, {
+				scrollTrigger: {
+					trigger: item,
+					start: 'top 80%',
+					toggleActions: 'play none none reverse'
+				},
+				opacity: 0,
+				x: i % 2 === 0 ? -100 : 100,
+				y: 30,
+				duration: 0.8,
+				ease: 'power2.out'
+			});
+		});
+
 		gsap.from('.ndgo-hero span', {
 			y: 40,
 			opacity: 0,
@@ -63,27 +82,21 @@
 	</div>
 </section>
 
-<section id="how" class="py-16 bg-[#F2B705]/10 px-8">
+<section id="how" class="py-16 bg-[#798EDF] px-8">
 	<h3 class="text-3xl font-bold text-black mb-10 text-center">How We Teach</h3>
-	<div class="grid md:grid-cols-3 gap-6">
-		<div class="bg-white p-6 rounded-xl border border-[#F2B705] shadow-sm">
-			<h4 class="text-xl font-bold text-[#D9042B] mb-2">Analog</h4>
-			<p class="text-gray-700">
-				Hands-on drawing, painting, music, and storytelling — the roots of creativity.
-			</p>
-		</div>
-		<div class="bg-white p-6 rounded-xl border border-[#F2B705] shadow-sm">
-			<h4 class="text-xl font-bold text-[#038C25] mb-2">Digital</h4>
-			<p class="text-gray-700">
-				Computers, coding, and design tools that turn imagination into real-world projects.
-			</p>
-		</div>
-		<div class="bg-white p-6 rounded-xl border border-[#F2B705] shadow-sm">
-			<h4 class="text-xl font-bold text-[#F27405] mb-2">Pedagogy</h4>
-			<p class="text-gray-700">
-				Playful, collaborative learning methods that empower expression at every age.
-			</p>
-		</div>
+	<div class="space-y-16 max-w-4xl mx-auto">
+		{#each [{ title: 'aNalog', color: '#D9042B', desc: 'Hands-on drawing, painting, music, and storytelling — the roots of creativity.' }, { title: 'Digital', color: '#038C25', desc: 'Computers, coding, and design tools that turn imagination into real-world projects.' }, { title: 'pedaGOgy', color: '#FFBC03', desc: 'Playful, collaborative learning methods that empower expression at every age.' }] as item, i}
+			<div class="flex flex-col md:flex-row items-center gap-6 how-item">
+				<div class="flex-1 {i % 2 === 0 ? '' : 'md:order-2'}">
+					<div class="h-48 rounded-xl bg-[${item.color}]"></div>
+					<!-- placeholder image -->
+				</div>
+				<div class="flex-1 text-gray-700">
+					<h4 class="text-xl font-bold mb-2" style="color: {item.color}">{item.title}</h4>
+					<p>{item.desc}</p>
+				</div>
+			</div>
+		{/each}
 	</div>
 </section>
 
@@ -101,11 +114,19 @@
 		Join the Program
 	</a>
 </section>
+<Footer />
 
 <NDGORegistrationModal bind:showModal onClose={() => (showModal = false)} />
 
 <style>
 	section {
 		scroll-margin-top: 100px;
+	}
+	.how-item div h4 {
+		font-weight: 700;
+	}
+
+	.how-item div p {
+		line-height: 1.6;
 	}
 </style>

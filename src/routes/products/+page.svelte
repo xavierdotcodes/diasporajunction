@@ -1,7 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';
-	import PreOrderModal from '$lib/PreOrderModal.svelte';
+	import PaymentModal from '$lib/PaymentModal.svelte';
 	import Footer from '$lib/Footer.svelte';
 
 	const productFeatures = [
@@ -187,7 +187,7 @@
 				>CE</strong
 			>.
 		</p>
-		<PreOrderModal />
+		<PaymentModal />
 	</section>
 </div>
 

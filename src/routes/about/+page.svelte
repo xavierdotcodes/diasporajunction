@@ -3,7 +3,11 @@
 	import gsap from 'gsap';
 	import Footer from '$lib/Footer.svelte';
 
-	onMount(() => {
+	onMount(async () => {
+		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
+		gsap.registerPlugin(ScrollTrigger);
+
+		// Hero animation
 		gsap.from('.about-hero span', {
 			y: 40,
 			opacity: 0,
@@ -18,6 +22,22 @@
 			delay: 1.5,
 			duration: 0.6,
 			ease: 'back.out(1.7)'
+		});
+
+		// Values alternating animation
+		gsap.utils.toArray('.value-block').forEach((block, i) => {
+			const fromX = i % 2 === 0 ? -150 : 150; // odd = left, even = right
+			gsap.from(block, {
+				x: fromX,
+				opacity: 0,
+				duration: 1,
+				ease: 'power4.out',
+				scrollTrigger: {
+					trigger: block,
+					start: 'top 80%',
+					toggleActions: 'play none none reverse'
+				}
+			});
 		});
 	});
 </script>
@@ -60,22 +80,49 @@
 </section>
 
 <!-- Values Section -->
-<section id="values" class="py-16 bg-[#F2B705]/10 px-8">
-	<h3 class="text-3xl font-bold text-black mb-10 text-center">What We Stand For</h3>
-	<div class="grid md:grid-cols-3 gap-6">
-		<div class="bg-white p-6 rounded-xl border border-[#F2B705] shadow-sm">
-			<h4 class="text-xl font-bold text-[#D9042B] mb-2">Connection</h4>
-			<p class="text-gray-700">We create authentic ties between diaspora and local voices.</p>
+<section id="values" class="py-20 bg-[#798EDF] px-8">
+	<h3 class="text-3xl font-bold text-black mb-16 text-center">What We Stand For</h3>
+
+	<div class="space-y-20 max-w-5xl mx-auto">
+		<!-- Value 1 -->
+		<div class="value-block flex flex-col md:flex-row items-center gap-8">
+			<img
+				src="/images/connection.jpg"
+				alt="Connection"
+				class="w-full md:w-1/2 rounded-xl shadow"
+			/>
+			<div class="md:w-1/2 text-center md:text-left">
+				<h4 class="text-2xl font-bold text-[#D9042B] mb-3">Connection</h4>
+				<p class="text-gray-700 text-lg">
+					We create authentic ties between diaspora and local voices.
+				</p>
+			</div>
 		</div>
-		<div class="bg-white p-6 rounded-xl border border-[#F2B705] shadow-sm">
-			<h4 class="text-xl font-bold text-[#038C25] mb-2">Culture</h4>
-			<p class="text-gray-700">
-				From food to fashion, music to language — we honor what makes us unique.
-			</p>
+
+		<!-- Value 2 -->
+		<div class="value-block flex flex-col md:flex-row-reverse items-center gap-8">
+			<img src="/images/culture.jpg" alt="Culture" class="w-full md:w-1/2 rounded-xl shadow" />
+			<div class="md:w-1/2 text-center md:text-left">
+				<h4 class="text-2xl font-bold text-[#038C25] mb-3">Culture</h4>
+				<p class="text-gray-700 text-lg">
+					From food to fashion, music to language — we honor what makes us unique.
+				</p>
+			</div>
 		</div>
-		<div class="bg-white p-6 rounded-xl border border-[#F2B705] shadow-sm">
-			<h4 class="text-xl font-bold text-[#F27405] mb-2">Collaboration</h4>
-			<p class="text-gray-700">Artists, makers, entrepreneurs — we grow stronger together.</p>
+
+		<!-- Value 3 -->
+		<div class="value-block flex flex-col md:flex-row items-center gap-8">
+			<img
+				src="/images/collaboration.jpg"
+				alt="Collaboration"
+				class="w-full md:w-1/2 rounded-xl shadow"
+			/>
+			<div class="md:w-1/2 text-center md:text-left">
+				<h4 class="text-2xl font-bold text-[#FFBC03] mb-3">Collaboration</h4>
+				<p class="text-gray-700 text-lg">
+					Artists, makers, entrepreneurs — we grow stronger together.
+				</p>
+			</div>
 		</div>
 	</div>
 </section>
@@ -88,7 +135,7 @@
 		events, or digital collabs — let’s make it real.
 	</p>
 	<a
-		href="/#tour"
+		href=""
 		class="inline-block bg-[#038C25] text-white px-6 py-3 rounded-full font-bold hover:bg-[#026b1d] transition"
 	>
 		Join The Movement
