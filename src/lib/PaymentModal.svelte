@@ -1,153 +1,160 @@
 <script>
-	import { onMount } from 'svelte';
-	import gsap from 'gsap';
+	import { fade } from 'svelte/transition';
+	import CustomerInfo from '$lib/CustomerInfo.svelte';
 
-	let showModal = false;
+	export let onClose = () => {};
 
-	// Example products info for pre-order
-	const product = {
-		name: 'SP△CE Mini Speaker',
-		priceUSD: 199
+	let paymentMethod = '';
+	let customer = {
+		name: '',
+		email: '',
+		phone: '',
+		street: '',
+		apt: '',
+		city: '',
+		state: '',
+		country: '',
+		zip: ''
 	};
 
-	function openModal() {
-		showModal = true;
-
-		// Animate modal in
-		gsap.fromTo(
-			'.modal-content',
-			{ y: 50, opacity: 0 },
-			{ y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }
-		);
-
-		gsap.fromTo('.overlay', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power3.out' });
+	function submitForm() {
+		console.log('Submitting order:', { customer, paymentMethod });
+		alert('Form submitted! (Check console)');
+		onClose();
 	}
 
-	function closeModal() {
-		// Animate modal out
-		gsap.to('.modal-content', {
-			y: 50,
-			opacity: 0,
-			duration: 0.4,
-			ease: 'power3.in',
-			onComplete: () => (showModal = false)
-		});
-
-		gsap.to('.overlay', { opacity: 0, duration: 0.4, ease: 'power3.in' });
-	}
-
-	function payWithStripe() {
-		alert('Stripe Checkout placeholder');
-		// integrate Stripe Checkout or redirect here
-	}
-
-	function payWithMoMo() {
-		alert('MoMo Payment placeholder');
-		// integrate MoMo API here
-	}
-
-	function payWithCrypto() {
-		alert('Crypto Payment placeholder');
-		// show wallet address or payment widget
+	// close on ESC key
+	function handleKeydown(e) {
+		if (e.key === 'Escape') onClose();
 	}
 </script>
 
-<!-- Pre-Order Button -->
-<button class="cta-button" on:click={openModal}>Pre-Order Now</button>
+<div
+	class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+	on:click={(e) => e.target === e.currentTarget && onClose()}
+	on:keydown={handleKeydown}
+	tabindex="0"
+	in:fade
+	out:fade
+>
+	<div
+		class="bg-white shadow-xl rounded-2xl w-full max-w-lg p-6 space-y-6 relative overflow-y-auto max-h-[90vh]"
+		in:fade={{ duration: 200 }}
+		out:fade={{ duration: 200 }}
+	>
+		<!-- Close Button -->
+		<button
+			type="button"
+			class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl"
+			on:click={onClose}
+		>
+			✕
+		</button>
 
-{#if showModal}
-	<!-- Overlay -->
-	<div class="overlay" on:click={closeModal}></div>
+		<h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Checkout</h2>
 
-	<!-- Modal Content -->
-	<div class="modal-content">
-		<h2>Pre-Order {product.name}</h2>
-		<p>Price: ${product.priceUSD}</p>
+		<!-- Customer Info -->
+		<CustomerInfo bind:customer />
 
-		<div class="payment-options">
-			<button on:click={payWithStripe}>Pay with Stripe</button>
-			<button on:click={payWithMoMo}>Pay with MoMo</button>
-			<button on:click={payWithCrypto}>Pay with Crypto</button>
+		<!-- Payment Method Selection -->
+		<div>
+			<label class="block text-sm font-medium text-gray-700 mb-2">Select Payment Method</label>
+			<div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+				<button
+					type="button"
+					class="border rounded-lg py-2 px-4 text-sm font-medium transition hover:bg-gray-100 focus:ring-2 focus:ring-indigo-500
+						{paymentMethod === 'card'
+						? 'bg-indigo-50 border-indigo-500 text-indigo-600'
+						: 'border-gray-300 text-gray-700'}"
+					on:click={() => (paymentMethod = 'card')}
+				>
+					Card
+				</button>
+				<button
+					type="button"
+					class="border rounded-lg py-2 px-4 text-sm font-medium transition hover:bg-gray-100 focus:ring-2 focus:ring-indigo-500
+						{paymentMethod === 'momo'
+						? 'bg-indigo-50 border-indigo-500 text-indigo-600'
+						: 'border-gray-300 text-gray-700'}"
+					on:click={() => (paymentMethod = 'momo')}
+				>
+					MoMo
+				</button>
+				<button
+					type="button"
+					class="border rounded-lg py-2 px-4 text-sm font-medium transition hover:bg-gray-100 focus:ring-2 focus:ring-indigo-500
+						{paymentMethod === 'crypto'
+						? 'bg-indigo-50 border-indigo-500 text-indigo-600'
+						: 'border-gray-300 text-gray-700'}"
+					on:click={() => (paymentMethod = 'crypto')}
+				>
+					Crypto
+				</button>
+			</div>
 		</div>
 
-		<button class="close-btn" on:click={closeModal}>✕</button>
+		<!-- Payment Details Forms -->
+		{#if paymentMethod === 'card'}
+			<div transition:fade class="space-y-3">
+				<input
+					type="text"
+					placeholder="Card Number"
+					class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+				/>
+				<div class="grid grid-cols-2 gap-3">
+					<input
+						type="text"
+						placeholder="MM/YY"
+						class="border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+					/>
+					<input
+						type="text"
+						placeholder="CVC"
+						class="border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+					/>
+				</div>
+			</div>
+		{/if}
+
+		{#if paymentMethod === 'momo'}
+			<div transition:fade class="space-y-3">
+				<input
+					type="tel"
+					placeholder="MoMo Number"
+					class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+				/>
+				<input
+					type="text"
+					placeholder="Provider"
+					class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+				/>
+			</div>
+		{/if}
+
+		{#if paymentMethod === 'crypto'}
+			<div transition:fade class="space-y-3">
+				<input
+					type="text"
+					placeholder="Wallet Address"
+					class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+				/>
+				<select
+					class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+				>
+					<option>USDT</option>
+					<option>ETH</option>
+					<option>BTC</option>
+				</select>
+			</div>
+		{/if}
+
+		<!-- Submit -->
+		<button
+			type="button"
+			on:click={submitForm}
+			class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg"
+		>
+			Complete Order
+		</button>
 	</div>
-{/if}
-
-<style>
-	/* Overlay */
-	.overlay {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: rgba(0, 0, 0, 0.5);
-		z-index: 1000;
-	}
-
-	/* Modal */
-	.modal-content {
-		position: fixed;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		background: white;
-		padding: 3rem;
-		border-radius: 1rem;
-		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-		width: 90%;
-		max-width: 500px;
-		text-align: center;
-		z-index: 1001;
-	}
-
-	.modal-content h2 {
-		font-size: 2rem;
-		margin-bottom: 1rem;
-	}
-
-	.payment-options {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-		margin: 2rem 0;
-	}
-
-	.payment-options button {
-		padding: 1rem;
-		font-size: 1rem;
-		font-weight: bold;
-		border-radius: 9999px;
-		border: none;
-		cursor: pointer;
-		transition: transform 0.2s ease;
-	}
-
-	.payment-options button:hover {
-		transform: scale(1.05);
-	}
-
-	.payment-options button:nth-child(1) {
-		background: #6772e5;
-		color: white;
-	}
-	.payment-options button:nth-child(2) {
-		background: #00b87c;
-		color: white;
-	}
-	.payment-options button:nth-child(3) {
-		background: #f7931a;
-		color: white;
-	}
-
-	.close-btn {
-		position: absolute;
-		top: 1rem;
-		right: 1rem;
-		background: none;
-		border: none;
-		font-size: 1.5rem;
-		cursor: pointer;
-	}
-</style>
+</div>

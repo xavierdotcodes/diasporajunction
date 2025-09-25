@@ -6,7 +6,7 @@
 
 	const links = [
 		{ href: '/about', label: 'About' },
-		{ href: '/products', label: 'Products' },
+		{ href: '/space', label: 'SP△CE' },
 		{ href: '/ndgo', label: 'NDGO' },
 		{ href: '/tours', label: 'Tours' },
 		{ href: '/team', label: 'Team' },
