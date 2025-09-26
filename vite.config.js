@@ -4,6 +4,12 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
+	optimizeDeps: {
+		include: ['stripe']
+	},
+	ssr: {
+		noExternal: ['stripe']
+	},
 	test: {
 		environment: 'jsdom',
 		setupFiles: ['./vitest-setup-client.js'],
