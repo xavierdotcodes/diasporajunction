@@ -1,6 +1,6 @@
 // src/routes/api/contact/+server.js
 import { json } from '@sveltejs/kit';
-import redis from '$lib/server/redis';
+import { redis } from '$lib/server/redis';
 
 export async function POST({ request, getClientAddress }) {
 	try {
