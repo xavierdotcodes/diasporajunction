@@ -10,14 +10,15 @@ datasource db {
 }
 
 model User {
-  id          Int        @id @default(autoincrement())
-  email       String     @unique
-  name        String?
-  phone       String?
-  role        Role       @default(CUSTOMER)
-  createdAt   DateTime   @default(now())
-  orders      Order[]
-  payments    Payment[]
+  id           Int        @id @default(autoincrement())
+  email        String     @unique
+  name         String?
+  phone        String?
+  role         Role       @default(CUSTOMER)
+  passwordHash String
+  createdAt    DateTime   @default(now())
+  orders       Order[]
+  payments     Payment[]
 }
 
 enum Role {
@@ -35,18 +36,17 @@ model Product {
   type        ProductType
   price       Float
   currency    String      @default("usd")
-  // optional fields
-  location    String?     // for tours
-  duration    Int?        // for tours, in days
-  startDate   DateTime?   // for tours
-  endDate     DateTime?   // for tours
+  location    String?
+  duration    Int?        // in days
+  startDate   DateTime?
+  endDate     DateTime?
   createdAt   DateTime    @default(now())
   orders      Order[]
 }
 
 enum ProductType {
-  MINI_SPEAKER
-  NDGO_PROGRAM
+  SPACE
+  NDGO
   TOUR
 }
 
@@ -61,8 +61,10 @@ model Order {
   productId   Int
   status      OrderStatus @default(PENDING)
   quantity    Int        @default(1)
-  scheduledAt DateTime?   // for tours or program
+  scheduledAt DateTime?
   createdAt   DateTime    @default(now())
+
+  // one-to-one relation
   payment     Payment?
 }
 
@@ -75,12 +77,12 @@ enum OrderStatus {
 model Payment {
   id          Int        @id @default(autoincrement())
   order       Order      @relation(fields: [orderId], references: [id])
-  orderId     Int
+  orderId     Int        @unique   // <-- make unique for one-to-one
   user        User       @relation(fields: [userId], references: [id])
   userId      Int
   amount      Float
   currency    String
-  reference   String     @unique // stripe payment_intent id or checkout session id
+  reference   String     @unique
   provider    PaymentProvider
   status      PaymentStatus
   createdAt   DateTime   @default(now())

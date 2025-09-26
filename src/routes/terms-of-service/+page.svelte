@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import Footer from '$lib/Footer.svelte';
+	import Footer from '$lib/layout/Footer.svelte';
 </script>
 
 <div class="legal-container">

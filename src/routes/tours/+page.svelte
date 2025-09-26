@@ -1,9 +1,10 @@
 <script>
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';
-	import TourRegistration from '$lib/TourRegistration.svelte';
-	import Footer from '$lib/Footer.svelte';
-	import TourCta from '$lib/TourCTA.svelte';
+
+	import Footer from '$lib/layout/Footer.svelte';
+	import TourCta from '$lib/tours/TourCTA.svelte';
+	import ReservationModal from '$lib/tours/ReservationModal.svelte';
 
 	let showModal = false;
 	const openModal = () => (showModal = true);
@@ -165,7 +166,7 @@
 <Footer />
 
 {#if showModal}
-	<TourRegistration on:close={closeModal} />
+	<ReservationModal on:close={closeModal} />
 {/if}
 
 <style>

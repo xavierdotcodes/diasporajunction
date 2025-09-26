@@ -1,7 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';
-	import Footer from '$lib/Footer.svelte';
+	import Footer from '$lib/layout/Footer.svelte';
 
 	const cards = [
 		{

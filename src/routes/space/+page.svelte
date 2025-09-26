@@ -1,8 +1,8 @@
 <script>
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';
-	import CheckoutModal from '$lib/CheckoutModal.svelte';
-	import Footer from '$lib/Footer.svelte';
+	import CheckoutModal from '$lib/payment/CheckoutModal.svelte';
+	import Footer from '$lib/layout/Footer.svelte';
 
 	const productFeatures = [
 		{
@@ -171,9 +171,11 @@
 		<button class="cta-button" on:click={() => (showModal = true)}>Pre-Order Now</button>
 	</section>
 
+	<!--
 	{#if showModal}
 		<CheckoutModal on:close={() => (showModal = false)} />
 	{/if}
+    -->
 </div>
 
 <Footer />

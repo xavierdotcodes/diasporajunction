@@ -1,12 +1,13 @@
 <script>
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';
+	import Footer from '$lib/layout/Footer.svelte';
 
 	const team = [
 		{
 			name: 'Xavi',
 			role: 'Visionary · Entrepreneur · Digital Architect',
-			image: '/images/team/xavi.jpg',
+			image: '/images/team/xavi.png',
 			bio: 'Building bridges between diaspora and homeland through creativity, tech, and embodied presence.'
 		},
 		{
@@ -90,3 +91,4 @@
 		{/each}
 	</div>
 </section>
+<Footer />

@@ -1,26 +1,62 @@
 <script>
-	import Footer from '$lib/Footer.svelte';
-	import { onMount } from 'svelte';
-	import {
-		faInstagram,
-		faTiktok,
-		faYoutube,
-		faPinterest,
-		faXTwitter,
-		faFacebook,
-		faLinkedin,
-		faTwitch
-	} from '@fortawesome/free-brands-svg-icons';
+	import Footer from '$lib/layout/Footer.svelte';
 
-	let Fa; // Will hold svelte-fa after dynamic import
-	let formData = { name: '', email: '', message: '' };
+	let formData = { name: '', email: '', message: '', honey: '' }; // added honey
 	let success = false;
+	let error = false;
+	let errorMessage = '';
 
-	function handleSubmit(e) {
+	async function handleSubmit(e) {
 		e.preventDefault();
-		console.log('Form submitted:', formData);
-		success = true;
-		formData = { name: '', email: '', message: '' };
+
+		// Client-side validation
+		if (formData.honey.trim() !== '') {
+			error = true;
+			errorMessage = 'Bot detected.';
+			return;
+		}
+
+		if (!formData.name || formData.name.length < 2 || formData.name.length > 50) {
+			error = true;
+			errorMessage = 'Name must be between 2 and 50 characters.';
+			return;
+		}
+
+		if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+			error = true;
+			errorMessage = 'Please provide a valid email address.';
+			return;
+		}
+
+		if (!formData.message || formData.message.length < 10 || formData.message.length > 1000) {
+			error = true;
+			errorMessage = 'Message must be between 10 and 1000 characters.';
+			return;
+		}
+
+		try {
+			const res = await fetch('/api/contact', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(formData)
+			});
+
+			const data = await res.json();
+
+			if (data.success) {
+				success = true;
+				error = false;
+				errorMessage = '';
+				formData = { name: '', email: '', message: '', honey: '' };
+			} else {
+				throw new Error(data.error || 'Unknown error');
+			}
+		} catch (err) {
+			console.error(err);
+			success = false;
+			error = true;
+			errorMessage = '⚠️ Something went wrong. Please try again.';
+		}
 	}
 </script>
 
@@ -31,30 +67,43 @@
 			We’d love to hear from you. Send us a message or connect on social media.
 		</p>
 
-		<form on:submit|preventDefault={handleSubmit} class="contact-form">
+		<form on:submit={handleSubmit} class="contact-form" novalidate>
 			<label>
 				<span>Name</span>
-				<input type="text" bind:value={formData.name} required />
+				<input type="text" bind:value={formData.name} required minlength="2" maxlength="50" />
 			</label>
 
 			<label>
 				<span>Email</span>
-				<input type="email" bind:value={formData.email} required />
+				<input type="email" bind:value={formData.email} required maxlength="100" />
 			</label>
 
 			<label>
 				<span>Message</span>
-				<textarea rows="5" bind:value={formData.message} required></textarea>
+				<textarea rows="5" bind:value={formData.message} required minlength="10" maxlength="1000"
+				></textarea>
 			</label>
+
+			<!-- Honeypot field (hidden from users) -->
+			<input
+				type="text"
+				bind:value={formData.honey}
+				tabindex="-1"
+				autocomplete="off"
+				class="hidden-honey"
+			/>
 
 			<button type="submit">Send Message</button>
 		</form>
 
 		{#if success}
-			<p class="success">✅ Your message has been sent. Thank you!</p>
+			<p class="success">✅ Your message has been sent to Discord. Thank you!</p>
+		{:else if error}
+			<p class="error">{errorMessage}</p>
 		{/if}
 	</div>
 </section>
+
 <Footer />
 
 <style>
@@ -133,33 +182,16 @@
 		margin-bottom: 1.5rem;
 	}
 
-	.socials {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
-		gap: 1rem;
-		justify-items: center;
-		align-items: center;
+	.error {
+		color: #d93025;
+		font-weight: 600;
+		margin-bottom: 1.5rem;
 	}
 
-	.socials a {
-		font-size: 1.8rem;
-		color: #333;
-		transition:
-			color 0.2s,
-			transform 0.2s;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		width: 48px;
-		height: 48px;
-		border-radius: 50%;
-		background: #f5f5f5;
-	}
-
-	.socials a:hover {
-		color: #fff;
-		background: #008e30;
-		transform: scale(1.2);
+	.hidden-honey {
+		display: none !important;
+		visibility: hidden;
+		height: 0;
 	}
 
 	/* Responsive adjustments */
