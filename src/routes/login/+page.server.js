@@ -3,7 +3,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { prisma } from '$lib/server/prisma';
-import { redis } from '$lib/server/redis';
+import { getRedis } from '$lib/server/redis';
 
 export const actions = {
 	default: async ({ request, cookies }) => {
@@ -29,7 +29,8 @@ export const actions = {
 			return fail(401, { error: 'Invalid credentials' });
 		}
 
-		// 4️⃣ Create Redis session
+		// 4️⃣ Create Redis session (lazy init)
+		const redis = getRedis();
 		const sessionId = crypto.randomBytes(32).toString('hex');
 		await redis.set(
 			`session:${sessionId}`,
