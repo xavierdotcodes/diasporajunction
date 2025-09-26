@@ -1,9 +1,10 @@
 // src/routes/api/contact/+server.js
 import { json } from '@sveltejs/kit';
-import { DISCORD_WEBHOOK, REDIS_URL } from '$env/static/private';
+import { env } from '$env/dynamic/private';
+import Redis from 'ioredis';
 
-const redisUrl = REDIS_URL;
-const redis = new Redis(REDIS_URL);
+const redis = new Redis(env.REDIS_URL);
+
 export async function POST({ request, getClientAddress }) {
 	try {
 		const { name, email, message } = await request.json();
@@ -24,6 +25,7 @@ export async function POST({ request, getClientAddress }) {
 				{ status: 429 }
 			);
 		}
+
 		const payload = {
 			username: 'DiasporaJunxion Contact Form',
 			embeds: [
@@ -40,7 +42,7 @@ export async function POST({ request, getClientAddress }) {
 			]
 		};
 
-		const res = await fetch(DISCORD_WEBHOOK, {
+		const res = await fetch(env.DISCORD_WEBHOOK, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(payload)
@@ -52,7 +54,7 @@ export async function POST({ request, getClientAddress }) {
 
 		return json({ success: true });
 	} catch (err) {
-		console.error(err);
+		console.error('Contact API error:', err);
 		return json({ success: false, error: 'Server error' }, { status: 500 });
 	}
 }
