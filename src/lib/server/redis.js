@@ -1,7 +1,7 @@
 import Redis from 'ioredis';
-import { env } from '$env/dynamic/private';
+import { REDIS_URL } from '$env/static/private';
 
-const redisUrl = env.REDIS_URL;
+const redisUrl = REDIS_URL;
 if (!redisUrl) {
 	throw new Error('Missing REDIS_URL in environment');
 }
