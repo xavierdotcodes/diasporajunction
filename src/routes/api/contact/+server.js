@@ -1,6 +1,8 @@
 // src/routes/api/contact/+server.js
 import { json } from '@sveltejs/kit';
 import { DISCORD_WEBHOOK, REDIS_URL } from '$env/static/private';
+
+const redisUrl = REDIS_URL;
 const redis = new Redis(REDIS_URL);
 export async function POST({ request, getClientAddress }) {
 	try {
