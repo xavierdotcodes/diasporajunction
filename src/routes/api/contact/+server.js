@@ -1,13 +1,14 @@
 // src/routes/api/contact/+server.js
 import { json } from '@sveltejs/kit';
-import { redis } from '$lib/server/redis';
+import { getRedis } from '$lib/server/redis';
+import { env } from '$env/dynamic/private';
 
 export async function POST({ request, getClientAddress }) {
 	try {
 		const { name, email, message } = await request.json();
 		const ip = getClientAddress();
 
-		// increment count in Redis
+		const redis = getRedis(); // lazy init
 		const key = `contact:${ip}`;
 		const count = await redis.incr(key);
 
