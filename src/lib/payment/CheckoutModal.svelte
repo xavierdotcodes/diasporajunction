@@ -38,11 +38,37 @@
 		}
 	}
 
+	function allCustomerFieldsValid() {
+		return (
+			customer.name.trim() &&
+			customer.email.trim() &&
+			customer.street.trim() &&
+			customer.city.trim() &&
+			customer.state.trim() &&
+			customer.country.trim() &&
+			customer.zip.trim()
+		);
+	}
+
+	function paymentValid() {
+		if (paymentMethod === 'card') {
+			return (
+				paymentDetails.number.trim() && paymentDetails.expiry.trim() && paymentDetails.cvc.trim()
+			);
+		}
+		if (paymentMethod === 'crypto') {
+			return paymentDetails.wallet.trim() && paymentDetails.coin.trim();
+		}
+		if (paymentMethod === 'provider') {
+			return paymentDetails.provider.trim();
+		}
+		return false;
+	}
+
 	function nextStep() {
-		if (step === 1) {
-			// TODO: validation for customer info
+		if (step === 1 && allCustomerFieldsValid()) {
 			step = 2;
-		} else {
+		} else if (step === 2 && paymentValid()) {
 			handleSubmit();
 		}
 	}
@@ -74,14 +100,16 @@
 </script>
 
 <div class="modal-overlay" on:click={handleOverlayClick}>
-	<div class="modal">
+	<div class="modal" on:click|stopPropagation>
 		<button class="close" on:click={close} aria-label="Close modal">✕</button>
 
 		{#if step === 1}
-			<h2 class="title">Step 1: Your Information</h2>
+			<h2 class="title">Step 1: Enter Your Information</h2>
+			<p class="subtitle">Please fill in all required fields to continue.</p>
 			<CustomerInfoForm {customer} />
 		{:else if step === 2}
-			<h2 class="title">Step 2: Payment</h2>
+			<h2 class="title">Step 2: Select Payment Method</h2>
+			<p class="subtitle">Choose your preferred payment option and complete payment.</p>
 			<PaymentForm bind:paymentMethod bind:paymentDetails />
 		{/if}
 
@@ -89,7 +117,12 @@
 			{#if step > 1}
 				<button type="button" class="secondary" on:click={prevStep}>Back</button>
 			{/if}
-			<button type="button" class="primary" on:click={nextStep}>
+			<button
+				type="button"
+				class="primary"
+				on:click={nextStep}
+				disabled={step === 1 ? !allCustomerFieldsValid() : !paymentValid()}
+			>
 				{step === 1 ? 'Continue' : 'Pay Now'}
 			</button>
 		</div>
@@ -118,13 +151,19 @@
 		animation: fadeIn 0.3s ease-out;
 		display: flex;
 		flex-direction: column;
-		gap: 1.5rem;
+		gap: 1.25rem;
 	}
 
 	.title {
-		font-size: 1.25rem;
+		font-size: 1.35rem;
 		font-weight: 700;
-		margin-bottom: 0.5rem;
+		margin-bottom: 0.25rem;
+	}
+
+	.subtitle {
+		font-size: 0.9rem;
+		color: #6b7280;
+		margin-bottom: 0.75rem;
 	}
 
 	.close {
@@ -141,7 +180,7 @@
 		display: flex;
 		justify-content: flex-end;
 		gap: 0.75rem;
-		margin-top: 1rem;
+		margin-top: 0.5rem;
 	}
 
 	.primary {
@@ -154,8 +193,12 @@
 		transition: background 0.3s;
 		font-weight: 600;
 	}
-	.primary:hover {
+	.primary:hover:enabled {
 		background: #ff4a3d;
+	}
+	.primary:disabled {
+		background: #fca5a5;
+		cursor: not-allowed;
 	}
 
 	.secondary {
