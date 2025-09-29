@@ -1,6 +1,7 @@
 <!-- src/routes/+layout.svelte -->
 <script>
 	import Navbar from '$lib/layout/Navbar.svelte';
+	import Footer from '$lib/layout/Footer.svelte';
 	import '../app.css';
 </script>
 
@@ -22,7 +23,7 @@
 	<meta property="fb:app_id" content="YOUR_FB_APP_ID" />
 
 	<!-- Twitter fallback -->
-	<meta name="twitter:card" content="https://diasporajunxion.com/logo2.png" />
+	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content="DiasporaJunxion – Connecting the Diaspora" />
 	<meta
 		name="twitter:description"
@@ -31,7 +32,13 @@
 	<meta name="twitter:image" content="https://diasporajunxion.com/logo2.png" />
 </svelte:head>
 
-<main>
+<!-- The important part -->
+<div class="flex flex-col min-h-screen">
 	<Navbar />
-	<slot />
-</main>
+
+	<main class="flex-1">
+		<slot />
+	</main>
+
+	<Footer />
+</div>

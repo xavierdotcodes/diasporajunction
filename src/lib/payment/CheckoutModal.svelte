@@ -1,11 +1,12 @@
 <script>
-	import { fade } from 'svelte/transition';
-	import CustomerInfoForm from '$lib/payment/CustomerInfoForm.svelte';
-	import PaymentForm from '$lib/payment/PaymentForm.svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
+	import CustomerInfoForm from './CustomerInfoForm.svelte';
+	import PaymentForm from './PaymentForm.svelte';
 
-	export let onClose = () => {};
+	const dispatch = createEventDispatcher();
 
-	let step = 1; // 1 = Customer Info, 2 = Payment
+	let step = 1;
+
 	let customer = {
 		name: '',
 		email: '',
@@ -16,104 +17,168 @@
 		country: '',
 		zip: ''
 	};
-	let paymentMethod = '';
-	let paymentDetails = {};
 
-	// close on ESC key
-	function handleKeydown(e) {
-		if (e.key === 'Escape') onClose();
+	let paymentMethod = 'card';
+	let paymentDetails = {
+		number: '',
+		expiry: '',
+		cvc: '',
+		provider: '',
+		wallet: '',
+		coin: 'USDT'
+	};
+
+	function close() {
+		dispatch('close');
+	}
+
+	function handleOverlayClick(e) {
+		if (e.target.classList.contains('modal-overlay')) {
+			close();
+		}
 	}
 
 	function nextStep() {
-		step = 2;
+		if (step === 1) {
+			// TODO: validation for customer info
+			step = 2;
+		} else {
+			handleSubmit();
+		}
 	}
 
 	function prevStep() {
-		step = 1;
+		if (step > 1) step -= 1;
 	}
 
-	function submitForm() {
-		console.log('Order Submitted:', { customer, paymentMethod, paymentDetails });
-		alert('Order submitted! Check console.');
-		onClose();
+	function handleSubmit() {
+		const order = {
+			customer,
+			payment: {
+				method: paymentMethod,
+				details: paymentDetails
+			}
+		};
+		console.log('Submitting order:', order);
+		// TODO: integrate with backend/payment API
+		close();
 	}
+
+	onMount(() => {
+		const handleKeydown = (e) => {
+			if (e.key === 'Escape') close();
+		};
+		window.addEventListener('keydown', handleKeydown);
+		return () => window.removeEventListener('keydown', handleKeydown);
+	});
 </script>
 
-<!-- Overlay -->
-<div
-	class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 modal-wrapper"
-	on:click={(e) => e.target === e.currentTarget && onClose()}
-	on:keydown={handleKeydown}
-	tabindex="0"
-	in:fade
-	out:fade
->
-	<!-- Scrollable Content -->
-	<div
-		class="bg-white shadow-xl rounded-2xl w-full max-w-lg p-6 space-y-6 relative overflow-y-auto max-h-[90vh] modal-content"
-		tabindex="0"
-	>
-		<!-- Close Button -->
-		<button
-			type="button"
-			class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl"
-			on:click={onClose}>✕</button
-		>
+<div class="modal-overlay" on:click={handleOverlayClick}>
+	<div class="modal">
+		<button class="close" on:click={close} aria-label="Close modal">✕</button>
 
-		<h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Checkout</h2>
-
-		<!-- Step 1: Customer Info -->
 		{#if step === 1}
-			<CustomerInfoForm bind:customer />
-
-			<div class="flex justify-end mt-4">
-				<button
-					class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg transition"
-					on:click={nextStep}
-				>
-					Next
-				</button>
-			</div>
-		{/if}
-
-		<!-- Step 2: Payment -->
-		{#if step === 2}
+			<h2 class="title">Step 1: Your Information</h2>
+			<CustomerInfoForm {customer} />
+		{:else if step === 2}
+			<h2 class="title">Step 2: Payment</h2>
 			<PaymentForm bind:paymentMethod bind:paymentDetails />
-
-			<div class="flex justify-between mt-4">
-				<button
-					class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-6 rounded-lg transition"
-					on:click={prevStep}
-				>
-					Back
-				</button>
-				<button
-					class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg transition"
-					on:click={submitForm}
-				>
-					Complete Order
-				</button>
-			</div>
 		{/if}
+
+		<div class="actions">
+			{#if step > 1}
+				<button type="button" class="secondary" on:click={prevStep}>Back</button>
+			{/if}
+			<button type="button" class="primary" on:click={nextStep}>
+				{step === 1 ? 'Continue' : 'Pay Now'}
+			</button>
+		</div>
 	</div>
 </div>
 
 <style>
-	.modal-wrapper {
-		overscroll-behavior: contain;
+	.modal-overlay {
+		position: fixed;
+		inset: 0;
+		background: rgba(0, 0, 0, 0.6);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 9999;
 	}
 
-	.modal-content {
-		transform: translateZ(0);
-		backface-visibility: hidden;
+	.modal {
+		background: white;
+		padding: 2rem;
+		border-radius: 1rem;
+		max-width: 450px;
+		width: 90%;
+		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+		position: relative;
+		animation: fadeIn 0.3s ease-out;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
 	}
 
-	/* Scrollbar styling */
-	.modal-content::-webkit-scrollbar {
-		width: 8px;
+	.title {
+		font-size: 1.25rem;
+		font-weight: 700;
+		margin-bottom: 0.5rem;
 	}
-	.modal-content::-webkit-scrollbar-thumb {
-		background-color: rgba(0, 0, 0, 0.2);
-		border-radius: 4px;
+
+	.close {
+		position: absolute;
+		top: 0.5rem;
+		right: 0.5rem;
+		background: none;
+		border: none;
+		font-size: 1.5rem;
+		cursor: pointer;
+	}
+
+	.actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 0.75rem;
+		margin-top: 1rem;
+	}
+
+	.primary {
+		background: #ff6f61;
+		color: white;
+		border: none;
+		padding: 0.75rem 1.5rem;
+		border-radius: 0.5rem;
+		cursor: pointer;
+		transition: background 0.3s;
+		font-weight: 600;
+	}
+	.primary:hover {
+		background: #ff4a3d;
+	}
+
+	.secondary {
+		background: #f3f4f6;
+		color: #374151;
+		border: none;
+		padding: 0.75rem 1.25rem;
+		border-radius: 0.5rem;
+		cursor: pointer;
+		font-weight: 500;
+	}
+	.secondary:hover {
+		background: #e5e7eb;
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(-10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
 	}
 </style>

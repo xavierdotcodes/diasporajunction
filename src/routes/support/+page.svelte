@@ -1,5 +1,4 @@
 <script>
-	import Footer from '$lib/layout/Footer.svelte';
 	// You can adjust these URLs to your campaigns
 	const gofundmeUrl = 'https://www.gofundme.com/f/your-campaign';
 	const kickstarterUrl = 'https://www.kickstarter.com/projects/your-campaign';
@@ -44,8 +43,6 @@
 		</div>
 	</div>
 </div>
-
-<Footer />
 
 <style>
 	.hero {

@@ -57,19 +57,19 @@
 		</button>
 	</div>
 
-	<!-- Mobile Slide-out Menu Overlay -->
+	<!-- Overlay for clicking outside -->
 	{#if menuOpen}
-		<div class="fixed inset-0 z-40" on:click={closeMenu}></div>
+		<div class="fixed inset-0 bg-black/30 z-40" on:click={closeMenu}></div>
 	{/if}
 
 	<!-- Mobile Slide-out Menu -->
 	<div
-		class={`md:hidden fixed top-0 right-0 h-full w-64 bg-[#f2b705] shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${
-			menuOpen ? 'translate-x-0' : 'translate-x-full'
-		}`}
+		class={`md:hidden fixed top-0 right-0 h-full bg-[#f2b705] shadow-lg transform transition-transform duration-300 ease-in-out z-50
+			${menuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+		style="width: 100vw; max-width: 320px;"
 	>
 		<div class="flex justify-end p-6">
-			<button class="text-white" on:click={closeMenu}>✕</button>
+			<button class="text-white text-2xl font-bold" on:click={closeMenu}>✕</button>
 		</div>
 		<nav class="flex flex-col space-y-6 px-6">
 			{#each links as link}

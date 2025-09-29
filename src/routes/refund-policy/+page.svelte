@@ -1,5 +1,4 @@
 <script>
-	import Footer from '$lib/layout/Footer.svelte';
 	import { onMount } from 'svelte';
 	onMount(() => window.scrollTo(0, 0));
 </script>
@@ -107,4 +106,3 @@
 		</div>
 	</div>
 </section>
-<Footer />

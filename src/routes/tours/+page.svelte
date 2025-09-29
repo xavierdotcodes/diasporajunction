@@ -2,7 +2,6 @@
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';
 
-	import Footer from '$lib/layout/Footer.svelte';
 	import Cta from '$lib/tours/CTA.svelte';
 	import BookingModal from '$lib/tours/BookingModal.svelte';
 
@@ -159,8 +158,6 @@
 		<Cta on:openBookingModal={openModal} />
 	</div>
 </section>
-
-<Footer />
 
 {#if showModal}
 	<ReservationModal {tours} on:close={closeModal} />

@@ -1,7 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';
-	import Footer from '$lib/layout/Footer.svelte';
 
 	onMount(async () => {
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
@@ -141,8 +140,6 @@
 		Join The Movement
 	</a>
 </section>
-
-<Footer />
 
 <style>
 	section {

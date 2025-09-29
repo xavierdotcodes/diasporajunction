@@ -85,7 +85,7 @@
 						ease: 'expo.out',
 						scrollTrigger: {
 							trigger: heroTitle,
-							start: 'top 20%', // <- starts when top of hero is 20% from viewport top
+							start: 'top 15%', // <- starts when top of hero is 20% from viewport top
 							end: 'top 0%',
 							scrub: false,
 							markers: true

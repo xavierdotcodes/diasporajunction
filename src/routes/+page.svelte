@@ -3,7 +3,6 @@
 	import AboutSection from '$lib/landing/AboutSection.svelte';
 	import CardsSection from '$lib/landing/CardsSection.svelte';
 	import CTASection from '$lib/landing/CTASection.svelte';
-	import Footer from '$lib/layout/Footer.svelte';
 
 	const cards = [
 		{
@@ -45,7 +44,6 @@
 	<AboutSection />
 	<CardsSection {cards} />
 	<CTASection />
-	<Footer />
 </div>
 
 <style>

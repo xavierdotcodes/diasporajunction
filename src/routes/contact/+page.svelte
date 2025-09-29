@@ -1,6 +1,4 @@
 <script>
-	import Footer from '$lib/layout/Footer.svelte';
-
 	let formData = { name: '', email: '', message: '', honey: '' }; // added honey
 	let success = false;
 	let error = false;
@@ -103,8 +101,6 @@
 		{/if}
 	</div>
 </section>
-
-<Footer />
 
 <style>
 	.contact {

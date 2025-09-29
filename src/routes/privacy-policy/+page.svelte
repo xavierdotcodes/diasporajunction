@@ -1,5 +1,4 @@
 <script>
-	import Footer from '$lib/layout/Footer.svelte';
 	import { onMount } from 'svelte';
 </script>
 
@@ -115,8 +114,6 @@
 		<strong>Email:</strong> info@diasporajunxion.com<br />
 	</p>
 </div>
-
-<Footer />
 
 <style>
 	.legal-container {

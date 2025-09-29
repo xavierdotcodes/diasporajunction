@@ -2,7 +2,6 @@
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';
 	import EnrollmentModal from '$lib/ndgo/EnrollmentModal.svelte';
-	import Footer from '$lib/layout/Footer.svelte';
 
 	let showModal = false;
 
@@ -114,7 +113,6 @@
 		Join the Program
 	</a>
 </section>
-<Footer />
 
 <EnrollmentModal bind:showModal onClose={() => (showModal = false)} />
 

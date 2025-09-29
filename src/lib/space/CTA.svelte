@@ -1,6 +1,10 @@
 <script>
-	import CheckoutModal from '$lib/payment/CheckoutModal.svelte';
-	let showModal = false;
+	import { createEventDispatcher } from 'svelte';
+	const dispatch = createEventDispatcher();
+
+	function openModal() {
+		dispatch('openModal');
+	}
 </script>
 
 <section class="cta">
@@ -15,89 +19,48 @@
 			</span>CE
 		</strong>.
 	</p>
-	<button class="cta-button" on:click={() => (showModal = true)}>Pre-Order Now</button>
-
-	{#if showModal}
-		<CheckoutModal on:close={() => (showModal = false)} />
-	{/if}
+	<button class="cta-button" on:click={openModal}>Pre-Order Now</button>
 </section>
 
 <style>
 	.cta {
 		text-align: center;
-		padding: 5rem 2rem;
-		background: linear-gradient(135deg, #d9042b, #038c25);
-		color: #fff;
-		border-radius: 2rem;
-		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 1.5rem;
-		transition: transform 0.3s ease;
-	}
-
-	.cta:hover {
-		transform: translateY(-4px);
+		padding: 3rem 1rem;
+		background: linear-gradient(135deg, #1e1e2f, #2d2d44);
+		color: white;
+		border-radius: 1rem;
+		box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
 	}
 
 	.cta h2 {
-		font-size: clamp(2rem, 4vw, 2.5rem);
-		font-weight: 800;
-		letter-spacing: 1px;
+		font-size: 2rem;
+		margin-bottom: 1rem;
 	}
 
 	.cta p {
 		font-size: 1.2rem;
-		line-height: 1.6;
-		max-width: 600px;
+		margin-bottom: 1.5rem;
 	}
 
-	.cta strong {
-		font-weight: 900;
-		display: inline-flex;
-		align-items: center;
-		gap: 0.2rem;
+	.cta-button {
+		padding: 0.75rem 1.5rem;
+		font-size: 1rem;
+		border: none;
+		border-radius: 0.5rem;
+		background: #ff6f61;
+		color: white;
+		cursor: pointer;
+		transition: background 0.3s;
+	}
+
+	.cta-button:hover {
+		background: #ff4a3d;
 	}
 
 	.triangle {
 		display: inline-block;
 		width: 1em;
 		height: 1em;
-		margin: 0 0.05em;
-		transform: translateY(-0.05em);
-	}
-
-	.triangle svg {
-		width: 1em;
-		height: 1em;
-		fill: currentColor;
-	}
-
-	.cta-button {
-		background: #fff;
-		color: #d9042b;
-		font-size: 1.15rem;
-		font-weight: 700;
-		padding: 1rem 3rem;
-		border-radius: 9999px;
-		border: none;
-		cursor: pointer;
-		transition:
-			transform 0.2s ease,
-			background 0.2s ease,
-			box-shadow 0.2s ease;
-		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-	}
-
-	.cta-button:hover {
-		transform: scale(1.05);
-		background: #f0f0f0;
-		box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
-	}
-
-	.cta-button:active {
-		transform: scale(0.98);
-		box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+		vertical-align: middle;
 	}
 </style>

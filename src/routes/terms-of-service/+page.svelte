@@ -1,6 +1,5 @@
 <script>
 	import { onMount } from 'svelte';
-	import Footer from '$lib/layout/Footer.svelte';
 </script>
 
 <div class="legal-container">
@@ -64,7 +63,6 @@
 		form.
 	</p>
 </div>
-<Footer />
 
 <style>
 	.legal-container {
