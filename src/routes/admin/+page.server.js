@@ -3,33 +3,46 @@ import { redirect } from '@sveltejs/kit';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ locals }) {
-	// Redirect non-admins
-	if (!locals.user || locals.user.role !== 'ADMIN') {
+	// Ensure admin
+	if (!locals.user || !locals.user.roles.some((r) => r.role === 'ADMIN')) {
 		throw redirect(302, '/login');
 	}
 
-	// Fetch tours
-	const tours = await prisma.product.findMany({
-		where: { type: 'TOUR' },
+	// Fetch Tours
+	const tours = await prisma.tour.findMany({
 		orderBy: { startDate: 'asc' }
 	});
 
-	// Fetch SPACE orders
-	const spaceOrders = await prisma.order.findMany({
-		where: { product: { type: 'MINI_SPEAKER' } }, // adjust to your enum if needed
-		include: { user: true, product: true }
+	// Fetch Orders
+	const orders = await prisma.order.findMany({
+		include: { user: true, payments: true },
+		orderBy: { createdAt: 'asc' }
 	});
 
-	// Fetch NDGO registrations
-	const ndgoRegs = await prisma.order.findMany({
-		where: { product: { type: 'NDGO_PROGRAM' } }, // adjust to your enum if needed
-		include: { user: true, product: true }
+	// Fetch Bookings
+	const bookings = await prisma.booking.findMany({
+		include: { user: true, tour: true, payments: true }
 	});
 
-	// Return data directly to page as props
+	const registrations = await prisma.registration.findMany({
+		include: { user: true, course: true, payments: true }
+	});
+
+	// Fetch all Users
+	const users = await prisma.user.findMany({
+		include: {
+			registrations: true,
+			bookings: true,
+			orders: true
+		},
+		orderBy: { createdAt: 'desc' }
+	});
+
 	return {
 		tours,
-		spaceOrders,
-		ndgoRegs
+		orders,
+		registrations,
+		bookings,
+		users
 	};
 }

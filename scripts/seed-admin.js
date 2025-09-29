@@ -3,17 +3,30 @@ import bcrypt from 'bcrypt';
 import { prisma } from '../src/lib/server/prisma.js';
 
 const run = async () => {
-	const passwordHash = await bcrypt.hash('D!@sp0r@junx!0n', 10);
+	// hash the password
+	const hashedPassword = await bcrypt.hash('D!@sp0r@junx!0n', 10);
 
-	await prisma.user.create({
+	// create the user
+	const adminUser = await prisma.user.create({
 		data: {
 			email: 'xcc2b@virginia.edu',
-			passwordHash,
-			role: 'ADMIN'
-		}
+			password: hashedPassword,
+			name: 'Admin',
+			subscribed: false,
+			roles: {
+				create: [
+					{
+						role: 'ADMIN'
+					}
+				]
+			}
+		},
+		include: { roles: true }
 	});
 
-	console.log('✅ Admin created: xcc2b@virginia.edu / D!@sp0r@junx!0n');
+	console.log('✅ Admin created:', adminUser.email, '/ D!@sp0r@junx!0n');
 };
 
-run().catch(console.error);
+run().catch((err) => {
+	console.error('❌ Failed to create admin:', err);
+});

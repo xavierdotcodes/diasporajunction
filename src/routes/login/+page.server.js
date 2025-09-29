@@ -1,4 +1,3 @@
-// src/routes/login/+page.server.js
 import { fail, redirect } from '@sveltejs/kit';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
@@ -7,7 +6,6 @@ import { getRedis } from '$lib/server/redis';
 
 export const actions = {
 	default: async ({ request, cookies }) => {
-		// 1️⃣ Get form data
 		const formData = await request.formData();
 		const email = formData.get('email');
 		const password = formData.get('password');
@@ -16,30 +14,30 @@ export const actions = {
 			return fail(400, { error: 'Email and password are required' });
 		}
 
-		// 2️⃣ Find user in DB
-		const user = await prisma.user.findUnique({ where: { email } });
+		const user = await prisma.user.findUnique({
+			where: { email },
+			include: { roles: true }
+		});
 
-		if (!user || user.role !== 'ADMIN') {
+		if (!user || !user.roles.some((r) => r.role === 'ADMIN')) {
 			return fail(401, { error: 'Invalid credentials' });
 		}
 
-		// 3️⃣ Check password
-		const valid = await bcrypt.compare(password, user.passwordHash);
+		const valid = await bcrypt.compare(password, user.password);
 		if (!valid) {
 			return fail(401, { error: 'Invalid credentials' });
 		}
 
-		// 4️⃣ Create Redis session (lazy init)
+		// Create Redis session
 		const redis = getRedis();
 		const sessionId = crypto.randomBytes(32).toString('hex');
 		await redis.set(
 			`session:${sessionId}`,
-			JSON.stringify({ id: user.id, role: user.role }),
+			JSON.stringify({ id: user.id, roles: user.roles.map((r) => r.role) }),
 			'EX',
-			60 * 60 * 2 // 2 hours
+			60 * 60 * 2
 		);
 
-		// 5️⃣ Set HttpOnly cookie
 		cookies.set('session', sessionId, {
 			path: '/',
 			httpOnly: true,
@@ -48,7 +46,7 @@ export const actions = {
 			maxAge: 60 * 60 * 2
 		});
 
-		// 6️⃣ Redirect to admin page
+		// Redirect to admin dashboard
 		throw redirect(303, '/admin');
 	}
 };
