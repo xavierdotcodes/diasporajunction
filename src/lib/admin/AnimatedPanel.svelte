@@ -8,7 +8,7 @@
 	onMount(() => {
 		if (panelEl) {
 			gsap.set(panelEl, {
-				x: active ? 0 : -50,
+				x: active ? 0 : 0,
 				opacity: active ? 1 : 0,
 				pointerEvents: active ? 'auto' : 'none'
 			});
@@ -28,7 +28,7 @@
 			});
 		} else {
 			gsap.to(panelEl, {
-				x: -50,
+				x: 0,
 				opacity: 0,
 				pointerEvents: 'none',
 				duration: 0.4,
@@ -38,16 +38,16 @@
 	}
 </script>
 
-<!--AnimatedPanel-->
-<div bind:this={panelEl} class="panel w-full top-0 left-0">
+<div bind:this={panelEl} class="panel absolute top-0 left-0 w-full">
 	<slot />
 </div>
 
 <style>
 	.panel {
-		width: 100%;
+		position: absolute; /* key fix: stack all panels on top of each other */
 		top: 0;
 		left: 0;
+		width: 100%;
 		z-index: 1;
 	}
 </style>

@@ -33,7 +33,8 @@ export async function load({ locals }) {
 		include: {
 			registrations: true,
 			bookings: true,
-			orders: true
+			orders: true,
+			roles: true
 		},
 		orderBy: { createdAt: 'desc' }
 	});

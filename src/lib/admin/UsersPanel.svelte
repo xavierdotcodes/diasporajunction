@@ -2,18 +2,16 @@
 	import UserItem from './UserItem.svelte';
 	import { createEventDispatcher } from 'svelte';
 
-	export let users = []; // all users
+	export let users = [];
+	export let filterType = 'all'; // comes from parent
 	const dispatch = createEventDispatcher();
 
-	let filterType = 'all'; // all, subscribers, ndgo, tourees, customers
-
-	// Reactive filtered list
 	$: filteredUsers = users.filter((user) => {
 		if (filterType === 'subscribers') return user.subscribed;
 		if (filterType === 'ndgo') return user.registrations?.length > 0;
 		if (filterType === 'tourees') return user.reservations?.length > 0;
 		if (filterType === 'customers') return user.orders?.length > 0;
-		return true; // fallback: show all
+		return true;
 	});
 
 	function handleRemove(id) {
@@ -25,31 +23,15 @@
 	}
 
 	function handleOpenModal(user) {
-		// bubble up the click to show modal
 		dispatch('openModal', user);
 	}
 </script>
 
-<!-- Filter selector -->
-<div class="filter-bar mb-4 flex flex-col sm:flex-row gap-2 sm:gap-4 items-center">
-	<label class="font-semibold text-gray-700">Show:</label>
-	<select
-		bind:value={filterType}
-		class="px-3 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
-	>
-		<option value="all">All Users</option>
-		<option value="subscribers">Subscribers</option>
-		<option value="ndgo">NDGO</option>
-		<option value="tourees">Tourees</option>
-		<option value="customers">Customers</option>
-	</select>
-</div>
-
-{#if filteredUsers.length === 0}
-	<p class="text-gray-500 text-center py-4">No users found.</p>
-{/if}
-
 <div class="users-list-container max-w-4xl mx-auto">
+	{#if filteredUsers.length === 0}
+		<p class="text-gray-500 text-center py-4">No users found.</p>
+	{/if}
+
 	{#each filteredUsers as user (user.id)}
 		<UserItem
 			{user}
@@ -80,10 +62,5 @@
 			padding: 2rem;
 			gap: 2.5rem;
 		}
-	}
-
-	.filter-bar {
-		width: 100%;
-		justify-content: flex-start;
 	}
 </style>

@@ -14,9 +14,13 @@
 		{ href: '/support', label: 'How to Support' },
 		{ href: '/contact', label: 'Contact Us' }
 	];
+
+	function closeMenu() {
+		menuOpen = false;
+	}
 </script>
 
-<header class="bg-[#f2b705] p-6 shadow-lg">
+<header class="bg-[#f2b705] p-6 shadow-lg relative z-50">
 	<div class="container mx-auto flex justify-between items-center">
 		<Logo />
 
@@ -25,8 +29,7 @@
 			{#each links as link}
 				<a
 					href={link.href}
-					class="relative font-medium transition-colors duration-300
-						   hover:[color:#008e30]"
+					class="relative font-medium transition-colors duration-300 hover:[color:#008e30]"
 					class:text-red-500={$page.url.pathname === link.href}
 					class:text-white={$page.url.pathname !== link.href}
 				>
@@ -54,6 +57,11 @@
 		</button>
 	</div>
 
+	<!-- Mobile Slide-out Menu Overlay -->
+	{#if menuOpen}
+		<div class="fixed inset-0 z-40" on:click={closeMenu}></div>
+	{/if}
+
 	<!-- Mobile Slide-out Menu -->
 	<div
 		class={`md:hidden fixed top-0 right-0 h-full w-64 bg-[#f2b705] shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${
@@ -61,17 +69,16 @@
 		}`}
 	>
 		<div class="flex justify-end p-6">
-			<button class="text-white" on:click={() => (menuOpen = false)}>✕</button>
+			<button class="text-white" on:click={closeMenu}>✕</button>
 		</div>
 		<nav class="flex flex-col space-y-6 px-6">
 			{#each links as link}
 				<a
 					href={link.href}
-					class="font-medium transition-colors duration-300
-						   hover:[color:#008e30]"
+					class="font-medium transition-colors duration-300 hover:[color:#008e30]"
 					class:text-red-500={$page.url.pathname === link.href}
 					class:text-white={$page.url.pathname !== link.href}
-					on:click={() => (menuOpen = false)}
+					on:click={closeMenu}
 				>
 					{link.label}
 				</a>

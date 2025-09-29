@@ -1,15 +1,13 @@
 <script>
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import gsap from 'gsap';
 
 	export let introText = 'Introducing DiasporaJunxion’s flagship product…';
-	export let spaceLetters = ['S', 'P', '▲', 'C', 'E'];
-	export let heroLetters = ['S', 'P', '▲', 'C', 'E'];
+	export let heroText = ['S', 'P', '▲', 'C', 'E'];
 	export let taglineText =
 		'Immersive sound. Futuristic design. Experience music like never before.';
 
 	let introLine;
-	let spaceTitle;
 	let heroTitle;
 	let tagline;
 
@@ -17,86 +15,84 @@
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
 		gsap.registerPlugin(ScrollTrigger);
 
-		// --- Intro line animation ---
+		await tick(); // ensure DOM is ready
+
+		// --- Split intro into words ---
 		if (introLine) {
 			const words = introLine.textContent
 				.split(' ')
 				.map((w) => `<span class="word">${w} </span>`)
 				.join('');
 			introLine.innerHTML = words;
-
-			const wordSpans = introLine.querySelectorAll('.word');
-
-			gsap.from(wordSpans, {
-				y: 20,
-				opacity: 0,
-				stagger: 0.15,
-				duration: 0.8,
-				ease: 'power2.out'
-			});
 		}
 
-		// --- SPACE letters fade up ---
-		if (spaceTitle) {
-			const letters = spaceTitle.querySelectorAll('span');
-			gsap.set(letters, { opacity: 0, y: 20 });
+		const tl = gsap.timeline();
 
-			gsap.to(letters, {
-				opacity: 1,
-				y: 0,
-				stagger: 0.1,
-				duration: 0.8,
-				ease: 'power2.out',
-				delay: 0.5
-			});
+		// 1️⃣ Intro line fade up
+		tl.from(introLine.querySelectorAll('.word'), {
+			y: 20,
+			opacity: 0,
+			stagger: 0.15,
+			duration: 0.8,
+			ease: 'power2.out'
+		});
 
-			// --- Expand on scroll ---
-			gsap.to(letters, {
-				scrollTrigger: {
-					trigger: spaceTitle,
-					start: 'top 80%',
-					end: 'top 50%',
-					scrub: true
+		// 2️⃣ Hero letters fade + slide up
+		if (heroTitle) {
+			tl.from(
+				heroTitle.querySelectorAll('span'),
+				{
+					y: 20,
+					opacity: 0,
+					stagger: 0.1,
+					duration: 0.8,
+					ease: 'power2.out'
 				},
-				scale: 1.3,
-				stagger: 0.1,
-				ease: 'power2.out'
-			});
+				'+=0.2'
+			);
 		}
 
-		// --- Hero letters scroll-triggered ---
+		// 3️⃣ Tagline fade in
+		if (tagline) {
+			tl.from(
+				tagline,
+				{
+					opacity: 0,
+					y: 20,
+					duration: 1,
+					ease: 'power2.out'
+				},
+				'+=0.2'
+			);
+		}
+
+		// 4️⃣ Scroll-triggered fan out starting at 20% from top
 		if (heroTitle) {
 			const letters = heroTitle.querySelectorAll('span');
-			gsap.set(letters, { opacity: 0, scale: 0.5 });
+			if (letters.length > 0) {
+				const centerIndex = heroText.findIndex((l) => l === '▲');
 
-			gsap.to(letters, {
-				scrollTrigger: {
-					trigger: heroTitle,
-					start: 'top 80%',
-					end: 'top 50%',
-					scrub: true
-				},
-				opacity: 1,
-				scale: 1,
-				stagger: 0.1,
-				ease: 'power2.out'
-			});
-		}
+				// responsive spread multiplier
+				const width = window.innerWidth;
+				let multiplier = width < 480 ? 6 : width < 768 ? 10 : 15;
 
-		// --- Tagline fade in ---
-		if (tagline) {
-			gsap.from(tagline, {
-				scrollTrigger: {
-					trigger: tagline,
-					start: 'top 90%',
-					end: 'top 70%',
-					scrub: true
-				},
-				opacity: 0,
-				y: 20,
-				duration: 1,
-				ease: 'power2.out'
-			});
+				gsap.fromTo(
+					letters,
+					{ x: 0 },
+					{
+						x: (i) => (i - centerIndex) * multiplier + 'vw',
+						duration: 4,
+						ease: 'expo.out',
+						scrollTrigger: {
+							trigger: heroTitle,
+							start: 'top 20%', // <- starts when top of hero is 20% from viewport top
+							end: 'top 0%',
+							scrub: false,
+							markers: true
+						}
+					}
+				);
+			}
 		}
 	});
 </script>
@@ -104,15 +100,8 @@
 <section class="hero-centered">
 	<p bind:this={introLine} class="intro-line">{introText}</p>
 
-	<!-- SPACE title -->
-	<h2 bind:this={spaceTitle} class="space-title">
-		{#each spaceLetters as letter}
-			<span>{letter}</span>
-		{/each}
-	</h2>
-
-	<h1 bind:this={heroTitle} class="logo">
-		{#each heroLetters as letter}
+	<h1 bind:this={heroTitle} class="hero-title">
+		{#each heroText as letter}
 			<span>{letter}</span>
 		{/each}
 	</h1>
@@ -137,40 +126,31 @@
 
 	.intro-line {
 		font-size: clamp(1rem, 4vw, 1.25rem);
-		color: #666;
+		color: #ccc;
 	}
 	.intro-line .word {
 		display: inline-block;
 	}
 
-	.space-title {
+	.hero-title {
+		font-size: clamp(3rem, 12vw, 6rem);
+		font-weight: 900;
+		letter-spacing: 0.05em;
 		display: flex;
 		justify-content: center;
-		gap: 0.2em;
+		gap: 0.05em;
+		color: white;
 		margin-top: 0.5rem;
-		margin-bottom: 1rem;
-		font-size: clamp(2rem, 8vw, 3rem);
-		font-weight: 900;
-		color: #222; /* neutral dark */
 	}
-	.space-title span {
+	.hero-title span {
 		display: inline-block;
 		transform-origin: center center;
 	}
 
-	.logo {
-		font-size: clamp(3rem, 8vw, 6rem);
-		font-weight: 900;
-		letter-spacing: 0.15em;
-		display: flex;
-		justify-content: center;
-		gap: 0.1em;
-	}
-
 	.tagline {
-		font-size: clamp(1.25rem, 2.5vw, 1.75rem);
-		color: #444;
-		max-width: 700px;
+		font-size: clamp(1rem, 2.5vw, 1.75rem);
+		color: #ddd;
+		max-width: 90%;
 		margin-top: 1rem;
 	}
 

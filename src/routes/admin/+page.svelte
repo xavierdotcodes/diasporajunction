@@ -6,6 +6,7 @@
 	import OrdersPanel from '$lib/admin/OrdersPanel.svelte';
 	import NDGOPanel from '$lib/admin/NDGOPanel.svelte';
 	import UsersPanel from '$lib/admin/UsersPanel.svelte';
+	import UserFilter from '$lib/admin/UserFilter.svelte';
 	import LogoutButton from '$lib/layout/LogoutButton.svelte';
 	import AddTourModal from '$lib/admin/AddTourModal.svelte';
 	import AnimatedPanel from '$lib/admin/AnimatedPanel.svelte';
@@ -17,6 +18,7 @@
 
 	let currentContext = 'tours';
 	let showAddTour = false;
+	let userFilterType = 'all';
 
 	let activeUser = null;
 	let modalWrapper;
@@ -35,9 +37,13 @@
 		users = users.map((u) => (u.id === id ? { ...u, subscribed: false } : u));
 	}
 
+	function handleUserFilterChange(value) {
+		userFilterType = value;
+	}
+
 	async function handleOpenUserModal(user) {
 		activeUser = user;
-		await tick(); // wait for modalWrapper to be in the DOM
+		await tick();
 		gsap.fromTo(
 			modalWrapper,
 			{ autoAlpha: 0, scale: 0.9 },
@@ -59,23 +65,22 @@
 	onMount(() => console.log('Admin dashboard mounted'));
 </script>
 
-<main class="min-h-screen bg-gray-50 flex flex-col p-4 md:p-6 relative w-full">
-	<h1 class="text-4xl font-bold text-center mb-8">Admin Dashboard</h1>
+<main class="min-h-screen bg-gray-50 flex flex-col gap-6 p-4 md:p-6 items-center relative w-full">
+	<h1 class="text-4xl font-bold text-center">Admin Dashboard</h1>
 
+	<!-- Toolbar row: UserFilter (for users only) -->
 	<div
-		class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 md:mb-6 gap-2 md:gap-0 w-full max-w-6xl mx-auto"
+		class="flex flex-col md:flex-row justify-end items-start md:items-center w-full max-w-6xl gap-2"
 	>
-		<LogoutButton />
-		{#if currentContext === 'tours'}
-			<button
-				on:click={() => (showAddTour = true)}
-				class="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 px-4 rounded-lg shadow transition-transform transform hover:scale-105"
-			>
-				➕ Add Tour
-			</button>
+		{#if currentContext === 'users'}
+			<UserFilter
+				bind:filterType={userFilterType}
+				on:change={(e) => handleUserFilterChange(e.detail)}
+			/>
 		{/if}
 	</div>
 
+	<!-- ContextSwitcher -->
 	<ContextSwitcher
 		{currentContext}
 		onSwitch={switchContext}
@@ -83,7 +88,8 @@
 		options={['tours', 'orders', 'ndgo', 'users']}
 	/>
 
-	<div class="flex-1 w-full max-w-6xl mx-auto relative">
+	<!-- Panels -->
+	<div class="flex-1 w-full max-w-6xl relative h-full">
 		<AnimatedPanel active={currentContext === 'tours'}>
 			<ToursPanel {tours} on:remove={handleTourDelete} />
 		</AnimatedPanel>
@@ -99,12 +105,14 @@
 		<AnimatedPanel active={currentContext === 'users'}>
 			<UsersPanel
 				{users}
+				filterType={userFilterType}
 				on:unsubscribe={handleSubscriberDelete}
 				on:openModal={(e) => handleOpenUserModal(e.detail)}
 			/>
 		</AnimatedPanel>
 	</div>
 
+	<!-- Modals -->
 	<AddTourModal
 		open={showAddTour}
 		onClose={() => (showAddTour = false)}
@@ -118,11 +126,37 @@
 	{/if}
 </main>
 
+<!-- Floating Buttons -->
+<!-- Logout: bottom-left -->
+<div class="fixed bottom-6 left-6 z-50">
+	<LogoutButton
+		class="shadow-xl rounded-full bg-white p-3 hover:bg-gray-100 transition-transform transform hover:scale-105"
+	/>
+</div>
+
+<!-- Add Tour: bottom-right -->
+{#if currentContext === 'tours'}
+	<div class="fixed bottom-6 right-6 z-50">
+		<button
+			on:click={() => (showAddTour = true)}
+			class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-6 rounded-full shadow-xl transition-transform transform hover:scale-105"
+		>
+			➕ Add Tour
+		</button>
+	</div>
+{/if}
+
 <style>
 	main {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		background: linear-gradient(to right, #f0f4f8, #d9e2ec);
+	}
+
+	/* Optional: floating buttons shadows */
+	.fixed button,
+	.fixed :global(button) {
+		cursor: pointer;
 	}
 </style>

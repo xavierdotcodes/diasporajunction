@@ -50,53 +50,55 @@
 	}
 </script>
 
-<div class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-lg mx-auto">
-	<h2 class="text-xl font-bold mb-4 text-center text-white">Add New Tour</h2>
-
+<div class="bg-gray-900 p-6 sm:p-8 rounded-2xl shadow-xl w-full max-w-md mx-auto">
 	{#if error}
 		<p class="text-red-400 text-center mb-4">{error}</p>
 	{/if}
 
-	<form on:submit={handleSubmit} class="space-y-4">
+	<form on:submit={handleSubmit} class="space-y-5">
+		<!-- Price -->
 		<div>
-			<label class="block mb-1 text-white">Price (USD)</label>
-			<div class="flex items-center">
-				<span class="px-3 bg-gray-600 text-white rounded-l">$</span>
+			<label class="block mb-2 text-white font-medium">Price (USD)</label>
+			<div class="flex">
+				<span class="px-4 py-3 bg-gray-700 text-white rounded-l-lg">$</span>
 				<input
 					type="number"
 					bind:value={tour.price}
 					min="0"
 					step="0.01"
-					class="w-full p-3 rounded-r bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-yellow-400"
+					class="w-full p-3 rounded-r-lg bg-gray-800 border border-gray-700 text-white focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400"
 					placeholder="0.00"
 					disabled={loading}
 				/>
 			</div>
 		</div>
 
+		<!-- Start Date -->
 		<div>
-			<label class="block mb-1 text-white">Start Date</label>
+			<label class="block mb-2 text-white font-medium">Start Date</label>
 			<input
 				type="date"
 				bind:value={tour.startDate}
-				class="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-yellow-400"
+				class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400"
 				disabled={loading}
 			/>
 		</div>
 
+		<!-- End Date -->
 		<div>
-			<label class="block mb-1 text-white">End Date</label>
+			<label class="block mb-2 text-white font-medium">End Date</label>
 			<input
 				type="date"
 				bind:value={tour.endDate}
-				class="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-yellow-400"
+				class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400"
 				disabled={loading}
 			/>
 		</div>
 
+		<!-- Submit -->
 		<button
 			type="submit"
-			class="w-full flex justify-center items-center bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-3 px-4 rounded disabled:opacity-60"
+			class="w-full flex justify-center items-center bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-3 px-4 rounded-full transition disabled:opacity-60"
 			disabled={loading}
 		>
 			{#if loading}
