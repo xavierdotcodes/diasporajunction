@@ -2,12 +2,14 @@
 	import CTA from '$lib/space/CTA.svelte';
 	import Hero from '$lib/space/Hero.svelte';
 	import CheckoutModal from '$lib/payment/CheckoutModal.svelte';
+	import FeatureBlock from '$lib/space/FeatureBlock.svelte';
 
 	let showModal = false;
 </script>
 
 <section class="space-wrapper">
 	<Hero />
+	<FeatureBlock />
 	<CTA on:openModal={() => (showModal = true)} />
 </section>
 

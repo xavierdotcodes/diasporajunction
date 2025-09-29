@@ -2,17 +2,47 @@
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';
 
-	export let features = []; // array of { title, description, image }
+	export let features = [
+		{
+			title: 'Premium Sound',
+			description:
+				'Experience crystal clear audio with deep bass and vibrant highs, crafted for true music lovers.',
+			image: 'images/space/speaker1.jpeg'
+		},
 
-	let blocks = [];
+		{
+			title: 'Minimalist Design',
+			description:
+				'Our SP△CE mini speakers blend seamlessly into any home or studio with timeless elegance.',
+			image: 'images/space/speaker2.jpeg'
+		},
+		{
+			title: 'Built for Portability',
+			description:
+				'Take your music anywhere. Compact, durable, and always reliable for your adventures.',
+			image: 'images/space/speaker3.jpeg'
+		},
+		{
+			title: 'Wireless Freedom',
+			description:
+				'No more tangled wires. Enjoy effortless Bluetooth connectivity with long-lasting battery life.',
+			image: 'images/space/speaker4.jpeg'
+		}
+	]; // array of { title, description, image }
+
+	// Make sure blocks has an object for each feature
+	let blocks = features.map(() => ({
+		blockEl: null,
+		textEl: null,
+		imageEl: null
+	}));
 
 	onMount(async () => {
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
 		gsap.registerPlugin(ScrollTrigger);
 
-		// Iterate over each block and attach scroll animations
 		blocks.forEach(({ blockEl, textEl, imageEl }, index) => {
-			const reverse = index % 2 === 1; // zig-zag every other block
+			const reverse = index % 2 === 1;
 
 			ScrollTrigger.matchMedia({
 				'(max-width: 768px)': () => {
@@ -73,23 +103,15 @@
 </script>
 
 {#each features as feature, index}
-	<div class="feature-block {index % 2 === 1 ? 'reverse' : ''}" bind:this={blocks[index]?.blockEl}>
-		<div class="feature-text" bind:this={blocks[index]?.textEl}>
+	<div class="feature-block {index % 2 === 1 ? 'reverse' : ''}" bind:this={blocks[index].blockEl}>
+		<div class="feature-text" bind:this={blocks[index].textEl}>
 			<h2>{feature.title}</h2>
 			<p>{feature.description}</p>
 		</div>
-		<div class="feature-image" bind:this={blocks[index]?.imageEl}>
+		<div class="feature-image" bind:this={blocks[index].imageEl}>
 			<img src={feature.image} alt={feature.title} />
 		</div>
 	</div>
-
-	<!-- Initialize block references for GSAP -->
-	<script>
-		blocks[index] = blocks[index] || {};
-		blocks[index].blockEl = blocks[index].blockEl;
-		blocks[index].textEl = blocks[index].textEl;
-		blocks[index].imageEl = blocks[index].imageEl;
-	</script>
 {/each}
 
 <style>
@@ -132,7 +154,6 @@
 		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 	}
 
-	/* Mobile / responsive adjustments */
 	@media (max-width: 768px) {
 		.feature-block,
 		.feature-block.reverse {
@@ -141,10 +162,10 @@
 		}
 
 		.feature-text {
-			flex: none; /* prevent stretching */
+			flex: none;
 			width: 100%;
 			max-width: 95%;
-			margin: 0 auto; /* center horizontally */
+			margin: 0 auto;
 		}
 
 		.feature-text h2 {
