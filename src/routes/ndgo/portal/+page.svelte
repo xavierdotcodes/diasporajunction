@@ -2,6 +2,7 @@
 	import { invalidate } from '$app/navigation';
 	export let data;
 
+	let email = '';
 	let password = '';
 	let error = false;
 
@@ -9,6 +10,7 @@
 		event.preventDefault();
 
 		const form = new FormData();
+		form.append('email', email);
 		form.append('password', password);
 
 		const res = await fetch('?/', {
@@ -16,10 +18,10 @@
 			body: form
 		});
 
-		if (res.status === 401) {
+		if (res.status === 401 || res.status === 403) {
 			error = true;
 		} else {
-			await invalidate();
+			await invalidate(); // reload with loggedIn = true
 		}
 	}
 </script>
@@ -34,10 +36,23 @@
 		<div class="login-card">
 			<h2>NDGO Portal Login</h2>
 			{#if error}
-				<p class="error-text">Incorrect password</p>
+				<p class="error-text">Incorrect email or password</p>
 			{/if}
 			<form on:submit={login} class="login-form">
-				<input type="password" bind:value={password} placeholder="Enter your password" required />
+				<input
+					type="email"
+					bind:value={email}
+					placeholder="Enter your email"
+					required
+					autocomplete="username"
+				/>
+				<input
+					type="password"
+					bind:value={password}
+					placeholder="Enter your password"
+					required
+					autocomplete="current-password"
+				/>
 				<button type="submit">Log In</button>
 			</form>
 		</div>
