@@ -11,6 +11,9 @@
 	let heroTitle;
 	let tagline;
 
+	// Only show GSAP markers in dev
+	const isDev = import.meta.env.MODE === 'development';
+
 	onMount(async () => {
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
 		gsap.registerPlugin(ScrollTrigger);
@@ -85,10 +88,10 @@
 						ease: 'expo.out',
 						scrollTrigger: {
 							trigger: heroTitle,
-							start: 'top 15%', // <- starts when top of hero is 20% from viewport top
+							start: 'top 15%',
 							end: 'top 0%',
 							scrub: false,
-							markers: true
+							markers: isDev
 						}
 					}
 				);
