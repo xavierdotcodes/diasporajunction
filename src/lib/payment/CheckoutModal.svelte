@@ -1,11 +1,15 @@
 <script>
-	import { createEventDispatcher, onMount } from 'svelte';
 	import CustomerInfoForm from './CustomerInfoForm.svelte';
 	import PaymentForm from './PaymentForm.svelte';
+	import { startPayment, completePayment, cancelPaymentIntent } from '$lib/client/stripe.js';
 
+	import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
-
 	let step = 1;
+	let clientSecret = null;
+	let orderid = null;
+	let loading = false;
+	let continueLoading = false;
 
 	let customer = {
 		name: '',
@@ -18,85 +22,67 @@
 		zip: ''
 	};
 
-	let paymentMethod = 'card';
-	let paymentDetails = {
-		number: '',
-		expiry: '',
-		cvc: '',
-		provider: '',
-		wallet: '',
-		coin: 'USDT'
-	};
+	let cardElement = null;
 
-	function close() {
+	export let onClose;
+
+	// CLOSE: cancel payment + reset + tell parent
+	async function close() {
+		if (clientSecret && step !== 3) await cancelPaymentIntent(clientSecret);
+
+		clientSecret = null;
+		orderid = null;
+		step = 1;
+		loading = false;
+		continueLoading = false;
 		dispatch('close');
 	}
 
-	function handleOverlayClick(e) {
-		if (e.target.classList.contains('modal-overlay')) {
-			close();
-		}
-	}
-
-	function allCustomerFieldsValid() {
-		return (
-			customer.name.trim() &&
-			customer.email.trim() &&
-			customer.street.trim() &&
-			customer.city.trim() &&
-			customer.state.trim() &&
-			customer.country.trim() &&
-			customer.zip.trim()
-		);
-	}
-
-	function paymentValid() {
-		if (paymentMethod === 'card') {
-			return (
-				paymentDetails.number.trim() && paymentDetails.expiry.trim() && paymentDetails.cvc.trim()
-			);
-		}
-		if (paymentMethod === 'crypto') {
-			return paymentDetails.wallet.trim() && paymentDetails.coin.trim();
-		}
-		if (paymentMethod === 'provider') {
-			return paymentDetails.provider.trim();
-		}
-		return false;
-	}
-
-	function nextStep() {
-		if (step === 1 && allCustomerFieldsValid()) {
-			step = 2;
-		} else if (step === 2 && paymentValid()) {
-			handleSubmit();
-		}
-	}
-
-	function prevStep() {
-		if (step > 1) step -= 1;
-	}
-
-	function handleSubmit() {
-		const order = {
-			customer,
-			payment: {
-				method: paymentMethod,
-				details: paymentDetails
-			}
-		};
-		console.log('Submitting order:', order);
-		// TODO: integrate with backend/payment API
+	// Overlay click ALWAYS closes the modal
+	function handleOverlayClick() {
 		close();
 	}
 
-	onMount(() => {
-		const handleKeydown = (e) => {
-			if (e.key === 'Escape') close();
-		};
-		window.addEventListener('keydown', handleKeydown);
-		return () => window.removeEventListener('keydown', handleKeydown);
-	});
+	async function nextStep() {
+		if (step === 1) {
+			try {
+				continueLoading = true;
+				clientSecret = await startPayment();
+				step = 2;
+			} catch (err) {
+				console.error('Error starting payment:', err);
+			} finally {
+				continueLoading = false;
+			}
+		} else if (step === 2) {
+			await handlePaymentSubmit();
+		}
+	}
+
+	async function handlePaymentSubmit() {
+		if (!clientSecret || !cardElement) return;
+		try {
+			loading = true;
+			const res = await completePayment(clientSecret, cardElement, customer);
+			orderid = res?.id; // make sure to return SpaceOrder.id from server
+			step = 3;
+			clientSecret = null;
+		} catch (err) {
+			console.error('❌ Payment error:', err.message);
+		} finally {
+			loading = false;
+		}
+	}
+
+	function backStep() {
+		if (step === 2) {
+			if (clientSecret) {
+				cancelPaymentIntent(clientSecret);
+				clientSecret = null;
+			}
+			step = 1;
+		}
+	}
 </script>
 
 <div class="modal-overlay" on:click={handleOverlayClick}>
@@ -105,27 +91,35 @@
 
 		{#if step === 1}
 			<h2 class="title">Step 1: Enter Your Information</h2>
-			<p class="subtitle">Please fill in all required fields to continue.</p>
-			<CustomerInfoForm {customer} />
-		{:else if step === 2}
-			<h2 class="title">Step 2: Select Payment Method</h2>
-			<p class="subtitle">Choose your preferred payment option and complete payment.</p>
-			<PaymentForm bind:paymentMethod bind:paymentDetails />
-		{/if}
-
-		<div class="actions">
-			{#if step > 1}
-				<button type="button" class="secondary" on:click={prevStep}>Back</button>
-			{/if}
-			<button
-				type="button"
-				class="primary"
-				on:click={nextStep}
-				disabled={step === 1 ? !allCustomerFieldsValid() : !paymentValid()}
-			>
-				{step === 1 ? 'Continue' : 'Pay Now'}
+			<CustomerInfoForm bind:customer />
+			<button class="primary" on:click={nextStep} disabled={continueLoading}>
+				{#if continueLoading}
+					<span class="loader"></span> Loading...
+				{:else}
+					Continue
+				{/if}
 			</button>
-		</div>
+		{:else if step === 2}
+			<h2 class="title">Step 2: Payment</h2>
+			<PaymentForm {clientSecret} bind:cardElement />
+			<div class="flex gap-3 mt-4">
+				<button class="secondary" on:click={backStep}>Back</button>
+				<button class="primary" on:click={nextStep} disabled={!cardElement || loading}>
+					{#if loading}
+						<span class="loader"></span> Processing...
+					{:else}
+						Pay Now
+					{/if}
+				</button>
+			</div>
+		{:else if step === 3}
+			<div class="thank-you">
+				<h2>Thank You!</h2>
+				<p>Your payment was successful.</p>
+				<p><strong>Order ID:</strong> {orderid}</p>
+				<button class="primary" on:click={close}>Close</button>
+			</div>
+		{/if}
 	</div>
 </div>
 
@@ -133,39 +127,32 @@
 	.modal-overlay {
 		position: fixed;
 		inset: 0;
-		background: rgba(0, 0, 0, 0.6);
+		background: rgba(0, 0, 0, 0.7);
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		z-index: 9999;
 	}
-
 	.modal {
-		background: white;
+		background: #111827;
 		padding: 2rem;
 		border-radius: 1rem;
-		max-width: 450px;
-		width: 90%;
-		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+		max-width: 500px;
+		width: 95%;
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
 		position: relative;
-		animation: fadeIn 0.3s ease-out;
 		display: flex;
 		flex-direction: column;
 		gap: 1.25rem;
+		color: #f9fafb;
 	}
-
 	.title {
-		font-size: 1.35rem;
+		font-size: 1.5rem;
 		font-weight: 700;
-		margin-bottom: 0.25rem;
+		text-align: center;
+		color: #e0e7ff;
+		margin-bottom: 0.5rem;
 	}
-
-	.subtitle {
-		font-size: 0.9rem;
-		color: #6b7280;
-		margin-bottom: 0.75rem;
-	}
-
 	.close {
 		position: absolute;
 		top: 0.5rem;
@@ -173,55 +160,67 @@
 		background: none;
 		border: none;
 		font-size: 1.5rem;
+		color: #f9fafb;
 		cursor: pointer;
 	}
-
-	.actions {
-		display: flex;
-		justify-content: flex-end;
-		gap: 0.75rem;
-		margin-top: 0.5rem;
-	}
-
 	.primary {
-		background: #ff6f61;
-		color: white;
-		border: none;
+		background: #6366f1;
+		color: #fff;
 		padding: 0.75rem 1.5rem;
 		border-radius: 0.5rem;
-		cursor: pointer;
-		transition: background 0.3s;
 		font-weight: 600;
+		cursor: pointer;
+		transition: background 0.2s;
 	}
 	.primary:hover:enabled {
-		background: #ff4a3d;
+		background: #818cf8;
 	}
 	.primary:disabled {
-		background: #fca5a5;
+		background: #c7d2fe;
 		cursor: not-allowed;
 	}
-
 	.secondary {
-		background: #f3f4f6;
-		color: #374151;
-		border: none;
-		padding: 0.75rem 1.25rem;
+		background: #e5e7eb;
+		color: #111827;
+		padding: 0.75rem 1.5rem;
 		border-radius: 0.5rem;
+		font-weight: 600;
 		cursor: pointer;
-		font-weight: 500;
+		transition: background 0.2s;
 	}
 	.secondary:hover {
-		background: #e5e7eb;
+		background: #d1d5db;
 	}
-
-	@keyframes fadeIn {
-		from {
-			opacity: 0;
-			transform: translateY(-10px);
-		}
+	.loader {
+		display: inline-block;
+		width: 1rem;
+		height: 1rem;
+		border: 2px solid rgba(255, 255, 255, 0.3);
+		border-top-color: #fff;
+		border-radius: 50%;
+		animation: spin 1s linear infinite;
+		margin-right: 0.5rem;
+		vertical-align: middle;
+	}
+	@keyframes spin {
 		to {
-			opacity: 1;
-			transform: translateY(0);
+			transform: rotate(360deg);
 		}
+	}
+	.thank-you {
+		text-align: center;
+		padding: 2rem 1rem;
+		background: #1e293b;
+		border-radius: 1rem;
+		color: #f0f9ff;
+	}
+	.thank-you h2 {
+		font-size: 2rem;
+		color: #60a5fa;
+		margin-bottom: 0.5rem;
+	}
+	.thank-you p {
+		font-size: 1rem;
+		margin-bottom: 0.5rem;
 	}
 </style>

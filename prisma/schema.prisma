@@ -69,8 +69,7 @@ model User {
   roles         UserRole[]
   bookings      Booking[]
   registrations Registration[]
-  payments      Payment[] @relation("UserPayments")
-  orders        Order[]
+  spaceOrders   SpaceOrder[]
   progresses    Progress[]
   teaching      Course[]
   submissions   Submission[]
@@ -194,7 +193,7 @@ model Booking {
   months        Int?
   planStartDate DateTime?
   createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  updatedAt     DateTime      @default(now())
 
   user         User     @relation(fields: [userId], references: [id])
   tour         Tour     @relation(fields: [tourId], references: [id])
@@ -215,13 +214,15 @@ model Installment {
   payments  Payment[]         @relation("InstallmentPayments")
 }
 
+// --------------------
+// Payments
+// --------------------
 model Payment {
   id                     Int           @id @default(autoincrement())
   bookingId              Int?
   installmentId          Int?
-  orderId                Int?
+  spaceOrderId           Int?
   registrationId         Int?
-  userId                 Int?
   amount                 Float
   type                   PaymentType
   status                 PaymentStatus @default(PENDING)
@@ -232,19 +233,22 @@ model Payment {
 
   booking      Booking?      @relation("BookingPayments", fields: [bookingId], references: [id], map: "fk_payment_booking")
   installment  Installment?  @relation("InstallmentPayments", fields: [installmentId], references: [id], map: "fk_payment_installment")
-  order        Order?        @relation("OrderPayments", fields: [orderId], references: [id], map: "fk_payment_order")
+  spaceOrder   SpaceOrder?   @relation("SpaceOrderPayments", fields: [spaceOrderId], references: [id], map: "fk_payment_spaceorder")
   registration Registration? @relation("RegistrationPayments", fields: [registrationId], references: [id], map: "fk_payment_registration")
-  user         User?         @relation("UserPayments", fields: [userId], references: [id], map: "fk_payment_user")
 }
 
-model Order {
-  id        Int      @id @default(autoincrement())
+// --------------------
+// Space Orders
+// --------------------
+model SpaceOrder {
+  id        Int       @id @default(autoincrement())
   userId    Int
   notes     String?
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
 
   user     User      @relation(fields: [userId], references: [id])
-  payments Payment[] @relation("OrderPayments")
+  payments Payment[] @relation("SpaceOrderPayments")
 }
 
 // --------------------
@@ -261,7 +265,7 @@ model Address {
   zip       String
   isPrimary Boolean   @default(false)
   createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  updatedAt DateTime  @default(now())
 
   user User @relation(fields: [userId], references: [id])
 

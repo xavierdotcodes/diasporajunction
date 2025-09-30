@@ -13,8 +13,8 @@ export async function load({ locals }) {
 		orderBy: { startDate: 'asc' }
 	});
 
-	// Fetch Orders
-	const orders = await prisma.order.findMany({
+	// Fetch Orders (now SpaceOrder)
+	const orders = await prisma.spaceOrder.findMany({
 		include: { user: true, payments: true },
 		orderBy: { createdAt: 'asc' }
 	});
@@ -24,6 +24,7 @@ export async function load({ locals }) {
 		include: { user: true, tour: true, payments: true }
 	});
 
+	// Fetch Registrations
 	const registrations = await prisma.registration.findMany({
 		include: { user: true, course: true, payments: true }
 	});
@@ -33,7 +34,7 @@ export async function load({ locals }) {
 		include: {
 			registrations: true,
 			bookings: true,
-			orders: true,
+			spaceOrders: true, // updated from orders
 			roles: true
 		},
 		orderBy: { createdAt: 'desc' }

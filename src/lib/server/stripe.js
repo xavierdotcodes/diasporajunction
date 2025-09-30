@@ -6,11 +6,19 @@ let stripe;
 
 export function getStripe() {
 	if (!stripe) {
-		if (!env.STRIPE_SECRET_KEY) {
-			throw new Error('Missing STRIPE_SECRET_KEY in environment');
+		const isDev = process.env.NODE_ENV !== 'production';
+
+		const secretKey = isDev ? env.STRIPE_TEST_SECRET_KEY : env.STRIPE_SECRET_KEY;
+		console.log('secretKey', secretKey);
+
+		if (!secretKey) {
+			throw new Error(`Missing Stripe secret key for ${isDev ? 'test' : 'live'} mode`);
 		}
-		stripe = new Stripe(env.STRIPE_SECRET_KEY, {
-			apiVersion: '2024-06-20' // keep Stripe API version pinned
+
+		console.log('🔑 Using Stripe key:', isDev ? 'TEST' : 'LIVE');
+
+		stripe = new Stripe(secretKey, {
+			apiVersion: '2024-06-20' // keep this pinned
 		});
 	}
 	return stripe;
