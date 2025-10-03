@@ -13,13 +13,6 @@ export async function POST({ request }) {
 		const stripe = getStripe();
 		const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
-		if (paymentIntent.status !== 'succeeded') {
-			return json(
-				{ error: 'Payment not successful', status: paymentIntent.status },
-				{ status: 400 }
-			);
-		}
-
 		// --- Upsert user ---
 		let user = await prisma.user.findUnique({ where: { email: customer.email } });
 		if (!user) {
@@ -62,7 +55,6 @@ export async function POST({ request }) {
 			}
 		});
 
-		// Return only the SpaceOrder
 		return json(spaceOrder);
 	} catch (err) {
 		console.error('Error completing order:', err);

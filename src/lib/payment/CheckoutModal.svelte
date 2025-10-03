@@ -2,8 +2,10 @@
 	import CustomerInfoForm from './CustomerInfoForm.svelte';
 	import PaymentForm from './PaymentForm.svelte';
 	import { startPayment, completePayment, cancelPaymentIntent } from '$lib/client/stripe.js';
-
 	import { createEventDispatcher } from 'svelte';
+	import { loadStripe } from '@stripe/stripe-js';
+	import { getStripe } from '$lib/client/stripe';
+
 	const dispatch = createEventDispatcher();
 	let step = 1;
 	let clientSecret = null;
@@ -23,8 +25,6 @@
 	};
 
 	let cardElement = null;
-
-	export let onClose;
 
 	// CLOSE: cancel payment + reset + tell parent
 	async function close() {
@@ -51,6 +51,7 @@
 				step = 2;
 			} catch (err) {
 				console.error('Error starting payment:', err);
+				alert('Failed to start payment. Please try again.');
 			} finally {
 				continueLoading = false;
 			}
@@ -61,14 +62,51 @@
 
 	async function handlePaymentSubmit() {
 		if (!clientSecret || !cardElement) return;
+
 		try {
 			loading = true;
+
+			// Complete payment on server
 			const res = await completePayment(clientSecret, cardElement, customer);
-			orderid = res?.id; // make sure to return SpaceOrder.id from server
-			step = 3;
-			clientSecret = null;
+
+			switch (res.status) {
+				case 'succeeded':
+					// Payment complete → show thank you
+					orderid = res.id;
+					step = 3;
+					clientSecret = null;
+					break;
+
+				case 'requires_payment_method':
+					// Declined → user must retry
+					alert('Payment declined, please try another card.');
+					break;
+
+				case 'requires_action':
+					// Needs 3D Secure or extra auth
+					const stripe = getStripe();
+					const result = await stripe.confirmCardPayment(res.client_secret);
+
+					if (result.error) {
+						// 3DS failed
+						alert('Payment authentication failed: ' + result.error.message);
+					} else if (result.paymentIntent.status === 'succeeded') {
+						orderid = result.paymentIntent.id;
+						step = 3;
+						clientSecret = null;
+					} else {
+						alert('Unexpected payment status after authentication.');
+						console.error('Unexpected post-3DS status:', result.paymentIntent.status);
+					}
+					break;
+
+				default:
+					alert('Unexpected payment status.');
+					console.error('Unexpected payment status:', res);
+			}
 		} catch (err) {
-			console.error('❌ Payment error:', err.message);
+			console.error('❌ Payment error:', err);
+			alert('Payment failed: ' + err.message);
 		} finally {
 			loading = false;
 		}

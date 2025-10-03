@@ -39,7 +39,7 @@
 		<button class="close-btn" on:click={() => dispatch('close')}>✕</button>
 
 		<!-- Image -->
-		<img src="/images/newsletter.png" alt="Subscribe" class="modal-image" />
+		<img src="/images/keys-to-africa.jpg" alt="Subscribe" class="modal-image" />
 
 		<h3 class="text-xl font-bold mb-2">Subscribe to our Newsletter</h3>
 		<p class="text-sm mb-4">Stay updated with DiasporaJunxion news and events.</p>
@@ -80,8 +80,6 @@
 	}
 
 	.modal-image {
-		width: 80%;
-		max-width: 200px;
 		margin: 0 auto 1rem auto;
 		border-radius: 1rem;
 	}

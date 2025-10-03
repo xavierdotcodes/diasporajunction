@@ -48,21 +48,42 @@ export async function completePayment(clientSecret, cardElement, customer) {
 		}
 	});
 
+	if (paymentIntent.status == 'succeeded') {
+		const response = await fetch('/api/space/complete-order', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ paymentIntentId: paymentIntent.id, customer })
+		});
+
+		const order = await response.json();
+		return order;
+	} else if (paymentIntent.status === 'requires_payment_method') {
+		// Declined → return error to front-end so user can retry
+		return json(
+			{ error: 'Payment declined, please try another card.', status: paymentIntent.status },
+			{ status: 402 }
+		);
+	} else if (paymentIntent.status === 'requires_action') {
+		// Needs 3D Secure / additional authentication
+		return json(
+			{
+				error: 'Payment requires additional authentication.',
+				status: paymentIntent.status,
+				clientSecret: paymentIntent.client_secret
+			},
+			{ status: 200 }
+		);
+	} else {
+		// Other unexpected statuses
+		return json(
+			{ error: 'Unexpected payment status.', status: paymentIntent.status },
+			{ status: 400 }
+		);
+	}
 	if (error) {
 		console.error('Payment failed:', error.message);
 		throw error;
 	}
-
-	const response = await fetch('/api/space/complete-order', {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ paymentIntentId: paymentIntent.id, customer })
-	});
-
-	const order = await response.json();
-	console.log('space order', order);
-
-	return order;
 }
 
 // ---- NEW ----
