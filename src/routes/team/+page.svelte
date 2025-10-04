@@ -8,8 +8,10 @@
 			image: '/images/team/xavi.png',
 			bio: 'Building bridges between diaspora and homeland through creativity, tech, and embodied presence.',
 			socials: {
-				twitter: 'https://twitter.com/xavi',
-				linkedin: 'https://linkedin.com/in/xavi'
+				twitter: 'https://twitter.com/mangoxsweat',
+				linkedin: 'https://linkedin.com/in/xaviercooper',
+				facebook: '',
+				instagram: 'https://www.instagram.com/mangoxsweat'
 			}
 		},
 		{
@@ -18,7 +20,7 @@
 			image: '/images/team/soji.jpg',
 			bio: 'Crafting the Afro-futurist visual language of Diaspora Junxion with bold imagination and design.',
 			socials: {
-				instagram: 'https://instagram.com/soji'
+				instagram: 'https://instagram.com/sojispiral'
 			}
 		},
 		{
@@ -27,7 +29,7 @@
 			image: '/images/team/space.jpg',
 			bio: 'Blending tradition and innovation into wearable art and crafted experiences that resonate deeply.',
 			socials: {
-				github: 'https://github.com/space'
+				instagram: 'https://github.com/space'
 			}
 		}
 	];
