@@ -5,7 +5,7 @@
 		{
 			name: 'Xavi',
 			role: 'Visionary · Entrepreneur · Digital Architect',
-			image: '/images/team/xavi.png',
+			image: '/images/team/xavi.jpg',
 			bio: 'Building bridges between diaspora and homeland through creativity, tech, and embodied presence.',
 			socials: {
 				twitter: 'https://twitter.com/mangoxsweat',
