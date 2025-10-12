@@ -1,11 +1,9 @@
 <script>
-	import { onMount } from 'svelte';
-	import gsap from 'gsap';
-
+	import Hero from '$lib/tours/Hero.svelte';
+	import Itinerary from '$lib/tours/Itinerary.svelte';
 	import Cta from '$lib/tours/CTA.svelte';
-	import BookingModal from '$lib/tours/BookingModal.svelte';
+	import CalendlyModal from '$lib/tours/CalendlyModal.svelte';
 
-	// data comes from +page.server.js
 	export let data;
 	let { tours } = data;
 
@@ -13,7 +11,6 @@
 	const openModal = () => (showModal = true);
 	const closeModal = () => (showModal = false);
 
-	// Itinerary (static descriptive content)
 	const itinerary = [
 		{
 			day: 'Day 1–2',
@@ -51,120 +48,28 @@
 				'https://images.unsplash.com/photo-1542144582-1ba0046e6f10?q=80&w=1400&auto=format&fit=crop'
 		}
 	];
-
-	onMount(async () => {
-		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
-		gsap.registerPlugin(ScrollTrigger);
-
-		// Hero animation
-		gsap.from('h1', {
-			duration: 1,
-			y: -40,
-			opacity: 0,
-			ease: 'power2.out'
-		});
-		gsap.from('.intro', {
-			duration: 1,
-			y: 24,
-			opacity: 0,
-			delay: 0.15,
-			ease: 'power2.out'
-		});
-
-		// Animate itinerary steps
-		gsap.utils.toArray('.itinerary-step').forEach((stepEl, i) => {
-			const content = stepEl.querySelector('.step-content');
-			const image = stepEl.querySelector('.step-image');
-			const dir = i % 2 === 0 ? -1 : 1;
-
-			gsap.from(content, {
-				scrollTrigger: {
-					trigger: stepEl,
-					start: 'top 80%',
-					toggleActions: 'play none none reverse'
-				},
-				x: dir * -120,
-				opacity: 0,
-				duration: 0.8,
-				ease: 'power3.out'
-			});
-
-			gsap.from(image, {
-				scrollTrigger: {
-					trigger: stepEl,
-					start: 'top 80%',
-					toggleActions: 'play none none reverse'
-				},
-				x: dir * 120,
-				opacity: 0,
-				duration: 0.9,
-				delay: 0.06,
-				ease: 'power3.out'
-			});
-		});
-	});
 </script>
 
 <section class="bg-white text-gray-900">
 	<div class="max-w-6xl mx-auto px-6 py-12">
-		<h1 class="text-4xl md:text-5xl font-extrabold text-center mb-4 text-[#038C25]">
-			10-Day Ghana Immersion
-		</h1>
+		<Hero
+			title="10-Day Ghana Immersion"
+			subtitle="An immersive, soul-forward 10-day experience across Accra, the Central Coast, Kakum, the Volta, and community projects — curated for connection, culture, and meaning."
+		/>
 
-		<p class="intro text-center text-lg md:text-xl text-gray-700 max-w-3xl mx-auto mb-12">
-			An immersive, soul-forward 10-day experience across Accra, the Central Coast, Kakum, the
-			Volta, and community projects — curated for connection, culture, and meaning.
-		</p>
+		<Itinerary steps={itinerary} />
 
-		<!-- Itinerary -->
-		<div class="space-y-28">
-			{#each itinerary as step, i}
-				<div class="itinerary-step grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-					<!-- Image -->
-					<div
-						class="step-image rounded-xl overflow-hidden shadow-lg"
-						class:md:order-1={i % 2 === 0}
-						class:md:order-2={i % 2 !== 0}
-					>
-						<img
-							alt={step.title}
-							src={step.image}
-							loading="lazy"
-							class="w-full h-64 md:h-72 object-cover block"
-						/>
-					</div>
-
-					<!-- Text content -->
-					<div
-						class="step-content bg-white p-6 rounded-xl border border-gray-100 shadow"
-						class:md:order-2={i % 2 === 0}
-						class:md:order-1={i % 2 !== 0}
-					>
-						<div class="text-sm text-gray-500 font-medium mb-1">{step.day}</div>
-						<h3 class="text-2xl font-bold mb-3 text-[#F29F05]">{step.title}</h3>
-						<p class="leading-relaxed text-gray-700 mb-4">{step.copy}</p>
-
-						<ul class="text-sm text-gray-600 space-y-1">
-							<li>• Local guide & translator</li>
-							<li>• All transport and entrance fees included</li>
-							<li>• Dietary accommodations available on request</li>
-						</ul>
-					</div>
-				</div>
-			{/each}
+		<!-- CTA section -->
+		<div class="mt-20">
+			<!-- When CTA button emits event, open Calendly modal -->
+			<Cta on:openDiscoveryCall={openModal} on:openReservationModal={openModal} />
 		</div>
-
-		<br /><br /><br />
-		<Cta on:openBookingModal={openModal} />
 	</div>
 </section>
 
-{#if showModal}
-	<ReservationModal {tours} on:close={closeModal} />
-{/if}
-
-<style>
-	.itinerary-spacer {
-		height: 60vh;
-	}
-</style>
+<!-- Calendly Modal -->
+<CalendlyModal
+	show={showModal}
+	calendlyUrl="https://calendly.com/diasporajunxion/discovery-call-ghana-immersion-experience"
+	onClose={closeModal}
+/>

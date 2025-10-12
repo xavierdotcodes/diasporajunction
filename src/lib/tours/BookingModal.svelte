@@ -1,5 +1,6 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
+	import { fade, scale } from 'svelte/transition';
 	import SelectDate from './SelectDate.svelte';
 	import UserDetails from './UserDetails.svelte';
 	import PaymentOption from './PaymentOption.svelte';
@@ -31,13 +32,27 @@
 		(step === 1 && tours.length > 0 && formData.tourDate) ||
 		(step === 2 && formData.name && formData.email) ||
 		step === 3; // always can submit
+
+	// handle overlay click
+	function handleOverlayClick(e) {
+		if (e.target === e.currentTarget) {
+			dispatch('close');
+		}
+	}
 </script>
 
 <!-- Modal Overlay -->
-<div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4 py-6 sm:px-6">
+<div
+	class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4 py-6 sm:px-6 backdrop-blur-sm"
+	on:click={handleOverlayClick}
+	in:fade={{ duration: 200 }}
+	out:fade={{ duration: 200 }}
+>
 	<!-- Modal Card -->
 	<div
 		class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl relative p-6 sm:p-8 lg:p-10 overflow-y-auto max-h-[90vh]"
+		in:scale={{ start: 0.96, duration: 250 }}
+		out:scale={{ end: 0.96, duration: 200 }}
 	>
 		<!-- Close Button -->
 		<button
@@ -47,7 +62,7 @@
 			✕
 		</button>
 
-		<!-- Steps -->
+		<!-- Steps Indicator -->
 		<div class="mb-6 flex justify-center gap-2 text-sm font-semibold">
 			<div
 				class={`px-3 py-1 rounded-full ${step === 1 ? 'bg-green-600 text-white' : 'bg-gray-200'}`}
@@ -66,6 +81,7 @@
 			</div>
 		</div>
 
+		<!-- Step Content -->
 		{#if step === 1}
 			<SelectDate {tours} bind:formData />
 		{:else if step === 2}

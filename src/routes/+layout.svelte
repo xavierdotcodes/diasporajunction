@@ -1,4 +1,3 @@
-<!-- src/routes/+layout.svelte -->
 <script>
 	import Navbar from '$lib/layout/Navbar.svelte';
 	import Footer from '$lib/layout/Footer.svelte';
@@ -39,7 +38,6 @@
 	<link rel="manifest" href="/site.webmanifest" />
 </svelte:head>
 
-<!-- The important part -->
 <div class="flex flex-col min-h-screen">
 	<Navbar />
 
