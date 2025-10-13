@@ -28,9 +28,13 @@
 		{ icon: faYoutube, url: 'https://www.youtube.com/@diasporajunxion', label: 'YouTube' },
 		{ icon: faTiktok, url: 'https://tiktok.com/@yourpage', label: 'TikTok' },
 		{ icon: faPinterest, url: 'https://www.pinterest.com/diasporajunxion/', label: 'Pinterest' },
-		{ icon: faLinkedin, url: 'https://linkedin.com/in/yourpage', label: 'LinkedIn' },
-		{ icon: faXTwitter, url: 'https://x.com/diasporajunxion', label: 'X (Twitter)' },
-		{ icon: faTwitch, url: 'https://twitch.tv/yourpage', label: 'Twitch' }
+		{
+			icon: faLinkedin,
+			url: 'https://www.linkedin.com/company/diasporajunxion',
+			label: 'LinkedIn'
+		},
+		{ icon: faXTwitter, url: 'https://x.com/diasporajunxion', label: 'X (Twitter)' }
+		//{ icon: faTwitch, url: 'https://twitch.tv/yourpage', label: 'Twitch' }
 	];
 </script>
 
