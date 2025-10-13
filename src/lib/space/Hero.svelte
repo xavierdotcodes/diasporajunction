@@ -14,12 +14,12 @@
 	const isDev = import.meta.env.MODE === 'development';
 
 	onMount(async () => {
-		const { ScrollTrigger, matchMedia } = await import('gsap/ScrollTrigger');
+		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
 		gsap.registerPlugin(ScrollTrigger);
 
 		await tick();
 
-		// Split intro into individual words for staggered animation
+		// Split intro into words for staggered animation
 		if (introLine) {
 			const words = introLine.textContent
 				.split(' ')
@@ -31,7 +31,7 @@
 		// Base timeline
 		const tl = gsap.timeline();
 
-		// 1️⃣ Intro text fade-in word by word
+		// 1️⃣ Intro text fade-in
 		tl.from(introLine.querySelectorAll('.word'), {
 			y: 20,
 			opacity: 0,
@@ -40,7 +40,7 @@
 			ease: 'power2.out'
 		});
 
-		// 2️⃣ Hero letters fade in
+		// 2️⃣ Hero letters fade-in
 		if (heroTitle) {
 			tl.from(
 				heroTitle.querySelectorAll('span'),
@@ -55,7 +55,7 @@
 			);
 		}
 
-		// 3️⃣ Tagline fade in
+		// 3️⃣ Tagline fade-in
 		if (tagline) {
 			tl.from(
 				tagline,
@@ -69,7 +69,7 @@
 			);
 		}
 
-		// 4️⃣ Responsive scroll-triggered fan out
+		// 4️⃣ Responsive fan-out using ScrollTrigger
 		const mm = gsap.matchMedia();
 		const centerIndex = heroText.findIndex((l) => l === '▲');
 
@@ -82,33 +82,45 @@
 			(context) => {
 				const { isMobile, isTablet, isDesktop } = context.conditions;
 				const letters = heroTitle.querySelectorAll('span');
-				let multiplier, start;
+				let multiplier, start, id;
 
 				if (isMobile) {
 					multiplier = 6;
-					start = 'top 25%';
+					start = 'top top';
+					id = 'fanout-mobile';
 				} else if (isTablet) {
 					multiplier = 10;
-					start = 'top 20%';
+					start = 'center 80%';
+					id = 'fanout-tablet';
 				} else if (isDesktop) {
 					multiplier = 15;
-					start = 'top 15%';
+					start = 'top top';
+					id = 'fanout-desktop';
 				}
 
-				// Fan-out animation triggered by scroll
 				gsap.fromTo(
 					letters,
 					{ x: 0 },
 					{
 						x: (i) => (i - centerIndex) * multiplier + 'vw',
-						duration: 4,
+						duration: 2.5,
 						ease: 'expo.out',
 						scrollTrigger: {
-							trigger: heroTitle,
+							id,
+							trigger: document.querySelector('.space-wrapper'),
 							start,
-							end: 'top 0%',
+							end: 'bottom top',
 							scrub: false,
+							toggleActions: 'play none none reverse',
 							markers: isDev
+								? {
+										startColor: 'white',
+										endColor: 'white',
+										fontSize: '18px',
+										fontWeight: 'bold',
+										indent: 20
+									}
+								: false
 						}
 					}
 				);
@@ -117,7 +129,7 @@
 	});
 </script>
 
-<section class="hero-centered">
+<section class="hero-centered space-wrapper">
 	<p bind:this={introLine} class="intro-line">{introText}</p>
 
 	<h1 bind:this={heroTitle} class="hero-title">
@@ -183,5 +195,15 @@
 		width: 100%;
 		border-radius: 1rem;
 		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+	}
+
+	/* 🟢 Marker color customization for dev mode */
+	.gsap-marker-start,
+	.gsap-marker-end {
+		color: white !important;
+		border-color: white !important;
+		font-size: 18px !important;
+		font-weight: bold !important;
+		padding-left: 20px !important;
 	}
 </style>
