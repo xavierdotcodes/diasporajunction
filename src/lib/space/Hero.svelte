@@ -11,16 +11,15 @@
 	let heroTitle;
 	let tagline;
 
-	// Only show GSAP markers in dev
 	const isDev = import.meta.env.MODE === 'development';
 
 	onMount(async () => {
-		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
+		const { ScrollTrigger, matchMedia } = await import('gsap/ScrollTrigger');
 		gsap.registerPlugin(ScrollTrigger);
 
-		await tick(); // ensure DOM is ready
+		await tick();
 
-		// --- Split intro into words ---
+		// Split intro into individual words for staggered animation
 		if (introLine) {
 			const words = introLine.textContent
 				.split(' ')
@@ -29,9 +28,10 @@
 			introLine.innerHTML = words;
 		}
 
+		// Base timeline
 		const tl = gsap.timeline();
 
-		// 1️⃣ Intro line fade up
+		// 1️⃣ Intro text fade-in word by word
 		tl.from(introLine.querySelectorAll('.word'), {
 			y: 20,
 			opacity: 0,
@@ -40,7 +40,7 @@
 			ease: 'power2.out'
 		});
 
-		// 2️⃣ Hero letters fade + slide up
+		// 2️⃣ Hero letters fade in
 		if (heroTitle) {
 			tl.from(
 				heroTitle.querySelectorAll('span'),
@@ -69,16 +69,33 @@
 			);
 		}
 
-		// 4️⃣ Scroll-triggered fan out starting at 20% from top
-		if (heroTitle) {
-			const letters = heroTitle.querySelectorAll('span');
-			if (letters.length > 0) {
-				const centerIndex = heroText.findIndex((l) => l === '▲');
+		// 4️⃣ Responsive scroll-triggered fan out
+		const mm = gsap.matchMedia();
+		const centerIndex = heroText.findIndex((l) => l === '▲');
 
-				// responsive spread multiplier
-				const width = window.innerWidth;
-				let multiplier = width < 480 ? 6 : width < 768 ? 10 : 15;
+		mm.add(
+			{
+				isMobile: '(max-width: 480px)',
+				isTablet: '(min-width: 481px) and (max-width: 767px)',
+				isDesktop: '(min-width: 768px)'
+			},
+			(context) => {
+				const { isMobile, isTablet, isDesktop } = context.conditions;
+				const letters = heroTitle.querySelectorAll('span');
+				let multiplier, start;
 
+				if (isMobile) {
+					multiplier = 6;
+					start = 'top 25%';
+				} else if (isTablet) {
+					multiplier = 10;
+					start = 'top 20%';
+				} else if (isDesktop) {
+					multiplier = 15;
+					start = 'top 15%';
+				}
+
+				// Fan-out animation triggered by scroll
 				gsap.fromTo(
 					letters,
 					{ x: 0 },
@@ -88,7 +105,7 @@
 						ease: 'expo.out',
 						scrollTrigger: {
 							trigger: heroTitle,
-							start: 'top 15%',
+							start,
 							end: 'top 0%',
 							scrub: false,
 							markers: isDev
@@ -96,7 +113,7 @@
 					}
 				);
 			}
-		}
+		);
 	});
 </script>
 
