@@ -16,8 +16,19 @@
 	onMount(async () => {
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
 		gsap.registerPlugin(ScrollTrigger);
-
 		await tick();
+
+		// 🩸 Option 1: force ScrollTrigger to use window and fix markers
+		ScrollTrigger.defaults({
+			scroller: window,
+			markers: false
+		});
+		if (isDev) {
+			ScrollTrigger.config({
+				limitCallbacks: true,
+				ignoreMobileResize: true
+			});
+		}
 
 		// Split intro into words for staggered animation
 		if (introLine) {
@@ -86,15 +97,15 @@
 
 				if (isMobile) {
 					multiplier = 6;
-					start = 'top top';
+					start = 'top 10%';
 					id = 'fanout-mobile';
 				} else if (isTablet) {
 					multiplier = 10;
-					start = 'center 80%';
+					start = 'top 75%';
 					id = 'fanout-tablet';
 				} else if (isDesktop) {
 					multiplier = 15;
-					start = 'top top';
+					start = 'top 15%';
 					id = 'fanout-desktop';
 				}
 
@@ -107,7 +118,7 @@
 						ease: 'expo.out',
 						scrollTrigger: {
 							id,
-							trigger: document.querySelector('.space-wrapper'),
+							trigger: document.querySelector('.expand-trigger'),
 							start,
 							end: 'bottom top',
 							scrub: false,
@@ -115,7 +126,7 @@
 							markers: isDev
 								? {
 										startColor: 'white',
-										endColor: 'white',
+										endColor: 'orange',
 										fontSize: '18px',
 										fontWeight: 'bold',
 										indent: 20
@@ -129,7 +140,7 @@
 	});
 </script>
 
-<section class="hero-centered space-wrapper">
+<section class="hero-centered space-wrapper expand-trigger">
 	<p bind:this={introLine} class="intro-line">{introText}</p>
 
 	<h1 bind:this={heroTitle} class="hero-title">
@@ -200,10 +211,12 @@
 	/* 🟢 Marker color customization for dev mode */
 	.gsap-marker-start,
 	.gsap-marker-end {
+		position: fixed !important; /* ← keeps them pinned to viewport */
 		color: white !important;
 		border-color: white !important;
 		font-size: 18px !important;
 		font-weight: bold !important;
 		padding-left: 20px !important;
+		z-index: 9999 !important;
 	}
 </style>

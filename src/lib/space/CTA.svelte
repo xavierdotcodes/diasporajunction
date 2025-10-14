@@ -17,8 +17,6 @@
 		await tick();
 
 		const letters = wordContainer.querySelectorAll('.letter');
-		const sIndex = 0; // "S" anchor
-
 		const mm = gsap.matchMedia();
 
 		mm.add(
@@ -30,23 +28,26 @@
 			(context) => {
 				const { isMobile, isTablet, isDesktop } = context.conditions;
 
-				let multiplier, sOffset, start;
+				let multiplier, sOffset, start, id;
 
 				if (isMobile) {
 					multiplier = 2.5;
 					sOffset = 0.3;
-					start = 'top 75%';
+					start = 'top 85%';
+					id = 'cta-mobile';
 				} else if (isTablet) {
 					multiplier = 3.5;
 					sOffset = 0.4;
 					start = 'top 70%';
+					id = 'cta-tablet';
 				} else if (isDesktop) {
-					multiplier = 0.4;
-					sOffset = 0.5;
+					multiplier = 0.45;
+					sOffset = 0.3;
 					start = 'top 70%';
+					id = 'cta-desktop';
 				}
 
-				// Fan-out animation (all letters shift right)
+				// Fan-out animation (letters shift right)
 				gsap.fromTo(
 					letters,
 					{ x: 0 },
@@ -55,6 +56,7 @@
 						duration: 2.5,
 						ease: 'expo.out',
 						scrollTrigger: {
+							id,
 							trigger: wordContainer,
 							start,
 							end: 'bottom 60%',
@@ -148,5 +150,27 @@
 		width: 100%;
 		height: 100%;
 		display: block;
+	}
+
+	/* 🟣 ScrollTrigger Marker Color Coding for CTA */
+	#gspath-marker-cta-mobile-start,
+	#gspath-marker-cta-mobile-end {
+		color: #b794f4 !important;
+		border-color: #b794f4 !important;
+		background: rgba(183, 148, 244, 0.2) !important;
+	}
+
+	#gspath-marker-cta-tablet-start,
+	#gspath-marker-cta-tablet-end {
+		color: #d53f8c !important;
+		border-color: #d53f8c !important;
+		background: rgba(213, 63, 140, 0.2) !important;
+	}
+
+	#gspath-marker-cta-desktop-start,
+	#gspath-marker-cta-desktop-end {
+		color: #9f7aea !important;
+		border-color: #9f7aea !important;
+		background: rgba(159, 122, 234, 0.2) !important;
 	}
 </style>
