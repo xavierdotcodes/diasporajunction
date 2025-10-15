@@ -7,53 +7,41 @@
 	export let taglineText =
 		'Immersive sound. Futuristic design. Experience music like never before.';
 
-	let introLine;
-	let heroTitle;
-	let tagline;
-
+	let introLine, heroTitle, tagline, heroImg;
 	const isDev = import.meta.env.MODE === 'development';
 
 	onMount(async () => {
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
 		gsap.registerPlugin(ScrollTrigger);
-		await tick();
 
-		// 🩸 Option 1: force ScrollTrigger to use window and fix markers
-		ScrollTrigger.defaults({
-			scroller: window,
-			markers: false
-		});
-		if (isDev) {
-			ScrollTrigger.config({
-				limitCallbacks: true,
-				ignoreMobileResize: true
-			});
-		}
+		// 🧩 Create fixed marker container so markers never scroll
+		const markerContainer = document.createElement('div');
+		markerContainer.style.position = 'fixed';
+		markerContainer.style.top = '0';
+		markerContainer.style.left = '0';
+		markerContainer.style.width = '100%';
+		markerContainer.style.height = '100%';
+		markerContainer.style.pointerEvents = 'none';
+		markerContainer.style.zIndex = '9999';
+		document.body.appendChild(markerContainer);
 
-		// Split intro into words for staggered animation
+		// 🟢 Intro animation
 		if (introLine) {
-			const words = introLine.textContent
+			introLine.innerHTML = introLine.textContent
 				.split(' ')
 				.map((w) => `<span class="word">${w} </span>`)
 				.join('');
-			introLine.innerHTML = words;
 		}
 
-		// Base timeline
 		const tl = gsap.timeline();
-
-		// 1️⃣ Intro text fade-in
 		tl.from(introLine.querySelectorAll('.word'), {
 			y: 20,
 			opacity: 0,
 			stagger: 0.15,
 			duration: 0.8,
 			ease: 'power2.out'
-		});
-
-		// 2️⃣ Hero letters fade-in
-		if (heroTitle) {
-			tl.from(
+		})
+			.from(
 				heroTitle.querySelectorAll('span'),
 				{
 					y: 20,
@@ -63,12 +51,8 @@
 					ease: 'power2.out'
 				},
 				'+=0.2'
-			);
-		}
-
-		// 3️⃣ Tagline fade-in
-		if (tagline) {
-			tl.from(
+			)
+			.from(
 				tagline,
 				{
 					opacity: 0,
@@ -78,69 +62,43 @@
 				},
 				'+=0.2'
 			);
-		}
 
-		// 4️⃣ Responsive fan-out using ScrollTrigger
-		const mm = gsap.matchMedia();
+		// 🟣 ScrollTrigger for fanout
 		const centerIndex = heroText.findIndex((l) => l === '▲');
+		const letters = heroTitle.querySelectorAll('span');
 
-		mm.add(
+		gsap.fromTo(
+			letters,
+			{ x: 0 },
 			{
-				isMobile: '(max-width: 480px)',
-				isTablet: '(min-width: 481px) and (max-width: 767px)',
-				isDesktop: '(min-width: 768px)'
-			},
-			(context) => {
-				const { isMobile, isTablet, isDesktop } = context.conditions;
-				const letters = heroTitle.querySelectorAll('span');
-				let multiplier, start, id;
-
-				if (isMobile) {
-					multiplier = 6;
-					start = 'top 10%';
-					id = 'fanout-mobile';
-				} else if (isTablet) {
-					multiplier = 10;
-					start = 'top 75%';
-					id = 'fanout-tablet';
-				} else if (isDesktop) {
-					multiplier = 15;
-					start = 'top 15%';
-					id = 'fanout-desktop';
+				x: (i) => (i - centerIndex) * 10 + 'vw',
+				duration: 2.5,
+				ease: 'expo.out',
+				scrollTrigger: {
+					trigger: heroTitle,
+					start: 'top 175vh',
+					end: 'bottom top',
+					scrub: false,
+					toggleActions: 'play none none reverse',
+					markers: isDev
+						? {
+								parent: markerContainer, // 👈 force fixed parent
+								startColor: 'green',
+								endColor: 'red',
+								fontSize: '14px',
+								indent: 20,
+								startLabel: 'BEGIN',
+								endLabel: 'FINISH',
+								name: 'HeroFanout'
+							}
+						: false
 				}
-
-				gsap.fromTo(
-					letters,
-					{ x: 0 },
-					{
-						x: (i) => (i - centerIndex) * multiplier + 'vw',
-						duration: 2.5,
-						ease: 'expo.out',
-						scrollTrigger: {
-							id,
-							trigger: document.querySelector('.expand-trigger'),
-							start,
-							end: 'bottom top',
-							scrub: false,
-							toggleActions: 'play none none reverse',
-							markers: isDev
-								? {
-										startColor: 'white',
-										endColor: 'orange',
-										fontSize: '18px',
-										fontWeight: 'bold',
-										indent: 20
-									}
-								: false
-						}
-					}
-				);
 			}
 		);
 	});
 </script>
 
-<section class="hero-centered space-wrapper expand-trigger">
+<section class="hero-centered">
 	<p bind:this={introLine} class="intro-line">{introText}</p>
 
 	<h1 bind:this={heroTitle} class="hero-title">
@@ -152,11 +110,16 @@
 	<p bind:this={tagline} class="tagline">{taglineText}</p>
 
 	<div class="hero-image">
-		<img src="/images/speaker-hero.jpeg" alt="SPACE Speaker" />
+		<img bind:this={heroImg} src="/images/speaker-hero.jpeg" alt="SPACE Speaker" />
 	</div>
 </section>
 
 <style>
+	html,
+	body {
+		overflow-x: hidden;
+	}
+
 	.hero-centered {
 		text-align: center;
 		display: flex;
@@ -206,17 +169,5 @@
 		width: 100%;
 		border-radius: 1rem;
 		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
-	}
-
-	/* 🟢 Marker color customization for dev mode */
-	.gsap-marker-start,
-	.gsap-marker-end {
-		position: fixed !important; /* ← keeps them pinned to viewport */
-		color: white !important;
-		border-color: white !important;
-		font-size: 18px !important;
-		font-weight: bold !important;
-		padding-left: 20px !important;
-		z-index: 9999 !important;
 	}
 </style>
