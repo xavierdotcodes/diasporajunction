@@ -5,12 +5,13 @@
 	let menuOpen = false;
 
 	const links = [
-		{ href: '/about', label: 'About' },
 		{ href: '/space', label: 'SP△CE' },
 		{ href: '/ndgo', label: 'NDGO' },
 		{ href: '/diasporaunited', label: 'Diaspora United' },
 		{ href: '/tours', label: 'Tours' },
 		{ href: '/team', label: 'Team' },
+		{ href: '/blog', label: 'Blog' },
+
 		{ href: '/sekondi', label: 'We ❤️ Sekondi' },
 		{ href: '/support', label: 'How to Support' },
 		{ href: '/contact', label: 'Contact Us' }
