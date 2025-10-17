@@ -26,32 +26,31 @@
 
 	let grid;
 
-	onMount(async () => {
-		if (typeof window === 'undefined') return; // 🚫 Skip SSR
-
-		try {
-			const module = await import('masonry-layout');
-			const Masonry = module.default;
-
-			const msnry = new Masonry(grid, {
-				itemSelector: '.blog-card',
-				columnWidth: '.blog-card',
-				gutter: 24,
-				percentPosition: true
-			});
-
-			revealOnScroll(grid);
-
-			window.addEventListener('resize', () => msnry.layout());
-		} catch (err) {
-			console.error('Failed to load Masonry:', err);
-		}
+	onMount(() => {
+		if (typeof window === 'undefined') return;
+		revealOnScroll(grid);
 	});
 </script>
 
 <section class="p-6 md:p-12">
-	<h1 class="text-4xl font-bold mb-6">The Junxion Journal</h1>
+	<h1 class="text-4xl font-bold mb-6 text-balance">The Junxion Journal</h1>
+
+	<!-- Pure CSS Masonry -->
 	<div bind:this={grid}>
 		<BlogGrid {posts} />
 	</div>
 </section>
+
+<style>
+	.blog-card {
+		opacity: 0;
+		transform: translateY(20px);
+		transition:
+			opacity 0.4s ease,
+			transform 0.4s ease;
+	}
+	.blog-card.revealed {
+		opacity: 1;
+		transform: translateY(0);
+	}
+</style>

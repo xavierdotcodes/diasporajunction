@@ -14,18 +14,17 @@
 <style>
 	.masonry-grid {
 		column-count: 3;
-		column-gap: 1.5rem;
+		column-gap: 2rem;
 		width: 100%;
 	}
 
 	.masonry-item {
 		break-inside: avoid;
-		margin-bottom: 1.5rem;
-		display: inline-block;
+		margin-bottom: 2rem;
+		display: block;
 		width: 100%;
 	}
 
-	/* Responsive adjustments */
 	@media (max-width: 1024px) {
 		.masonry-grid {
 			column-count: 2;
