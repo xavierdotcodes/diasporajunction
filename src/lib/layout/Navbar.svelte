@@ -8,6 +8,7 @@
 		{ href: '/about', label: 'About' },
 		{ href: '/space', label: 'SP△CE' },
 		{ href: '/ndgo', label: 'NDGO' },
+		{ href: '/diasporaunited', label: 'Diaspora United' },
 		{ href: '/tours', label: 'Tours' },
 		{ href: '/team', label: 'Team' },
 		{ href: '/sekondi', label: 'We ❤️ Sekondi' },
