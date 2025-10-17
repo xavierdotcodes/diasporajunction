@@ -1,3 +1,5 @@
 <div>
-	<a href="/"> <img src="/images/logos/logo1.png" alt="Diaspora Junxion Logo" width="100px" /></a>
+	<a href="/">
+		<img src="/images/logos/logo-optimized.png" alt="Diaspora Junxion Logo" width="100px" /></a
+	>
 </div>
