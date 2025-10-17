@@ -27,20 +27,25 @@
 	let grid;
 
 	onMount(async () => {
-		// Dynamically import Masonry only on the client
-		const Masonry = (await import('masonry-layout')).default;
+		if (typeof window === 'undefined') return; // 🚫 Skip SSR
 
-		const msnry = new Masonry(grid, {
-			itemSelector: '.blog-card',
-			columnWidth: '.blog-card',
-			gutter: 24,
-			percentPosition: true
-		});
+		try {
+			const module = await import('masonry-layout');
+			const Masonry = module.default;
 
-		revealOnScroll(grid);
+			const msnry = new Masonry(grid, {
+				itemSelector: '.blog-card',
+				columnWidth: '.blog-card',
+				gutter: 24,
+				percentPosition: true
+			});
 
-		// Re-layout on resize
-		window.addEventListener('resize', () => msnry.layout());
+			revealOnScroll(grid);
+
+			window.addEventListener('resize', () => msnry.layout());
+		} catch (err) {
+			console.error('Failed to load Masonry:', err);
+		}
 	});
 </script>
 
