@@ -1,0 +1,89 @@
+<script>
+	import { onMount } from 'svelte';
+	import gsap from 'gsap';
+
+	let section;
+
+	onMount(() => {
+		// Animate hero content smoothly
+		gsap.from(section.querySelectorAll('.hero-content > *'), {
+			y: 60,
+			opacity: 0,
+			stagger: 0.2,
+			duration: 1.2,
+			ease: 'power3.out'
+		});
+	});
+</script>
+
+<section class="hero" bind:this={section}>
+	<div class="hero-overlay"></div>
+
+	<div class="hero-content">
+		<img src="/images/logos/DiasporaU-optimized.png" alt="DiasporaUnited Logo" class="hero-logo" />
+		<h1>Diaspora United F.C.</h1>
+		<p>
+			The first Diaspora-owned football club in Ghana.<br />
+			Where culture meets competition.
+		</p>
+	</div>
+</section>
+
+<style>
+	.hero {
+		position: relative;
+		width: 100%;
+		height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		background: radial-gradient(circle at 40% 20%, #0b0b0b, #000);
+		color: white;
+		overflow: hidden;
+	}
+
+	.hero-overlay {
+		position: absolute;
+		inset: 0;
+		background: url('/images/du_field.jpg') center/cover no-repeat;
+		opacity: 0.25;
+		z-index: 1;
+	}
+
+	.hero-content {
+		position: relative;
+		z-index: 2;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 2rem;
+	}
+
+	.hero-logo {
+		width: clamp(200px, 30vw, 320px); /* 👈 Bigger size, scales smoothly */
+		max-width: 100%;
+		margin-bottom: 2rem;
+		transition: transform 0.3s ease;
+	}
+
+	.hero-logo:hover {
+		transform: scale(1.05);
+	}
+
+	h1 {
+		font-family: 'Archivo Black', sans-serif;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		margin-bottom: 1.2rem;
+		font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+	}
+
+	p {
+		max-width: 700px;
+		line-height: 1.6;
+		font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+		color: #ddd;
+	}
+</style>
