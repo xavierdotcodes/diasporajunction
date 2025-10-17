@@ -16,8 +16,9 @@
 <section class="py-16 sm:py-20 px-6 text-center">
 	<div class="max-w-3xl mx-auto">
 		<h3 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Join the Movement</h3>
-		<p class="text-base sm:text-lg mb-8 sm:mb-10">
-			DiasporaJunxion is just getting started. Be part of the first wave shaping the story.
+		<p class="text-lg text-gray-700 max-w-2xl mx-auto mb-6">
+			Whether you’re diaspora, local, or global fam, your energy is welcome here. Join us for tours,
+			events, or digital collabs — let’s make it real.
 		</p>
 		<button on:click={openModal} class="cta-btn">Get Involved</button>
 	</div>
