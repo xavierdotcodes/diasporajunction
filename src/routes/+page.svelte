@@ -16,6 +16,9 @@
 			ease: 'power4.out'
 		});
 
+		// Fade in video background
+		gsap.from('video', { opacity: 0, duration: 1.5, ease: 'power2.out' });
+
 		// Card scroll animations
 		document.querySelectorAll('.card').forEach((card, i) => {
 			const text = card.querySelector('.card-text');
@@ -39,6 +42,22 @@
 				duration: 1.2,
 				delay: 0.2,
 				ease: 'power3.out',
+				scrollTrigger: {
+					trigger: card,
+					start: 'top 85%',
+					toggleActions: 'play none none reverse'
+				}
+			});
+		});
+
+		// Approach animations
+		gsap.utils.toArray('.approach-card').forEach((card, i) => {
+			gsap.from(card, {
+				opacity: 0,
+				y: 60,
+				duration: 1,
+				delay: i * 0.15,
+				ease: 'power2.out',
 				scrollTrigger: {
 					trigger: card,
 					start: 'top 85%',
@@ -96,20 +115,35 @@
 
 <div class="landing-page font-sans bg-black text-white">
 	<!-- HERO SECTION -->
-	<section class="relative min-h-screen flex flex-col items-center justify-center px-6 text-center">
+	<section
+		class="relative min-h-screen flex flex-col items-center justify-center px-6 text-center overflow-hidden"
+	>
+		<!-- Background video -->
+		<video
+			class="absolute inset-0 w-full h-full object-cover"
+			autoplay
+			muted
+			loop
+			playsinline
+			poster="/images/hero-poster.jpg"
+		>
+			<source src="/videos/hero-video.mp4" type="video/mp4" />
+		</video>
+
+		<!-- Overlay gradient -->
 		<div class="absolute inset-0 bg-gradient-to-b from-black/60 to-black"></div>
+
+		<!-- Hero content -->
 		<div class="relative z-10 max-w-5xl mx-auto">
 			<h1
 				class="hero-title text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6"
 			>
 				Diaspora<span class="text-[#D9042B]">Junxion</span>
 			</h1>
-
 			<h2 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-light mb-8 text-gray-200">
 				The meeting point of <span class="font-semibold">Diaspora Power</span> and
 				<span class="font-semibold">African Innovation</span>
 			</h2>
-
 			<p class="text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed mb-10 text-gray-300">
 				<span class="font-bold text-white">Diaspora</span> is more than a word — it’s a people.<br
 				/>
@@ -119,7 +153,6 @@
 				<span class="text-[#FFBC03] font-semibold">DiasporaJunxion</span> is the bridge — where we return,
 				connect, and build the future together.
 			</p>
-
 			<a
 				href="#about"
 				class="inline-block bg-[#038C25] text-white px-8 py-4 rounded-full font-semibold hover:bg-[#026b1d] transition"
@@ -134,13 +167,11 @@
 		<h2 class="text-4xl font-extrabold mb-4">
 			What Is <span class="text-[#D9042B]">DiasporaJunxion</span>?
 		</h2>
-
 		<p class="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed mb-10">
 			DiasporaJunxion is a creative business accelerator and incubator built for Ghanaian artists,
 			makers, and entrepreneurs — inspired by models like Y Combinator, but grounded in African
 			culture and innovation.
 		</p>
-
 		<p class="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed mb-10">
 			We help forward-thinking creators refine their craft or venture through structured mentorship,
 			access to capital, and global exposure. Our programs connect local talent with diaspora
@@ -193,7 +224,6 @@
 	<!-- VALUES / PILLARS -->
 	<section id="values" class="py-20 bg-[#111] px-6">
 		<h3 class="text-3xl font-bold text-center mb-16 text-white">The Pillars of the Junxion</h3>
-
 		<div class="flex flex-col items-center w-full gap-20 max-w-6xl mx-auto">
 			{#each cards as card, i}
 				<div
@@ -209,10 +239,7 @@
 						class="card-image w-full md:w-1/2 rounded-xl shadow-lg"
 					/>
 					<div class="card-text md:w-1/2 text-center md:text-left">
-						<h4 class="text-2xl font-bold mb-3">
-							<span>{card.icon}</span>
-							{card.title}
-						</h4>
+						<h4 class="text-2xl font-bold mb-3"><span>{card.icon}</span> {card.title}</h4>
 						<p class="text-lg text-gray-300">{card.description}</p>
 					</div>
 				</div>
@@ -220,7 +247,48 @@
 		</div>
 	</section>
 
-	<!-- MISSION / STORY -->
+	<!-- OUR APPROACH (CONDENSED) -->
+	<section id="approach" class="py-20 bg-white text-black text-center px-8">
+		<h3 class="text-3xl font-bold mb-10 text-[#D9042B]">Our Approach</h3>
+		<p class="text-lg text-gray-700 max-w-3xl mx-auto mb-12 leading-relaxed">
+			We help creators go from idea to impact through a simple three-step model —
+			<span class="text-[#038C25] font-semibold">Development</span>,
+			<span class="text-[#FFBC03] font-semibold">Exposure</span>, and
+			<span class="text-[#D9042B] font-semibold">Delivery</span>.
+		</p>
+		<div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+			<div class="approach-card bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition">
+				<div class="text-4xl mb-4">⚙️</div>
+				<h4 class="text-xl font-semibold text-[#038C25] mb-2">Development</h4>
+				<p class="text-gray-700 text-sm leading-relaxed">
+					We help refine projects and products to meet global standards through mentorship and
+					structure.
+				</p>
+			</div>
+			<div class="approach-card bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition">
+				<div class="text-4xl mb-4">🌍</div>
+				<h4 class="text-xl font-semibold text-[#FFBC03] mb-2">Exposure</h4>
+				<p class="text-gray-700 text-sm leading-relaxed">
+					We build the outlets and networks for creators to gain visibility on a global stage.
+				</p>
+			</div>
+			<div class="approach-card bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition">
+				<div class="text-4xl mb-4">🚀</div>
+				<h4 class="text-xl font-semibold text-[#D9042B] mb-2">Delivery</h4>
+				<p class="text-gray-700 text-sm leading-relaxed">
+					We establish pipelines that connect Ghanaian-made creations directly to international
+					markets.
+				</p>
+			</div>
+		</div>
+		<p class="mt-12 text-gray-700 max-w-3xl mx-auto text-lg">
+			From concept to commerce — <span class="text-[#038C25] font-semibold"
+				>we build the bridge</span
+			>.
+		</p>
+	</section>
+
+	<!-- WHY WE EXIST -->
 	<section id="story" class="py-20 bg-white px-8 text-center">
 		<h3 class="text-3xl font-bold text-black mb-8">Why We Exist</h3>
 		<div class="max-w-3xl mx-auto text-gray-700 space-y-4 text-lg">
@@ -255,5 +323,8 @@
 	}
 	section {
 		scroll-margin-top: 100px;
+	}
+	video {
+		object-fit: cover;
 	}
 </style>
