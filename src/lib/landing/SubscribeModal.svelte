@@ -71,7 +71,7 @@
 	<div class="modal-content" on:click|stopPropagation>
 		<button class="close-btn" on:click={closeModal}>✕</button>
 
-		<img src="/images/keys-to-africa.jpg" alt="Subscribe" class="modal-image" />
+		<img src="/images/keys.jpg" alt="Subscribe" class="modal-image" />
 
 		<h3 class="text-xl font-bold mb-2">Subscribe to our Newsletter</h3>
 		<p class="text-sm mb-4">Stay updated with DiasporaJunxion news and events.</p>
