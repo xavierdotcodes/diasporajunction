@@ -116,25 +116,26 @@
 <div class="landing-page font-sans bg-black text-white">
 	<!-- HERO SECTION -->
 	<section
-		class="relative min-h-screen flex flex-col items-center justify-center px-6 text-center overflow-hidden"
+		class="relative flex flex-col items-center justify-center min-h-[100dvh] w-full px-6 text-center overflow-hidden"
 	>
 		<!-- Background video -->
-		<video
-			class="absolute inset-0 w-full h-full object-cover"
-			autoplay
-			muted
-			loop
-			playsinline
-			poster="/images/hero-poster.jpg"
-		>
-			<source src="/videos/hero-video.mp4" type="video/mp4" />
-		</video>
+		<div class="absolute inset-0 w-full h-full overflow-hidden">
+			<video
+				class="w-full h-full object-cover object-center"
+				src="/videos/hero-video.mp4"
+				poster="/images/hero-poster.jpg"
+				autoplay
+				muted
+				loop
+				playsinline
+			></video>
+		</div>
 
 		<!-- Overlay gradient -->
-		<div class="absolute inset-0 bg-gradient-to-b from-black/60 to-black"></div>
+		<div class="absolute inset-0 bg-gradient-to-b from-black/70 to-black/90"></div>
 
 		<!-- Hero content -->
-		<div class="relative z-10 max-w-5xl mx-auto">
+		<div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 md:px-8">
 			<h1
 				class="hero-title text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6"
 			>
@@ -144,7 +145,9 @@
 				The meeting point of <span class="font-semibold">Diaspora Power</span> and
 				<span class="font-semibold">African Innovation</span>
 			</h2>
-			<p class="text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed mb-10 text-gray-300">
+			<p
+				class="text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed mb-10 text-gray-300 max-w-3xl mx-auto"
+			>
 				<span class="font-bold text-white">Diaspora</span> is more than a word — it’s a people.<br
 				/>
 				Africans at home and abroad, carrying the continent’s rhythm into every corner of the world.<br
@@ -247,7 +250,7 @@
 		</div>
 	</section>
 
-	<!-- OUR APPROACH (CONDENSED) -->
+	<!-- OUR APPROACH -->
 	<section id="approach" class="py-20 bg-white text-black text-center px-8">
 		<h3 class="text-3xl font-bold mb-10 text-[#D9042B]">Our Approach</h3>
 		<p class="text-lg text-gray-700 max-w-3xl mx-auto mb-12 leading-relaxed">
@@ -321,10 +324,16 @@
 	html {
 		scroll-behavior: smooth;
 	}
-	section {
-		scroll-margin-top: 100px;
-	}
 	video {
+		width: 100%;
+		height: 100%;
 		object-fit: cover;
+		object-position: center;
+	}
+	@media (max-width: 640px) {
+		.hero-title {
+			font-size: 2.5rem;
+			line-height: 1.2;
+		}
 	}
 </style>
