@@ -3,11 +3,49 @@
 	import gsap from 'gsap';
 	import CTASection from '$lib/landing/CTASection.svelte';
 
+	const cards = [
+		{
+			title: 'Connection',
+			description:
+				'We’re building real bridges — not just flights — between diaspora travelers and the Ghanaian creative scene.',
+			icon: '🔗',
+			image: '/images/landing/connection.jpg'
+		},
+		{
+			title: 'Innovation',
+			description:
+				'Africa’s new ideas meet global skillsets. We incubate creative projects that move culture and commerce forward.',
+			icon: '💡',
+			image: '/images/landing/innovation.jpg'
+		},
+		{
+			title: 'Culture',
+			description:
+				'We amplify the heartbeat of Ghana — nightlife, art, food, and rhythm — and connect it with the world.',
+			icon: '🎶',
+			image: '/images/landing/culture.jpg'
+		},
+		{
+			title: 'Collaboration',
+			description:
+				'From designers to DJs, coders to curators — DiasporaJunxion is a meeting ground for ideas and partnerships.',
+			icon: '🫱🏾‍🫲🏽',
+			image: '/images/landing/collaboration.jpg'
+		},
+		{
+			title: 'Impact',
+			description:
+				'Every project supports local makers, artisans, and entrepreneurs. When we grow, communities grow.',
+			icon: '🌍',
+			image: '/images/landing/impact.jpg'
+		}
+	];
+
 	onMount(async () => {
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
 		gsap.registerPlugin(ScrollTrigger);
 
-		// Animate hero intro
+		// Animate hero letters
 		gsap.from('.hero-title span', {
 			y: 40,
 			opacity: 0,
@@ -66,47 +104,14 @@
 			});
 		});
 	});
-
-	const cards = [
-		{
-			title: 'Connection',
-			description:
-				'We’re building real bridges — not just flights — between diaspora travelers and the Ghanaian creative scene.',
-			icon: '🔗',
-			image: '/images/landing/connection.jpg'
-		},
-		{
-			title: 'Innovation',
-			description:
-				'Africa’s new ideas meet global skillsets. We incubate creative projects that move culture and commerce forward.',
-			icon: '💡',
-			image: '/images/landing/innovation.jpg'
-		},
-		{
-			title: 'Culture',
-			description:
-				'We amplify the heartbeat of Ghana — nightlife, art, food, and rhythm — and connect it with the world.',
-			icon: '🎶',
-			image: '/images/landing/culture.jpg'
-		},
-		{
-			title: 'Collaboration',
-			description:
-				'From designers to DJs, coders to curators — DiasporaJunxion is a meeting ground for ideas and partnerships.',
-			icon: '🫱🏾‍🫲🏽',
-			image: '/images/landing/collaboration.jpg'
-		},
-		{
-			title: 'Impact',
-			description:
-				'Every project supports local makers, artisans, and entrepreneurs. When we grow, communities grow.',
-			icon: '🌍',
-			image: '/images/landing/impact.jpg'
-		}
-	];
 </script>
 
 <svelte:head>
+	<title>DiasporaJunxion | Connecting Diaspora & African Innovation</title>
+	<meta
+		name="description"
+		content="Learn how DiasporaJunxion empowers Ghanaian artists, makers, and entrepreneurs to reach global markets through mentorship, structure, and exposure."
+	/>
 	<link
 		href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
 		rel="stylesheet"
@@ -139,12 +144,21 @@
 			<h1
 				class="hero-title text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6"
 			>
-				Diaspora<span class="text-[#D9042B]">Junxion</span>
+				{#each 'Diaspora'.split('') as letter}
+					<span>{letter}</span>
+				{/each}
+				<span class="text-[#D9042B]">
+					{#each 'Junxion'.split('') as letter}
+						<span>{letter}</span>
+					{/each}
+				</span>
 			</h1>
+
 			<h2 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-light mb-8 text-gray-200">
 				The meeting point of <span class="font-semibold">Diaspora Power</span> and
 				<span class="font-semibold">African Innovation</span>
 			</h2>
+
 			<p
 				class="text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed mb-10 text-gray-300 max-w-3xl mx-auto"
 			>
@@ -156,6 +170,7 @@
 				<span class="text-[#FFBC03] font-semibold">DiasporaJunxion</span> is the bridge — where we return,
 				connect, and build the future together.
 			</p>
+
 			<a
 				href="#about"
 				class="inline-block bg-[#038C25] text-white px-8 py-4 rounded-full font-semibold hover:bg-[#026b1d] transition"
@@ -181,7 +196,6 @@
 			expertise and technology to build ventures that move culture forward.
 		</p>
 
-		<!-- FEATURED PROGRAMS GRID -->
 		<h3 class="text-2xl font-bold text-gray-900 mb-8 mt-16">
 			Beyond Business — Our Creative Ecosystem
 		</h3>

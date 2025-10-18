@@ -2,9 +2,47 @@
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';
 
+	export let titleParts = [
+		{ text: 'Our ', color: '#FFFFFF' },
+		{ text: 'Approach', color: '#D9042B' }
+	];
+	export let subtitle =
+		'How we turn Ghanaian creativity into globally viable ventures — through mentorship, structure, and exposure.';
+
 	onMount(async () => {
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
 		gsap.registerPlugin(ScrollTrigger);
+
+		// Animate hero title letters/spans
+		gsap.from('.approach-hero h1 span', {
+			y: -40,
+			opacity: 0,
+			stagger: 0.15,
+			duration: 1,
+			ease: 'power2.out'
+		});
+
+		// Animate subtitle
+		gsap.from('.approach-hero .intro', {
+			y: 24,
+			opacity: 0,
+			duration: 1,
+			delay: 0.4,
+			ease: 'power2.out'
+		});
+
+		// Subtle parallax on hero video
+		gsap.to('.approach-hero video', {
+			yPercent: 5,
+			scale: 1.05,
+			ease: 'power1.inOut',
+			scrollTrigger: {
+				trigger: '.approach-hero',
+				start: 'top top',
+				end: 'bottom top',
+				scrub: true
+			}
+		});
 
 		// Section fade-in animations
 		gsap.utils.toArray('.fade-section').forEach((section) => {
@@ -21,7 +59,7 @@
 			});
 		});
 
-		// Animate each process card
+		// Animate process cards
 		gsap.utils.toArray('.process-card').forEach((card, i) => {
 			gsap.from(card, {
 				opacity: 0,
@@ -35,19 +73,6 @@
 					toggleActions: 'play none none reverse'
 				}
 			});
-		});
-
-		// Optional: subtle parallax on hero video
-		gsap.to('.hero-video', {
-			yPercent: 10,
-			scale: 1.05,
-			ease: 'power1.inOut',
-			scrollTrigger: {
-				trigger: '.hero-section',
-				start: 'top top',
-				end: 'bottom top',
-				scrub: true
-			}
 		});
 	});
 </script>
@@ -63,7 +88,7 @@
 <div class="approach-page font-sans bg-white text-black">
 	<!-- HERO -->
 	<section
-		class="relative min-h-[60vh] flex flex-col items-center justify-center text-center hero-section px-6"
+		class="relative approach-hero min-h-[60vh] flex flex-col items-center justify-center text-center px-6"
 	>
 		<!-- Background video -->
 		<video
@@ -76,20 +101,22 @@
 			playsinline
 		></video>
 
-		<!-- Underlay gradient for contrast -->
+		<!-- Gradient overlay -->
 		<div class="absolute inset-0 bg-gradient-to-b from-black/70 to-black/90"></div>
 
 		<!-- Hero content -->
 		<div class="relative z-10 max-w-3xl px-4 sm:px-6 md:px-8">
-			<h1 class="text-5xl sm:text-6xl font-extrabold mb-4 text-white">
-				Our <span class="text-[#D9042B]">Approach</span>
+			<h1 class="text-5xl sm:text-6xl font-extrabold mb-4 leading-tight">
+				{#each titleParts as part}
+					<span style="color: {part.color}">{part.text}</span>
+				{/each}
 			</h1>
-			<p class="text-lg sm:text-xl text-gray-200 leading-relaxed">
-				How we turn Ghanaian creativity into globally viable ventures — through mentorship,
-				structure, and exposure.
+			<p class="intro text-lg sm:text-xl text-gray-200 leading-relaxed max-w-3xl mx-auto mt-4">
+				{subtitle}
 			</p>
 		</div>
 	</section>
+
 	<!-- WHAT WE DO -->
 	<section class="fade-section py-20 px-8 text-center bg-white">
 		<h2 class="text-3xl font-bold text-[#038C25] mb-4">What We Do</h2>
