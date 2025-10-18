@@ -91,16 +91,15 @@
 		class="relative approach-hero min-h-[60vh] flex flex-col items-center justify-center text-center px-6"
 	>
 		<!-- Background video -->
+		<!-- Background video -->
 		<video
 			class="absolute inset-0 w-full h-full object-cover hero-video"
 			src="/videos/approach-hero.mp4"
-			poster="/images/approach-poster.jpg"
 			autoplay
 			muted
 			loop
 			playsinline
 		></video>
-
 		<!-- Gradient overlay -->
 		<div class="absolute inset-0 bg-gradient-to-b from-black/70 to-black/90"></div>
 

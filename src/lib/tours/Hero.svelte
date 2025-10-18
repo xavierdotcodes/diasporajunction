@@ -45,7 +45,6 @@
 	<video
 		class="absolute inset-0 w-full h-full object-cover"
 		src="/videos/tours-hero.mp4"
-		poster="/images/tour-hero-poster.jpg"
 		autoplay
 		muted
 		loop

@@ -128,7 +128,6 @@
 			<video
 				class="w-full h-full object-cover object-center"
 				src="/videos/hero-video.mp4"
-				poster="/images/hero-poster.jpg"
 				autoplay
 				muted
 				loop

@@ -36,6 +36,7 @@
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 	<meta name="apple-mobile-web-app-title" content="DiasporaJunxion" />
 	<link rel="manifest" href="/site.webmanifest" />
+	<link rel="preload" as="video" href="/videos/tours-hero.mp4" type="video/mp4" />
 </svelte:head>
 
 <div class="flex flex-col min-h-screen">
