@@ -73,21 +73,21 @@
 			description:
 				'We’re building real bridges — not just flights — between diaspora travelers and the Ghanaian creative scene.',
 			icon: '🔗',
-			image: '/images/landing/connection.jpeg'
+			image: '/images/landing/connection.jpg'
 		},
 		{
 			title: 'Innovation',
 			description:
 				'Africa’s new ideas meet global skillsets. We incubate creative projects that move culture and commerce forward.',
 			icon: '💡',
-			image: '/images/landing/innovation.jpeg'
+			image: '/images/landing/innovation.jpg'
 		},
 		{
 			title: 'Culture',
 			description:
 				'We amplify the heartbeat of Ghana — nightlife, art, food, and rhythm — and connect it with the world.',
 			icon: '🎶',
-			image: '/images/landing/culture.jpeg'
+			image: '/images/landing/culture.jpg'
 		},
 		{
 			title: 'Collaboration',
@@ -101,7 +101,7 @@
 			description:
 				'Every project supports local makers, artisans, and entrepreneurs. When we grow, communities grow.',
 			icon: '🌍',
-			image: '/images/landing/impact.jpeg'
+			image: '/images/landing/impact.jpg'
 		}
 	];
 </script>
