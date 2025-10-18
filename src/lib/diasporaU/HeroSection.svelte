@@ -38,7 +38,7 @@
 
 <section class="hero" bind:this={section}>
 	<video class="hero-video" autoplay muted loop playsinline poster="/images/du_field-poster.jpg">
-		<source src="/videos/football-hero.mp4" type="video/mp4" />
+		<source src="/videos/diasporau-hero.mp4" type="video/mp4" />
 	</video>
 
 	<div class="hero-overlay"></div>

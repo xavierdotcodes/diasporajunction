@@ -127,7 +127,7 @@
 		<div class="absolute inset-0 w-full h-full overflow-hidden">
 			<video
 				class="w-full h-full object-cover object-center"
-				src="/videos/hero-video.mp4"
+				src="/videos/landing-hero.mp4"
 				autoplay
 				muted
 				loop
