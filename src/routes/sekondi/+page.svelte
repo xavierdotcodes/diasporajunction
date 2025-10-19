@@ -24,7 +24,7 @@
 
 	<div class="grid gap-12 lg:grid-cols-2 items-center sekondi-section">
 		<img
-			src="/images/sekondi/sekondi.jpg"
+			src="/images/sekondi/sekondi.webp"
 			alt="Sekondi view"
 			class="rounded-2xl shadow-xl object-cover w-full h-80"
 		/>
@@ -50,7 +50,7 @@
 			</p>
 		</div>
 		<img
-			src="/images/sekondi/community.jpg"
+			src="/images/sekondi/community.webp"
 			alt="Sekondi community"
 			class="rounded-2xl shadow-xl object-cover w-full h-80"
 		/>
