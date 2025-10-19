@@ -48,7 +48,7 @@
 		heroVideoSrc =
 			window.innerWidth <= 768
 				? '/videos/mobile_landing-hero.mp4'
-				: '/videos/desktop_landing-hero.mp4';
+				: '/videos/desktop_landing-hero.mp5';
 
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
 		gsap.registerPlugin(ScrollTrigger);
@@ -161,10 +161,10 @@
 			</p>
 
 			<a
-				href="#about"
+				href="#approach"
 				class="inline-block bg-[#038C25] text-white px-8 py-4 rounded-full font-semibold hover:bg-[#026b1d] transition"
 			>
-				Enter the Junxion
+				Our Approach
 			</a>
 		</div>
 	</section>
