@@ -13,16 +13,29 @@
 	});
 </script>
 
-<section class="bg-white text-black min-h-screen py-16 px-4 sm:px-12">
-	<h1 class="text-4xl sm:text-5xl font-bold text-center mb-4 text-[black]">We ❤️ Sekondi</h1>
-	<p class="text-center text-lg sm:text-xl mb-12 max-w-3xl mx-auto text-gray-700">
-		Sekondi is more than a city to us — it’s family. It’s where our roots, friends, and daily
-		inspirations live. It’s where resilience and creativity shine through, even in the face of
-		hardship. We dedicate this page to the people of Sekondi — our collaborators, supporters, and
-		neighbors. Your strength fuels Diaspora Junxion.
-	</p>
+<!-- Hero Section -->
+<section
+	class="relative text-black py-20 px-4 sm:px-12 flex flex-col justify-center items-center overflow-hidden min-h-[700px]"
+	style="background-image: url('/images/sekondi/fish.webp'); background-size: cover; background-position: top center;"
+>
+	<!-- Overlay for readability -->
+	<div class="absolute inset-0 bg-black/40 z-0"></div>
 
-	<div class="grid gap-12 lg:grid-cols-2 items-center sekondi-section">
+	<!-- Hero Content -->
+	<div class="relative z-10 text-center max-w-3xl">
+		<h1 class="text-4xl sm:text-5xl font-bold mb-4 text-white">We ❤️ Sekondi</h1>
+		<p class="text-lg sm:text-xl mb-12 text-gray-100">
+			Sekondi is more than a city to us — it’s family. It’s where our roots, friends, and daily
+			inspirations live. It’s where resilience and creativity shine through, even in the face of
+			hardship. We dedicate this page to the people of Sekondi — our collaborators, supporters, and
+			neighbors. Your strength fuels Diaspora Junxion.
+		</p>
+	</div>
+</section>
+<!-- Page Background Wrapper -->
+<div class="bg-white">
+	<!-- First Sekondi Section -->
+	<div class="grid gap-12 lg:grid-cols-2 items-center sekondi-section py-16 px-4 sm:px-12">
 		<img
 			src="/images/sekondi/sekondi.webp"
 			alt="Sekondi view"
@@ -39,9 +52,10 @@
 		</div>
 	</div>
 
-	<div class="grid gap-12 lg:grid-cols-2 items-center sekondi-section mt-16">
+	<!-- Second Sekondi Section -->
+	<div class="grid gap-12 lg:grid-cols-2 items-center sekondi-section py-16 px-4 sm:px-12">
 		<div>
-			<h2 class="text-2xl sm:text-3xl font-bold text-[#038C25] mb-4">Our Commitment</h2>
+			<h2 class="text-2xl sm:text-3xl font-bold mb-4" style="color: #FEBE05;">Our Commitment</h2>
 			<p class="text-gray-700 leading-relaxed">
 				We are here not just to build products, but to build community. By shining a light on
 				Sekondi’s creativity and resilience, we hope to inspire hope and opportunity. Every project,
@@ -56,7 +70,8 @@
 		/>
 	</div>
 
-	<div class="sekondi-section text-center mt-20">
+	<!-- Third Section: To Sekondi With Love -->
+	<div class="sekondi-section text-center py-16 px-4 sm:px-12">
 		<h2 class="text-2xl sm:text-3xl font-bold text-[#D9042B] mb-6">To Sekondi, With Love</h2>
 		<p class="text-gray-700 max-w-2xl mx-auto leading-relaxed">
 			From the shores of Ghana to the global stage, Sekondi will always be our heartbeat. We stand
@@ -64,15 +79,15 @@
 		</p>
 	</div>
 
-	<!-- Adinkra Flag Symbol -->
-	<div class="sekondi-section adinkra-flag mt-24">
+	<!-- Adinkra Flag Section -->
+	<div class="sekondi-section adinkra-flag py-16 px-4 sm:px-12 text-center">
 		<img
 			src="/images/sekondi/adinkra-flag.jpeg"
 			alt="Adinkra symbol with American flag pattern"
 			class="max-w-xs sm:max-w-sm mx-auto opacity-95 transition-transform duration-300 hover:scale-105"
 		/>
 	</div>
-</section>
+</div>
 
 <style>
 	.adinkra-flag img {
