@@ -17,9 +17,9 @@
 			title: 'Arrival & Accra Vibes',
 			copy: 'Arrive in Accra, get settled in our boutique guesthouse, enjoy a welcome dinner with a live drumming circle. Afternoon beach time at Labadi, followed by a curated night out to experience Accra’s contemporary music scene and local street food.',
 			images: [
-				'/images/tours/arrival1.jpg',
-				'/images/tours/arrival2.jpg',
-				'/images/tours/arrival3.jpg'
+				'/images/tours/arrival1.webp',
+				'/images/tours/arrival2.webp',
+				'/images/tours/arrival3.webp'
 			]
 		},
 		{

@@ -4,8 +4,13 @@
 	import EnrollmentModal from '$lib/ndgo/EnrollmentModal.svelte';
 
 	let showModal = false;
+	let heroVideoSrc;
 
 	onMount(async () => {
+		// Choose video source based on viewport
+		heroVideoSrc =
+			window.innerWidth <= 768 ? '/videos/mobile_ndgo-hero1.mp4' : '/videos/ndgo-hero1.mp4';
+
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
 		gsap.registerPlugin(ScrollTrigger);
 
@@ -42,19 +47,6 @@
 			duration: 0.6,
 			ease: 'back.out(1.7)'
 		});
-
-		// Optional: subtle parallax on hero video
-		gsap.to('.hero-video', {
-			yPercent: 10,
-			scale: 1.05,
-			ease: 'power1.inOut',
-			scrollTrigger: {
-				trigger: '.hero-section',
-				start: 'top top',
-				end: 'bottom top',
-				scrub: true
-			}
-		});
 	});
 </script>
 
@@ -73,14 +65,16 @@
 	>
 		<video
 			class="absolute inset-0 w-full h-full object-cover hero-video"
-			src="/videos/ndgo-hero1.mp4"
-			poster="/images/ndgo-poster.jpg"
+			src={heroVideoSrc}
+			poster="/images/ndgo-hero-poster.jpg"
 			autoplay
 			muted
 			loop
 			playsinline
+			preload="auto"
 		></video>
 
+		<!-- Gradient overlay -->
 		<div class="absolute inset-0 bg-gradient-to-b from-black/70 to-black/90"></div>
 
 		<div class="relative z-10 max-w-3xl px-4 sm:px-6 md:px-8">
@@ -126,7 +120,7 @@
 	<section id="how" class="fade-section py-16 bg-[#798EDF] px-8 text-center">
 		<h3 class="text-3xl font-bold text-black mb-10">How We Teach</h3>
 		<div class="space-y-16 max-w-4xl mx-auto">
-			{#each [{ title: 'aNalog', color: '#D9042B', desc: 'Hands-on drawing, painting, music, and storytelling — the roots of creativity.', img: '/images/ndgo/analog.jpg' }, { title: 'Digital', color: '#038C25', desc: 'Computers, coding, and design tools that turn imagination into real-world projects.', img: '/images/ndgo/digital.jpg' }, { title: 'pedaGOgy', color: '#FFBC03', desc: 'Playful, collaborative learning methods that empower expression at every age.', img: '/images/ndgo/pedagogy.jpg' }] as item, i}
+			{#each [{ title: 'aNalog', color: '#D9042B', desc: 'Hands-on drawing, painting, music, and storytelling — the roots of creativity.', img: '/images/ndgo/analog.webp' }, { title: 'Digital', color: '#038C25', desc: 'Computers, coding, and design tools that turn imagination into real-world projects.', img: '/images/ndgo/digital.webp' }, { title: 'pedaGOgy', color: '#FFBC03', desc: 'Playful, collaborative learning methods that empower expression at every age.', img: '/images/ndgo/pedagogy.webp' }] as item, i}
 				<div class="flex flex-col md:flex-row items-center gap-6 how-item">
 					<div class="flex-1 {i % 2 === 0 ? '' : 'md:order-2'}">
 						<img
@@ -136,7 +130,9 @@
 						/>
 					</div>
 					<div class="flex-1 text-gray-700">
-						<h4 class="text-xl font-bold mb-2" style="color: {item.color}">{item.title}</h4>
+						<h4 class="text-xl font-bold mb-2" style="color: {item.color}">
+							{item.title}
+						</h4>
 						<p>{item.desc}</p>
 					</div>
 				</div>
@@ -185,5 +181,12 @@
 	}
 	.how-item div p {
 		line-height: 1.6;
+	}
+
+	video.hero-video {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center;
 	}
 </style>

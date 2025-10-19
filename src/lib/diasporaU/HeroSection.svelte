@@ -3,13 +3,29 @@
 	import gsap from 'gsap';
 
 	let section;
+	let heroVideoSrc;
 
-	onMount(() => {
-		// Split title letters into spans for animation
+	const setVideoSrc = () => {
+		heroVideoSrc =
+			window.innerWidth <= 768
+				? '/videos/mobile_diasporau-hero.mp4'
+				: '/videos/desktop_diasporau-hero.mp4';
+	};
+
+	onMount(async () => {
+		setVideoSrc();
+
+		// Optional: change video on resize
+		window.addEventListener('resize', setVideoSrc);
+
+		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
+		gsap.registerPlugin(ScrollTrigger);
+
+		// Split title words into spans for animation
 		const title = section.querySelector('h1');
 		title.innerHTML = title.textContent.replace(/(\S+)/g, '<span>$1</span>');
 
-		// Animate hero content elements
+		// Animate hero content
 		gsap.from(section.querySelectorAll('.hero-content span, .hero-content p, .hero-logo'), {
 			y: 60,
 			opacity: 0,
@@ -18,10 +34,21 @@
 			ease: 'power3.out'
 		});
 
-		// Fade in hero video
+		// Fade in hero video with subtle parallax
 		const video = section.querySelector('video');
 		if (video) {
 			gsap.from(video, { opacity: 0, duration: 1.5, ease: 'power2.out' });
+			gsap.to(video, {
+				yPercent: 3,
+				scale: 1.02,
+				ease: 'power1.inOut',
+				scrollTrigger: {
+					trigger: section,
+					start: 'top top',
+					end: 'bottom top',
+					scrub: true
+				}
+			});
 		}
 
 		// Subtle logo bounce
@@ -37,8 +64,16 @@
 </script>
 
 <section class="hero" bind:this={section}>
-	<video class="hero-video" autoplay muted loop playsinline poster="/images/du_field-poster.jpg">
-		<source src="/videos/diasporau-hero.mp4" type="video/mp4" />
+	<video
+		class="hero-video"
+		autoplay
+		muted
+		loop
+		playsinline
+		poster="/images/du_field-poster.jpg"
+		preload="auto"
+	>
+		<source src={heroVideoSrc} type="video/mp4" />
 	</video>
 
 	<div class="hero-overlay"></div>
@@ -71,10 +106,15 @@
 
 	.hero-video {
 		position: absolute;
-		inset: 0;
+		top: 50%;
+		left: 50%;
 		width: 100%;
 		height: 100%;
+		min-width: 100%;
+		min-height: 100%;
+		transform: translate(-50%, -50%);
 		object-fit: cover;
+		object-position: center;
 		z-index: 0;
 	}
 
@@ -122,5 +162,20 @@
 
 	p span {
 		font-weight: 600;
+	}
+
+	/* Responsive adjustments */
+	@media (max-width: 768px) {
+		.hero {
+			height: 50vh;
+		}
+
+		h1 {
+			font-size: 2rem;
+		}
+
+		p {
+			font-size: 1rem;
+		}
 	}
 </style>

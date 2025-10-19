@@ -9,7 +9,14 @@
 	export let subtitle =
 		'How we turn Ghanaian creativity into globally viable ventures — through mentorship, structure, and exposure.';
 
+	let heroVideoSrc;
+
 	onMount(async () => {
+		heroVideoSrc =
+			window.innerWidth <= 768
+				? '/videos/mobile_approach-hero.mp4'
+				: '/videos/desktop_approach-hero.mp4';
+
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
 		gsap.registerPlugin(ScrollTrigger);
 
@@ -90,16 +97,17 @@
 	<section
 		class="relative approach-hero min-h-[60vh] flex flex-col items-center justify-center text-center px-6"
 	>
-		<!-- Background video -->
-		<!-- Background video -->
 		<video
 			class="absolute inset-0 w-full h-full object-cover hero-video"
-			src="/videos/approach-hero.mp4"
+			src={heroVideoSrc}
+			poster="/images/approach-hero-poster.jpg"
 			autoplay
 			muted
 			loop
 			playsinline
+			preload="auto"
 		></video>
+
 		<!-- Gradient overlay -->
 		<div class="absolute inset-0 bg-gradient-to-b from-black/70 to-black/90"></div>
 
@@ -245,5 +253,11 @@
 	}
 	section {
 		scroll-margin-top: 100px;
+	}
+	video.hero-video {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center;
 	}
 </style>
