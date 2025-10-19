@@ -48,7 +48,7 @@
 		heroVideoSrc =
 			window.innerWidth <= 768
 				? '/videos/mobile_landing-hero.mp4'
-				: '/videos/desktop_landing-hero.mp5';
+				: '/videos/desktop_landing-hero.mp4';
 
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
 		gsap.registerPlugin(ScrollTrigger);
