@@ -10,12 +10,17 @@
 		'How we turn Ghanaian creativity into globally viable ventures — through mentorship, structure, and exposure.';
 
 	let heroVideoSrc;
+	let heroPosterSrc;
 
 	onMount(async () => {
-		heroVideoSrc =
-			window.innerWidth <= 768
-				? '/videos/mobile_approach-hero.mp4'
-				: '/videos/desktop_approach-hero.mp4';
+		// Dynamic hero video + poster
+		if (window.innerWidth <= 768) {
+			heroVideoSrc = '/videos/mobile_approach-hero.mp4';
+			heroPosterSrc = '/videos/covers/mobile_approach-hero-cover.jpg';
+		} else {
+			heroVideoSrc = '/videos/desktop_approach-hero.mp4';
+			heroPosterSrc = '/videos/covers/desktop_approach-hero-cover.jpg';
+		}
 
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
 		gsap.registerPlugin(ScrollTrigger);
@@ -36,19 +41,6 @@
 			duration: 1,
 			delay: 0.4,
 			ease: 'power2.out'
-		});
-
-		// Subtle parallax on hero video
-		gsap.to('.approach-hero video', {
-			yPercent: 5,
-			scale: 1.05,
-			ease: 'power1.inOut',
-			scrollTrigger: {
-				trigger: '.approach-hero',
-				start: 'top top',
-				end: 'bottom top',
-				scrub: true
-			}
 		});
 
 		// Section fade-in animations
@@ -100,7 +92,7 @@
 		<video
 			class="absolute inset-0 w-full h-full object-cover hero-video"
 			src={heroVideoSrc}
-			poster="/images/approach-hero-poster.jpg"
+			poster={heroPosterSrc}
 			autoplay
 			muted
 			loop
@@ -139,7 +131,6 @@
 	<!-- HOW WE DO IT -->
 	<section class="fade-section py-20 bg-[#f9f9f9] px-8 text-center">
 		<h2 class="text-3xl font-bold text-[#FFBC03] mb-10">How We Do It</h2>
-
 		<div class="max-w-5xl mx-auto grid md:grid-cols-3 gap-8 text-left">
 			<div class="process-card p-8 bg-white rounded-2xl shadow-sm hover:shadow-md transition">
 				<div class="text-4xl mb-4">⚙️</div>
@@ -186,7 +177,6 @@
 	<!-- WHAT WE OFFER -->
 	<section class="fade-section py-20 bg-[#111] text-white px-8 text-center">
 		<h2 class="text-3xl font-bold mb-10 text-[#FFBC03]">What We Offer Creators</h2>
-
 		<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto text-left">
 			<div class="bg-[#1a1a1a] p-6 rounded-xl shadow-sm hover:shadow-md transition">
 				<h3 class="font-semibold text-lg mb-2 text-[#038C25]">💬 Mentorship & Training</h3>
@@ -194,35 +184,30 @@
 					Direct access to seasoned mentors and professionals from Ghana and the diaspora.
 				</p>
 			</div>
-
 			<div class="bg-[#1a1a1a] p-6 rounded-xl shadow-sm hover:shadow-md transition">
 				<h3 class="font-semibold text-lg mb-2 text-[#FFBC03]">💰 Access to Funding</h3>
 				<p class="text-gray-300 text-sm">
 					Microgrants, investor connections, and capital pathways to bring ideas to life.
 				</p>
 			</div>
-
 			<div class="bg-[#1a1a1a] p-6 rounded-xl shadow-sm hover:shadow-md transition">
 				<h3 class="font-semibold text-lg mb-2 text-[#D9042B]">🎨 Product & Brand Development</h3>
 				<p class="text-gray-300 text-sm">
 					Helping refine storytelling, packaging, and strategy for creative ventures.
 				</p>
 			</div>
-
 			<div class="bg-[#1a1a1a] p-6 rounded-xl shadow-sm hover:shadow-md transition">
 				<h3 class="font-semibold text-lg mb-2 text-[#FFBC03]">🌍 Global Market Exposure</h3>
 				<p class="text-gray-300 text-sm">
 					Connecting creators to international stages, digital platforms, and collaborations.
 				</p>
 			</div>
-
 			<div class="bg-[#1a1a1a] p-6 rounded-xl shadow-sm hover:shadow-md transition">
 				<h3 class="font-semibold text-lg mb-2 text-[#038C25]">🤝 International Partnerships</h3>
 				<p class="text-gray-300 text-sm">
 					Building bridges between Ghanaian creatives and diaspora investors, brands, and educators.
 				</p>
 			</div>
-
 			<div class="bg-[#1a1a1a] p-6 rounded-xl shadow-sm hover:shadow-md transition">
 				<h3 class="font-semibold text-lg mb-2 text-[#D9042B]">🎉 Events & Residencies</h3>
 				<p class="text-gray-300 text-sm">

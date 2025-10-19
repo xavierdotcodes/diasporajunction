@@ -4,6 +4,7 @@
 	import CTASection from '$lib/landing/CTASection.svelte';
 
 	let heroVideoSrc;
+	let heroPosterSrc;
 
 	const cards = [
 		{
@@ -44,11 +45,14 @@
 	];
 
 	onMount(async () => {
-		// Set hero video based on viewport
-		heroVideoSrc =
-			window.innerWidth <= 768
-				? '/videos/mobile_landing-hero.mp4'
-				: '/videos/desktop_landing-hero.mp4';
+		// Set hero video and poster based on viewport
+		if (window.innerWidth <= 768) {
+			heroVideoSrc = '/videos/mobile_landing-hero.mp4';
+			heroPosterSrc = '/videos/covers/mobile_landing-hero-cover.jpg';
+		} else {
+			heroVideoSrc = '/videos/desktop_landing-hero.mp4';
+			heroPosterSrc = '/videos/covers/desktop_landing-hero-cover.jpg';
+		}
 
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
 		gsap.registerPlugin(ScrollTrigger);
@@ -127,6 +131,7 @@
 				muted
 				loop
 				playsinline
+				poster={heroPosterSrc}
 			>
 				<source src={heroVideoSrc} type="video/mp4" />
 			</video>
@@ -227,7 +232,7 @@
 		</p>
 	</section>
 
-	<!-- VALUES / PILLARS -->
+	<!-- PILLARS SECTION -->
 	<section id="values" class="py-20 bg-[#111] px-6">
 		<h3 class="text-3xl font-bold text-center mb-16 text-white">The Pillars of the Junxion</h3>
 		<div class="flex flex-col items-center w-full gap-20 max-w-6xl mx-auto">

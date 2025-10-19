@@ -4,31 +4,25 @@
 	import EnrollmentModal from '$lib/ndgo/EnrollmentModal.svelte';
 
 	let showModal = false;
-	let heroVideoSrc;
+	let heroVideoSrc = '';
+	let heroPoster = '';
+
+	function updateHeroSources() {
+		if (window.innerWidth <= 768) {
+			heroVideoSrc = '/videos/mobile_ndgo-hero1.mp4';
+			heroPoster = '/videos/covers/mobile_ndgo-hero1-cover.jpg';
+		} else {
+			heroVideoSrc = '/videos/ndgo-hero1.mp4';
+			heroPoster = '/videos/covers/ndgo-hero1-cover.jpg';
+		}
+	}
 
 	onMount(async () => {
-		// Choose video source based on viewport
-		heroVideoSrc =
-			window.innerWidth <= 768 ? '/videos/mobile_ndgo-hero1.mp4' : '/videos/ndgo-hero1.mp4';
+		updateHeroSources();
+		window.addEventListener('resize', updateHeroSources);
 
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
 		gsap.registerPlugin(ScrollTrigger);
-
-		// Animate each how-item
-		gsap.utils.toArray('.how-item').forEach((item, i) => {
-			gsap.from(item, {
-				scrollTrigger: {
-					trigger: item,
-					start: 'top 80%',
-					toggleActions: 'play none none reverse'
-				},
-				opacity: 0,
-				x: i % 2 === 0 ? -100 : 100,
-				y: 30,
-				duration: 0.8,
-				ease: 'power2.out'
-			});
-		});
 
 		// Animate hero text
 		gsap.from('.ndgo-hero span', {
@@ -46,6 +40,22 @@
 			delay: 1.5,
 			duration: 0.6,
 			ease: 'back.out(1.7)'
+		});
+
+		// Animate how-items
+		gsap.utils.toArray('.how-item').forEach((item, i) => {
+			gsap.from(item, {
+				scrollTrigger: {
+					trigger: item,
+					start: 'top 80%',
+					toggleActions: 'play none none reverse'
+				},
+				opacity: 0,
+				x: i % 2 === 0 ? -100 : 100,
+				y: 30,
+				duration: 0.8,
+				ease: 'power2.out'
+			});
 		});
 	});
 </script>
@@ -66,7 +76,7 @@
 		<video
 			class="absolute inset-0 w-full h-full object-cover hero-video"
 			src={heroVideoSrc}
-			poster="/images/ndgo-hero-poster.jpg"
+			poster={heroPoster}
 			autoplay
 			muted
 			loop

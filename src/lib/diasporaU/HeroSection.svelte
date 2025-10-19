@@ -3,29 +3,30 @@
 	import gsap from 'gsap';
 
 	let section;
-	let heroVideoSrc;
+	let heroVideoSrc = '';
+	let heroPoster = '';
 
-	const setVideoSrc = () => {
-		heroVideoSrc =
-			window.innerWidth <= 768
-				? '/videos/mobile_diasporau-hero.mp4'
-				: '/videos/desktop_diasporau-hero.mp4';
-	};
+	function updateHeroSources() {
+		if (window.innerWidth <= 768) {
+			heroVideoSrc = '/videos/mobile_diasporau-hero.mp4';
+			heroPoster = '/videos/covers/mobile_diasporau-hero-cover.jpg';
+		} else {
+			heroVideoSrc = '/videos/desktop_diasporau-hero.mp4';
+			heroPoster = '/videos/covers/desktop_diasporau-hero-cover.jpg';
+		}
+	}
 
 	onMount(async () => {
-		setVideoSrc();
-
-		// Optional: change video on resize
-		window.addEventListener('resize', setVideoSrc);
+		updateHeroSources();
+		window.addEventListener('resize', updateHeroSources);
 
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
 		gsap.registerPlugin(ScrollTrigger);
 
-		// Split title words into spans for animation
+		// Animate hero title words
 		const title = section.querySelector('h1');
 		title.innerHTML = title.textContent.replace(/(\S+)/g, '<span>$1</span>');
 
-		// Animate hero content
 		gsap.from(section.querySelectorAll('.hero-content span, .hero-content p, .hero-logo'), {
 			y: 60,
 			opacity: 0,
@@ -34,7 +35,7 @@
 			ease: 'power3.out'
 		});
 
-		// Fade in hero video with subtle parallax
+		// Hero video fade-in and parallax
 		const video = section.querySelector('video');
 		if (video) {
 			gsap.from(video, { opacity: 0, duration: 1.5, ease: 'power2.out' });
@@ -51,7 +52,7 @@
 			});
 		}
 
-		// Subtle logo bounce
+		// Logo bounce
 		const logo = section.querySelector('.hero-logo');
 		if (logo) {
 			gsap.fromTo(
@@ -64,15 +65,7 @@
 </script>
 
 <section class="hero" bind:this={section}>
-	<video
-		class="hero-video"
-		autoplay
-		muted
-		loop
-		playsinline
-		poster="/images/du_field-poster.jpg"
-		preload="auto"
-	>
+	<video class="hero-video" autoplay muted loop playsinline poster={heroPoster} preload="auto">
 		<source src={heroVideoSrc} type="video/mp4" />
 	</video>
 
@@ -110,8 +103,6 @@
 		left: 50%;
 		width: 100%;
 		height: 100%;
-		min-width: 100%;
-		min-height: 100%;
 		transform: translate(-50%, -50%);
 		object-fit: cover;
 		object-position: center;
@@ -164,7 +155,6 @@
 		font-weight: 600;
 	}
 
-	/* Responsive adjustments */
 	@media (max-width: 768px) {
 		.hero {
 			height: 50vh;

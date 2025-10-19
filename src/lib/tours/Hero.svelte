@@ -9,17 +9,27 @@
 	export let subtitle;
 
 	let section;
-	let heroVideoSrc;
+	let heroVideoSrc = '';
+	let heroPoster = '';
+
+	function updateHeroSources() {
+		if (window.innerWidth <= 768) {
+			heroVideoSrc = '/videos/mobile_tours-hero.mp4';
+			heroPoster = '/videos/covers/mobile_tours-hero-cover.jpg';
+		} else {
+			heroVideoSrc = '/videos/desktop_tours-hero.mp4';
+			heroPoster = '/videos/covers/desktop_tours-hero-cover.jpg';
+		}
+	}
 
 	onMount(async () => {
-		// Responsive video source
-		heroVideoSrc =
-			window.innerWidth <= 768 ? '/videos/mobile_tours-hero.mp4' : '/videos/desktop_tours-hero.mp4';
+		updateHeroSources();
+		window.addEventListener('resize', updateHeroSources);
 
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
 		gsap.registerPlugin(ScrollTrigger);
 
-		// Animate title letters
+		// Animate title spans
 		gsap.from(section.querySelectorAll('h1 span'), {
 			duration: 1,
 			y: -40,
@@ -37,9 +47,10 @@
 			ease: 'power2.out'
 		});
 
-		// Parallax + subtle movement on hero video
+		// Hero video parallax & fade
 		const video = section.querySelector('video');
 		if (video) {
+			gsap.from(video, { opacity: 0, duration: 1.5, ease: 'power2.out' });
 			gsap.to(video, {
 				yPercent: 5,
 				scale: 1.05,
@@ -51,9 +62,6 @@
 					scrub: true
 				}
 			});
-
-			// Fade in video
-			gsap.from(video, { opacity: 0, duration: 1.5, ease: 'power2.out' });
 		}
 	});
 </script>
@@ -64,14 +72,15 @@
 >
 	<video
 		class="absolute hero-video"
-		src={heroVideoSrc}
-		poster="/images/tours-hero-poster.jpg"
 		autoplay
 		muted
 		loop
 		playsinline
 		preload="auto"
-	></video>
+		poster={heroPoster}
+	>
+		<source src={heroVideoSrc} type="video/mp4" />
+	</video>
 
 	<div class="absolute inset-0 bg-gradient-to-b from-black/60 to-black/80"></div>
 
