@@ -15,10 +15,12 @@
 	let posterSrc;
 	let showLogo = false;
 
-	// Split title into prefix + highlight
+	// Split title into prefix + highlight (fixed)
 	$: titleParts = (() => {
-		const parts = title.split('Junxion');
-		return { prefix: parts[0], highlight: parts[1] ? 'Junxion' : '' };
+		const match = title.match(/(.*?)(Junxion)(.*)/);
+		return match
+			? { prefix: match[1], highlight: match[2], suffix: match[3] }
+			: { prefix: title, highlight: '', suffix: '' };
 	})();
 
 	// Detect mobile via user agent
@@ -37,13 +39,13 @@
 		updateDevice();
 		window.addEventListener('resize', updateDevice);
 
-		// GSAP title animation
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
 		gsap.registerPlugin(ScrollTrigger);
 
 		gsap.from('.hero-title span', {
 			y: 40,
-			stagger: 0.08,
+			opacity: 0,
+			stagger: 0.05,
 			duration: 1.2,
 			ease: 'power4.out'
 		});
@@ -75,7 +77,7 @@
 	<!-- Overlay -->
 	<div class="absolute inset-0 bg-gradient-to-b from-black/70 to-black/90"></div>
 
-	<!-- Hero Content (logo now flows with content) -->
+	<!-- Hero Content -->
 	<div
 		class="hero-content relative z-10 flex flex-col items-center justify-center max-w-6xl mx-auto px-4 sm:px-6 md:px-8 space-y-6"
 	>
@@ -92,6 +94,9 @@
 			{#if titleParts.highlight}
 				<span class="text-[#D9042B]">{titleParts.highlight}</span>
 			{/if}
+			{#each titleParts.suffix.split('') as letter}
+				<span class="text-white">{letter}</span>
+			{/each}
 		</h1>
 
 		{#if subtitle}
