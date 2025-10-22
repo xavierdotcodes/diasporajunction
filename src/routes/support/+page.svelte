@@ -1,8 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';
-
-	const gofundmeUrl = 'https://www.gofundme.com/f/your-campaign';
+	const gofundmeUrl = 'https://gofund.me/7509c62e9';
 	const kickstarterUrl = 'https://www.kickstarter.com/projects/your-campaign';
 
 	onMount(() => {
