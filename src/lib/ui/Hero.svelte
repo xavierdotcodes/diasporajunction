@@ -1,6 +1,5 @@
 <script>
 	import { onMount } from 'svelte';
-	import gsap from 'gsap';
 	import { browser } from '$app/environment';
 
 	export let title = 'DiasporaJunxion';
@@ -11,48 +10,38 @@
 	export let mobileVideoSrc;
 	export let mobilePosterSrc;
 
-	let videoSrc;
-	let posterSrc;
+	let videoSrc = '';
+	let posterSrc = '';
 	let showLogo = false;
 
-	// Split title into prefix + highlight (fixed)
+	// Split title into prefix + highlight
 	$: titleParts = (() => {
-		const match = title.match(/(.*?)(Junxion)(.*)/);
-		return match
-			? { prefix: match[1], highlight: match[2], suffix: match[3] }
-			: { prefix: title, highlight: '', suffix: '' };
+		const idx = title.indexOf('Junxion');
+		if (idx !== -1) {
+			return {
+				prefix: title.slice(0, idx),
+				highlight: 'Junxion',
+				suffix: title.slice(idx + 'Junxion'.length)
+			};
+		}
+		return { prefix: title, highlight: '', suffix: '' };
 	})();
 
-	// Detect mobile via user agent
 	function updateDevice() {
 		if (!browser) return;
-		const ua = navigator.userAgent;
-		const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+		const ua = navigator.userAgent || '';
+		const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobi/i.test(
+			ua
+		);
 		showLogo = isMobileUA;
 		videoSrc = isMobileUA ? mobileVideoSrc : desktopVideoSrc;
 		posterSrc = isMobileUA ? mobilePosterSrc : desktopPosterSrc;
 	}
 
-	onMount(async () => {
+	onMount(() => {
 		if (!browser) return;
-
 		updateDevice();
 		window.addEventListener('resize', updateDevice);
-
-		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
-		gsap.registerPlugin(ScrollTrigger);
-
-		gsap.from('.hero-title span', {
-			y: 40,
-			opacity: 0,
-			stagger: 0.05,
-			duration: 1.2,
-			ease: 'power4.out'
-		});
-
-		const video = document.querySelector('.hero-video');
-		if (video) gsap.from(video, { opacity: 0, duration: 1.5, ease: 'power2.out' });
-
 		return () => window.removeEventListener('resize', updateDevice);
 	});
 </script>
@@ -61,7 +50,7 @@
 	class="hero-section relative flex flex-col items-center justify-center text-center font-sans bg-black text-white overflow-hidden"
 >
 	<!-- Background Video -->
-	<div class="absolute inset-0 w-full h-full overflow-hidden">
+	<div class="absolute inset-0 w-full h-full pointer-events-none">
 		<video
 			class="hero-video w-full h-full object-cover object-center"
 			autoplay
@@ -70,41 +59,39 @@
 			playsinline
 			poster={posterSrc}
 		>
-			<source src={videoSrc} type="video/mp4" />
+			{#if videoSrc}
+				<source src={videoSrc} type="video/mp4" />
+			{/if}
 		</video>
 	</div>
 
 	<!-- Overlay -->
-	<div class="absolute inset-0 bg-gradient-to-b from-black/70 to-black/90"></div>
+	<div
+		class="absolute inset-0 bg-gradient-to-b from-black/70 to-black/90 pointer-events-none"
+	></div>
 
-	<!-- Hero Content -->
+	<!-- Content -->
 	<div
 		class="hero-content relative z-10 flex flex-col items-center justify-center max-w-6xl mx-auto px-4 sm:px-6 md:px-8 space-y-6"
 	>
 		{#if showLogo}
-			<div class="logo mb-4">
+			<div class="logo">
 				<slot name="logo" />
 			</div>
 		{/if}
 
-		<h1 class="hero-title font-extrabold tracking-tight text-white">
-			{#each titleParts.prefix.split('') as letter}
-				<span class="text-white">{letter}</span>
-			{/each}
-			{#if titleParts.highlight}
-				<span class="text-[#D9042B]">{titleParts.highlight}</span>
-			{/if}
-			{#each titleParts.suffix.split('') as letter}
-				<span class="text-white">{letter}</span>
-			{/each}
+		<h1 class="hero-title font-extrabold tracking-tight leading-tight text-white">
+			<span class="text-white">{titleParts.prefix}</span><span class="text-[#D9042B]"
+				>{titleParts.highlight}</span
+			><span class="text-white">{titleParts.suffix}</span>
 		</h1>
 
 		{#if subtitle}
-			<h2 class="hero-subtitle font-light text-white">{subtitle}</h2>
+			<h2 class="hero-subtitle font-light text-white max-w-3xl">{subtitle}</h2>
 		{/if}
 
 		{#if description}
-			<p class="hero-description text-white max-w-3xl mx-auto">
+			<p class="hero-description text-white max-w-3xl">
 				{@html description}
 			</p>
 		{/if}
