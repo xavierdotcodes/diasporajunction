@@ -1,12 +1,20 @@
 <script>
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';
+	import Hero from '$lib/ui/Hero.svelte';
+	import Logo from '$lib/ui/Logo.svelte';
 	import CTASection from '$lib/landing/CTASection.svelte';
 
-	let heroVideoSrc;
-	let heroPosterSrc;
+	let isMobile = false;
 
-	const cards = [
+	onMount(() => {
+		const checkDevice = () => (isMobile = window.innerWidth <= 768);
+		checkDevice();
+		window.addEventListener('resize', checkDevice);
+		return () => window.removeEventListener('resize', checkDevice);
+	});
+
+	const pillars = [
 		{
 			title: 'Connection',
 			description:
@@ -45,42 +53,30 @@
 	];
 
 	onMount(async () => {
-		// Set hero video and poster based on viewport
-		if (window.innerWidth <= 768) {
-			heroVideoSrc = '/videos/mobile_landing-hero.mp4';
-			heroPosterSrc = '/videos/covers/mobile_landing-hero-cover.jpg';
-		} else {
-			heroVideoSrc = '/videos/desktop_landing-hero.mp4';
-			heroPosterSrc = '/videos/covers/desktop_landing-hero-cover.jpg';
-		}
-
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
 		gsap.registerPlugin(ScrollTrigger);
 
-		// Animate hero letters
+		// Hero title letters animation
 		gsap.from('.hero-title span', {
 			y: 40,
 			opacity: 0,
-			stagger: 0.1,
+			stagger: 0.08,
 			duration: 1.2,
 			ease: 'power4.out'
 		});
 
-		// Fade in video
-		const video = document.querySelector('.hero-video');
-		if (video) gsap.from(video, { opacity: 0, duration: 1.5, ease: 'power2.out' });
-
-		// Card scroll animations
-		document.querySelectorAll('.card').forEach((card, i) => {
-			const text = card.querySelector('.card-text');
-			const img = card.querySelector('.card-image');
+		// Pillar cards animation
+		document.querySelectorAll('.pillar-card').forEach((card, i) => {
+			card.style.overflow = 'hidden';
+			const text = card.querySelector('.pillar-text');
+			const img = card.querySelector('.pillar-image');
 
 			gsap.from(text, {
 				x: i % 2 === 0 ? -200 : 200,
 				opacity: 0,
 				duration: 1.2,
 				ease: 'power3.out',
-				scrollTrigger: { trigger: card, start: 'top 85%', toggleActions: 'play none none reverse' }
+				scrollTrigger: { trigger: card, start: 'top 85%' }
 			});
 
 			gsap.from(img, {
@@ -89,29 +85,30 @@
 				duration: 1.2,
 				delay: 0.2,
 				ease: 'power3.out',
-				scrollTrigger: { trigger: card, start: 'top 85%', toggleActions: 'play none none reverse' }
+				scrollTrigger: { trigger: card, start: 'top 85%' }
 			});
 		});
 
-		// Approach animations
+		// Approach cards animation
 		gsap.utils.toArray('.approach-card').forEach((card, i) => {
+			card.style.overflow = 'hidden';
 			gsap.from(card, {
-				opacity: 0,
 				y: 60,
+				opacity: 0,
 				duration: 1,
 				delay: i * 0.15,
 				ease: 'power2.out',
-				scrollTrigger: { trigger: card, start: 'top 85%', toggleActions: 'play none none reverse' }
+				scrollTrigger: { trigger: card, start: 'top 85%' }
 			});
 		});
 	});
 </script>
 
 <svelte:head>
-	<title>DiasporaJunxion | Connecting Diaspora & African Innovation</title>
+	<title>DiasporaJunxion | The Bridge Between Diaspora & African Innovation</title>
 	<meta
 		name="description"
-		content="Learn how DiasporaJunxion empowers Ghanaian artists, makers, and entrepreneurs to reach global markets through mentorship, structure, and exposure."
+		content="DiasporaJunxion connects diaspora travelers and African creators through culture, innovation, and impact."
 	/>
 	<link
 		href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
@@ -119,71 +116,44 @@
 	/>
 </svelte:head>
 
-<div class="landing-page font-sans bg-black text-white">
-	<!-- HERO SECTION -->
-	<section
-		class="relative flex flex-col items-center justify-center min-h-[100dvh] w-full px-6 text-center overflow-hidden"
+<div class="landing font-sans bg-black text-white overflow-x-hidden">
+	<!-- HERO -->
+	<Hero
+		title="DiasporaJunxion"
+		subtitle="The meeting point of Diaspora Power and African Innovation"
+		description={`<span class="font-bold text-white">Diaspora</span> is more than a word — it’s a people.<br/>
+			Africans at home and abroad, carrying the continent’s rhythm into every corner of the world.<br/>
+			From music to tech, from art to nightlife — we are Africa in motion.<br/><br/>
+			<span class="text-[#FFBC03] font-semibold">DiasporaJunxion</span> is the bridge — where we return,
+			connect, and build the future together.`}
+		desktopVideoSrc="/videos/desktop_landing-hero.mp4"
+		desktopPosterSrc="/videos/covers/desktop_landing-hero-cover.jpg"
+		mobileVideoSrc="/videos/mobile_landing-hero.mp4"
+		mobilePosterSrc="/videos/covers/mobile_landing-hero-cover.jpg"
 	>
-		<div class="absolute inset-0 w-full h-full overflow-hidden">
-			<video
-				class="hero-video w-full h-full object-cover object-center"
-				autoplay
-				muted
-				loop
-				playsinline
-				poster={heroPosterSrc}
-			>
-				<source src={heroVideoSrc} type="video/mp4" />
-			</video>
-		</div>
-		<div class="absolute inset-0 bg-gradient-to-b from-black/70 to-black/90"></div>
+		<Logo slot="logo" src="/images/logos/diasporajunxion-icon.png" width="200" />
 
-		<div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 md:px-8">
-			<h1
-				class="hero-title text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6"
-			>
-				{#each 'Diaspora'.split('') as letter}<span>{letter}</span>{/each}
-				<span class="text-[#D9042B]"
-					>{#each 'Junxion'.split('') as letter}<span>{letter}</span>{/each}</span
-				>
-			</h1>
+		<a
+			slot="cta"
+			href="#about"
+			class="inline-block bg-[#038C25] text-white px-8 py-4 rounded-full font-semibold hover:bg-[#026b1d] transition"
+		>
+			Learn More
+		</a>
+	</Hero>
 
-			<h2 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-light mb-8 text-gray-200">
-				The meeting point of <span class="font-semibold">Diaspora Power</span> and
-				<span class="font-semibold">African Innovation</span>
-			</h2>
-
-			<p
-				class="text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed mb-10 text-gray-300 max-w-3xl mx-auto"
-			>
-				<span class="font-bold text-white">Diaspora</span> is more than a word — it’s a people.<br
-				/>
-				Africans at home and abroad, carrying the continent’s rhythm into every corner of the world.<br
-				/>
-				From music to tech, from art to nightlife — we are Africa in motion.<br /><br />
-				<span class="text-[#FFBC03] font-semibold">DiasporaJunxion</span> is the bridge — where we return,
-				connect, and build the future together.
-			</p>
-
-			<a
-				href="#approach"
-				class="inline-block bg-[#038C25] text-white px-8 py-4 rounded-full font-semibold hover:bg-[#026b1d] transition"
-			>
-				Our Approach
-			</a>
-		</div>
-	</section>
-
-	<!-- ABOUT SECTION -->
-	<section id="about" class="bg-white text-black py-20 px-8 text-center">
-		<h2 class="text-4xl font-extrabold mb-4">
+	<!-- WHAT IS DIASPORAJUNXION -->
+	<section id="about" class="bg-white text-black py-20 px-6 md:px-16 text-center">
+		<h2 class="text-4xl md:text-5xl font-extrabold mb-6">
 			What Is <span class="text-[#D9042B]">DiasporaJunxion</span>?
 		</h2>
+
 		<p class="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed mb-10">
 			DiasporaJunxion is a creative business accelerator and incubator built for Ghanaian artists,
 			makers, and entrepreneurs — inspired by models like Y Combinator, but grounded in African
 			culture and innovation.
 		</p>
+
 		<p class="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed mb-10">
 			We help forward-thinking creators refine their craft or venture through structured mentorship,
 			access to capital, and global exposure. Our programs connect local talent with diaspora
@@ -193,9 +163,10 @@
 		<h3 class="text-2xl font-bold text-gray-900 mb-8 mt-16">
 			Beyond Business — Our Creative Ecosystem
 		</h3>
+
 		<div class="grid gap-10 md:grid-cols-3 max-w-5xl mx-auto">
-			<div class="p-6 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition">
-				<div class="text-4xl mb-4">🎨</div>
+			<div class="p-6 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition text-center">
+				<div class="text-4xl mb-4 flex justify-center">🎨</div>
 				<h4 class="font-bold text-xl mb-2 text-[#038C25]">NDGO</h4>
 				<p class="text-gray-700 leading-relaxed">
 					An art and education program where students learn <span class="font-semibold"
@@ -206,8 +177,8 @@
 				</p>
 			</div>
 
-			<div class="p-6 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition">
-				<div class="text-4xl mb-4">⚽️</div>
+			<div class="p-6 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition text-center">
+				<div class="text-4xl mb-4 flex justify-center">⚽️</div>
 				<h4 class="font-bold text-xl mb-2 text-[#FFBC03]">DiasporaUnited</h4>
 				<p class="text-gray-700 leading-relaxed">
 					A football club uniting culture and competition — working to become the first <span
@@ -216,8 +187,8 @@
 				</p>
 			</div>
 
-			<div class="p-6 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition">
-				<div class="text-4xl mb-4">🌍</div>
+			<div class="p-6 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition text-center">
+				<div class="text-4xl mb-4 flex justify-center">🌍</div>
 				<h4 class="font-bold text-xl mb-2 text-[#D9042B]">Ghana Experience Tours</h4>
 				<p class="text-gray-700 leading-relaxed">
 					Curated journeys that blend heritage exploration with Ghana’s vibrant nightlife — helping
@@ -232,26 +203,30 @@
 		</p>
 	</section>
 
-	<!-- PILLARS SECTION -->
-	<section id="values" class="py-20 bg-[#111] px-6">
-		<h3 class="text-3xl font-bold text-center mb-16 text-white">The Pillars of the Junxion</h3>
-		<div class="flex flex-col items-center w-full gap-20 max-w-6xl mx-auto">
-			{#each cards as card, i}
+	<!-- PILLARS -->
+	<section id="pillars" class="py-20 bg-[#111] text-white text-center">
+		<h2 class="text-4xl md:text-5xl font-extrabold mb-12">
+			Our <span class="text-[#FFBC03]">Pillars</span>
+		</h2>
+
+		<div class="space-y-20 max-w-6xl mx-auto px-6 md:px-8 overflow-hidden">
+			{#each pillars as { title, description, image, icon }, i}
 				<div
-					class="card flex flex-col md:flex-row items-center gap-8 md:gap-16 max-w-5xl mx-auto {i %
-						2 !==
-					0
-						? 'md:flex-row-reverse'
-						: ''}"
+					class="pillar-card flex flex-col md:flex-row items-center gap-10 max-w-full mx-auto overflow-hidden"
+					class:md:flex-row-reverse={i % 2 !== 0}
 				>
-					<img
-						src={card.image}
-						alt={card.title}
-						class="card-image w-full md:w-1/2 rounded-xl shadow-lg"
-					/>
-					<div class="card-text md:w-1/2 text-center md:text-left">
-						<h4 class="text-2xl font-bold mb-3"><span>{card.icon}</span> {card.title}</h4>
-						<p class="text-lg text-gray-300">{card.description}</p>
+					<div class="pillar-text flex-1 text-center md:text-left">
+						<h3 class="text-2xl font-bold mb-4 flex items-center justify-center md:justify-start">
+							<span class="mr-2">{icon}</span>{title}
+						</h3>
+						<p class="text-gray-300 leading-relaxed">{description}</p>
+					</div>
+					<div class="pillar-image flex-1">
+						<img
+							src={image}
+							alt={title}
+							class="rounded-2xl shadow-lg w-full h-[300px] object-cover"
+						/>
 					</div>
 				</div>
 			{/each}
@@ -259,16 +234,19 @@
 	</section>
 
 	<!-- OUR APPROACH -->
-	<section id="approach" class="py-20 bg-white text-black text-center px-8">
-		<h3 class="text-3xl font-bold mb-10 text-[#D9042B]">Our Approach</h3>
+	<section id="approach" class="bg-white text-black py-20 px-6 md:px-16 text-center">
+		<h2 class="text-4xl md:text-5xl font-extrabold mb-10 text-[#D9042B]">Our Approach</h2>
 		<p class="text-lg text-gray-700 max-w-3xl mx-auto mb-12 leading-relaxed">
 			We help creators go from idea to impact through a simple three-step model —
 			<span class="text-[#038C25] font-semibold">Development</span>,
 			<span class="text-[#FFBC03] font-semibold">Exposure</span>, and
 			<span class="text-[#D9042B] font-semibold">Delivery</span>.
 		</p>
+
 		<div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-			<div class="approach-card bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition">
+			<div
+				class="approach-card bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition text-center"
+			>
 				<div class="text-4xl mb-4">⚙️</div>
 				<h4 class="text-xl font-semibold text-[#038C25] mb-2">Development</h4>
 				<p class="text-gray-700 text-sm leading-relaxed">
@@ -276,14 +254,18 @@
 					structure.
 				</p>
 			</div>
-			<div class="approach-card bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition">
+			<div
+				class="approach-card bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition text-center"
+			>
 				<div class="text-4xl mb-4">🌍</div>
 				<h4 class="text-xl font-semibold text-[#FFBC03] mb-2">Exposure</h4>
 				<p class="text-gray-700 text-sm leading-relaxed">
 					We build the outlets and networks for creators to gain visibility on a global stage.
 				</p>
 			</div>
-			<div class="approach-card bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition">
+			<div
+				class="approach-card bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition text-center"
+			>
 				<div class="text-4xl mb-4">🚀</div>
 				<h4 class="text-xl font-semibold text-[#D9042B] mb-2">Delivery</h4>
 				<p class="text-gray-700 text-sm leading-relaxed">
@@ -292,6 +274,7 @@
 				</p>
 			</div>
 		</div>
+
 		<p class="mt-12 text-gray-700 max-w-3xl mx-auto text-lg">
 			From concept to commerce — <span class="text-[#038C25] font-semibold"
 				>we build the bridge</span
@@ -307,9 +290,8 @@
 				We built DiasporaJunxion to close the gap between <span class="text-[#038C25] font-semibold"
 					>inspiration</span
 				>
-				and
-				<span class="text-[#D9042B] font-semibold">access</span>. To create a hub where the diaspora
-				and Ghana’s creators meet — to collaborate, build, and grow together.
+				and <span class="text-[#D9042B] font-semibold">access</span>. To create a hub where the
+				diaspora and Ghana’s creators meet — to collaborate, build, and grow together.
 			</p>
 			<p>
 				Our goal is to make Ghana feel like <em>home</em> for anyone chasing creative expression or purpose.
@@ -325,25 +307,39 @@
 </div>
 
 <style>
-	video.hero-video {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		object-position: center;
-	}
-	:global(body) {
-		margin: 0;
-		font-family: 'Inter', sans-serif;
-		background-color: #000;
-		color: #fff;
-	}
+	body,
 	html {
-		scroll-behavior: smooth;
+		margin: 0;
+		padding: 0;
+		width: 100%;
+		max-width: 100vw;
+		overflow-x: hidden;
+		font-family: 'Inter', sans-serif;
 	}
-	@media (max-width: 640px) {
-		.hero-title {
+
+	/* Responsive tweaks */
+	@media (max-width: 768px) {
+		h2 {
+			font-size: 1.8rem;
+		}
+		.pillar-card {
+			flex-direction: column !important;
+		}
+		.pillar-image img {
+			height: 220px !important;
+		}
+	}
+	@media (orientation: landscape) and (max-width: 900px) {
+		.landing {
+			padding-bottom: 4rem;
+		}
+		.pillar-card {
+			gap: 2rem;
+		}
+	}
+	@media (min-width: 1024px) {
+		h2 {
 			font-size: 2.5rem;
-			line-height: 1.2;
 		}
 	}
 </style>
