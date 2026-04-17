@@ -1,11 +1,11 @@
+// src/lib/server/prisma.js
+import { building } from '$app/environment';
 import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { withAccelerate } from '@prisma/extension-accelerate';
-import 'dotenv/config';
 import { scopedLogger } from '$lib/utils/logger';
 
 const log = scopedLogger('prisma');
-
 const globalForPrisma = globalThis;
 
 function createPrisma() {
@@ -42,10 +42,37 @@ function createPrisma() {
     });
 }
 
-const prisma = globalForPrisma.prisma ?? createPrisma();
+function getClient() {
+    if (building) {
+        return null;
+    }
 
-if (process.env.NODE_ENV !== 'production') {
-    globalForPrisma.prisma = prisma;
+    if (!globalForPrisma.__prisma) {
+        globalForPrisma.__prisma = createPrisma();
+    }
+
+    return globalForPrisma.__prisma;
 }
+
+const prisma = new Proxy(
+    {},
+    {
+        get(_target, prop) {
+            const client = getClient();
+
+            if (!client) {
+                // During SvelteKit build analysis, return a harmless noop function
+                // so mere imports don't explode.
+                return () => {
+                    throw new Error(`Prisma cannot be used during build analysis. Tried to access prisma.${String(prop)}`);
+                };
+            }
+
+            const value = client[prop];
+
+            return typeof value === 'function' ? value.bind(client) : value;
+        }
+    }
+);
 
 export default prisma;
