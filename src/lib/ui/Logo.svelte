@@ -1,7 +1,17 @@
 <script>
-	export let src = '/images/logos/logo-optimized.png';
-	export let width = '100'; // default width
-	export let alt = 'Diaspora Junxion Logo';
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/ui/Logo.svelte');
+
+	/**
+	 * @typedef {Object} Props
+	 * @property {string} [src]
+	 * @property {string} [width] - default width
+	 * @property {string} [alt]
+	 */
+
+	/** @type {Props} */
+	let { src = '/images/logos/logo-optimized.png', width = '100', alt = 'Diaspora Junxion Logo' } = $props();
 </script>
 
 <div class="logo">

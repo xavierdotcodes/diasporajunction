@@ -1,6 +1,9 @@
 <script>
 	import Slideshow from './Slideshow.svelte';
-	export let steps = [];
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/tours/Itinerary.svelte');
+	let { steps = [] } = $props();
 </script>
 
 <div class="space-y-12">

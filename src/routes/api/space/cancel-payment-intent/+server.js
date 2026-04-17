@@ -1,6 +1,9 @@
 import { json } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { getStripe } from '$lib/server/stripe';
+import { fileLogger } from '$lib/utils/logger';
+
+fileLogger('src/routes/api/space/cancel-payment-intent/+server.js');
 
 export async function POST({ request }) {
 	const { paymentIntentId } = await request.json();

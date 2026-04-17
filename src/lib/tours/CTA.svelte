@@ -1,5 +1,8 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/tours/CTA.svelte');
 	const dispatch = createEventDispatcher();
 
 	function handleDiscoveryCall() {
@@ -28,7 +31,7 @@
 		<div class="flex flex-col sm:flex-row gap-3 items-center">
 			<!-- Discovery Call (opens Calendly modal) -->
 			<button
-				on:click={handleDiscoveryCall}
+				onclick={handleDiscoveryCall}
 				class="bg-white text-[#F29F05] hover:bg-[#FFF8E1] transition px-6 py-3 rounded-full font-semibold text-center w-full sm:w-auto"
 			>
 				💬 Book a Discovery Call
@@ -36,7 +39,7 @@
 
 			<!-- Reserve Button -->
 			<button
-				on:click={handleReservation}
+				onclick={handleReservation}
 				class="bg-[#D9042B] hover:bg-[#F27405] px-6 py-3 rounded-full font-semibold text-white transition w-full sm:w-auto"
 			>
 				Reserve Your Spot

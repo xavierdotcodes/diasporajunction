@@ -1,0 +1,4 @@
+import { fileLogger } from '$lib/utils/logger';
+
+fileLogger('src/routes/api/ndgo/enroll/+server.js');
+

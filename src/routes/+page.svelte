@@ -1,114 +1,58 @@
 <script>
-	import { onMount } from 'svelte';
-	import gsap from 'gsap';
 	import Hero from '$lib/ui/Hero.svelte';
 	import Logo from '$lib/ui/Logo.svelte';
 	import CTASection from '$lib/landing/CTASection.svelte';
+	import PillarCard from '$lib/ui/PillarCard.svelte';
+	import Title from '$lib/ui/Title.svelte';
+	import { fileLogger } from '$lib/utils/logger';
 
-	let isMobile = false;
-
-	onMount(() => {
-		const checkDevice = () => (isMobile = window.innerWidth <= 768);
-		checkDevice();
-		window.addEventListener('resize', checkDevice);
-		return () => window.removeEventListener('resize', checkDevice);
-	});
+	fileLogger('src/routes/+page.svelte');
 
 	const pillars = [
 		{
-			title: 'Connection',
+			title: 'Relocation',
 			description:
-				'We’re building real bridges — not just flights — between diaspora travelers and the Ghanaian creative scene.',
-			icon: '🔗',
+				'We help diaspora travelers, returners, and families think more clearly about moving to Ghana with grounded context instead of guesswork.',
+			icon: '🏡',
 			image: '/images/landing/connection.webp'
 		},
 		{
-			title: 'Innovation',
+			title: 'Guidance',
 			description:
-				'Africa’s new ideas meet global skillsets. We incubate creative projects that move culture and commerce forward.',
-			icon: '💡',
+				'From cost of living to family rhythms to the difference between visiting and living, we create practical guidance for real-life decisions.',
+			icon: '🧭',
 			image: '/images/landing/innovation.webp'
 		},
 		{
 			title: 'Culture',
 			description:
-				'We amplify the heartbeat of Ghana — nightlife, art, food, and rhythm — and connect it with the world.',
+				'To know Ghana, you need more than logistics. You need rhythm, places, people, food, nightlife, and the living texture of the culture.',
 			icon: '🎶',
 			image: '/images/landing/culture.webp'
 		},
 		{
-			title: 'Collaboration',
+			title: 'Community',
 			description:
-				'From designers to DJs, coders to curators — DiasporaJunxion is a meeting ground for ideas and partnerships.',
+				'DiasporaJunxion is about more than information. It is about belonging, trusted pathways, and feeling less alone in the move.',
 			icon: '🫱🏾‍🫲🏽',
 			image: '/images/landing/collaboration.webp'
 		},
 		{
-			title: 'Impact',
+			title: 'Opportunity',
 			description:
-				'Every project supports local makers, artisans, and entrepreneurs. When we grow, communities grow.',
+				'Beyond relocation, we hold space for long-term participation through investment intrigue, local connection, and the bridge into African possibility.',
 			icon: '🌍',
 			image: '/images/landing/impact1.webp'
 		}
 	];
 
-	onMount(async () => {
-		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
-		gsap.registerPlugin(ScrollTrigger);
-
-		// Hero title letters animation
-		gsap.from('.hero-title span', {
-			y: 40,
-			opacity: 0,
-			stagger: 0.08,
-			duration: 1.2,
-			ease: 'power4.out'
-		});
-
-		// Pillar cards animation
-		document.querySelectorAll('.pillar-card').forEach((card, i) => {
-			card.style.overflow = 'hidden';
-			const text = card.querySelector('.pillar-text');
-			const img = card.querySelector('.pillar-image');
-
-			gsap.from(text, {
-				x: i % 2 === 0 ? -200 : 200,
-				opacity: 0,
-				duration: 1.2,
-				ease: 'power3.out',
-				scrollTrigger: { trigger: card, start: 'top 85%' }
-			});
-
-			gsap.from(img, {
-				x: i % 2 === 0 ? 200 : -200,
-				opacity: 0,
-				duration: 1.2,
-				delay: 0.2,
-				ease: 'power3.out',
-				scrollTrigger: { trigger: card, start: 'top 85%' }
-			});
-		});
-
-		// Approach cards animation
-		gsap.utils.toArray('.approach-card').forEach((card, i) => {
-			card.style.overflow = 'hidden';
-			gsap.from(card, {
-				y: 60,
-				opacity: 0,
-				duration: 1,
-				delay: i * 0.15,
-				ease: 'power2.out',
-				scrollTrigger: { trigger: card, start: 'top 85%' }
-			});
-		});
-	});
 </script>
 
 <svelte:head>
-	<title>DiasporaJunxion | The Bridge Between Diaspora & African Innovation</title>
+	<title>DiasporaJunxion | Relocate, Connect, and Build in Ghana</title>
 	<meta
 		name="description"
-		content="DiasporaJunxion connects diaspora travelers and African creators through culture, innovation, and impact."
+		content="DiasporaJunxion helps diaspora travelers, returners, and families move toward Ghana with more clarity, connection, and opportunity."
 	/>
 	<link
 		href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
@@ -119,27 +63,33 @@
 <div class="landing font-sans bg-black text-white overflow-x-hidden">
 	<!-- HERO -->
 	<Hero
-		title="DiasporaJunxion"
-		subtitle="The meeting point of Diaspora Power and African Innovation"
-		description={`<span class="font-bold text-white">Diaspora</span> is more than a word — it’s a people.<br/>
-			Africans at home and abroad, carrying the continent’s rhythm into every corner of the world.<br/>
-			From music to tech, from art to nightlife — we are Africa in motion.<br/><br/>
-			<span class="text-[#FFBC03] font-semibold">DiasporaJunxion</span> is the bridge — where we return,
-			connect, and build the future together.`}
+		subtitle="A bridge for diaspora relocation, belonging, and opportunity in Ghana"
+		description={`<span class="font-bold text-white">Ghana</span> is more than a destination — for many in the diaspora, it is a question, a pull, and a possible next chapter.<br/>
+			Some come searching for reconnection. Some come for family, peace, culture, or a better life rhythm.<br/>
+			Some come wondering whether they can truly build here.<br/><br/>
+			<span class="text-[#FFBC03] font-semibold">DiasporaJunxion</span> exists to help you move with more clarity —
+			to relocate, connect, and step into Ghana with grounded guidance instead of fantasy.`}
 		desktopVideoSrc="/videos/desktop_landing-hero.mp4"
 		desktopPosterSrc="/videos/covers/desktop_landing-hero-cover.jpg"
 		mobileVideoSrc="/videos/mobile_landing-hero.mp4"
 		mobilePosterSrc="/videos/covers/mobile_landing-hero-cover.jpg"
 	>
-		<Logo slot="logo" src="/images/logos/diasporajunxion-icon.png" width="200" />
+		{#snippet logo()}
+			<Logo src="/images/logos/diasporajunxion-icon.png" width="200" />
+		{/snippet}
 
-		<a
-			slot="cta"
-			href="#about"
-			class="inline-block bg-[#038C25] text-white px-8 py-4 rounded-full font-semibold hover:bg-[#026b1d] transition"
-		>
-			Learn More
-		</a>
+		{#snippet title()}
+			<Title />
+		{/snippet}
+
+		{#snippet cta()}
+			<a
+				href="/start-here"
+				class="inline-block bg-[#038C25] text-white px-8 py-4 rounded-full font-semibold hover:bg-[#026b1d] transition"
+			>
+				Start Here
+			</a>
+		{/snippet}
 	</Hero>
 
 	<!-- WHAT IS DIASPORAJUNXION -->
@@ -149,57 +99,53 @@
 		</h2>
 
 		<p class="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed mb-10">
-			DiasporaJunxion is a creative business accelerator and incubator built for Ghanaian artists,
-			makers, and entrepreneurs — inspired by models like Y Combinator, but grounded in African
-			culture and innovation.
+			DiasporaJunxion is a relocation, connection, and opportunity hub for diaspora people exploring
+			life in Ghana. We help future movers, returners, and families think more clearly about what it
+			means to come, settle, belong, and build.
 		</p>
 
 		<p class="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed mb-10">
-			We help forward-thinking creators refine their craft or venture through structured mentorship,
-			access to capital, and global exposure. Our programs connect local talent with diaspora
-			expertise and technology to build ventures that move culture forward.
+			Right now, we lead with grounded guidance around relocation, community, culture, and
+			opportunity. Over time, that bridge expands into a deeper ecosystem connecting diaspora
+			participation with African creativity, entrepreneurship, and long-term development.
 		</p>
 
 		<h3 class="text-2xl font-bold text-gray-900 mb-8 mt-16">
-			Beyond Business — Our Creative Ecosystem
+			More Than a Move — The Ecosystem Around It
 		</h3>
 
 		<div class="grid gap-10 md:grid-cols-3 max-w-5xl mx-auto">
 			<div class="p-6 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition text-center">
-				<div class="text-4xl mb-4 flex justify-center">🎨</div>
-				<h4 class="font-bold text-xl mb-2 text-[#038C25]">NDGO</h4>
+				<div class="text-4xl mb-4 flex justify-center">📘</div>
+				<h4 class="font-bold text-xl mb-2 text-[#038C25]">Relocation Guides</h4>
 				<p class="text-gray-700 leading-relaxed">
-					An art and education program where students learn <span class="font-semibold"
-						>art through computers</span
-					>
-					and <span class="font-semibold">computers through art</span> — shaping the next generation
-					of digital creators.
+					Practical content for diaspora people thinking about Ghana — from visiting vs living to
+					cost of living, family life, and how to move with more clarity.
 				</p>
 			</div>
 
 			<div class="p-6 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition text-center">
-				<div class="text-4xl mb-4 flex justify-center">⚽️</div>
-				<h4 class="font-bold text-xl mb-2 text-[#FFBC03]">DiasporaUnited</h4>
+				<div class="text-4xl mb-4 flex justify-center">🤝</div>
+				<h4 class="font-bold text-xl mb-2 text-[#FFBC03]">Community & Connection</h4>
 				<p class="text-gray-700 leading-relaxed">
-					A football club uniting culture and competition — working to become the first <span
-						class="font-semibold">diaspora-owned</span
-					> team in the Ghanaian Premier League.
+					A softer landing into Ghana through belonging, trusted pathways, social rhythm, and
+					connection to the people and places that make life here real.
 				</p>
 			</div>
 
 			<div class="p-6 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition text-center">
 				<div class="text-4xl mb-4 flex justify-center">🌍</div>
-				<h4 class="font-bold text-xl mb-2 text-[#D9042B]">Ghana Experience Tours</h4>
+				<h4 class="font-bold text-xl mb-2 text-[#D9042B]">Opportunity & Long-Term Vision</h4>
 				<p class="text-gray-700 leading-relaxed">
-					Curated journeys that blend heritage exploration with Ghana’s vibrant nightlife — helping
-					you move with comfort, connection, and familiarity, as if you were a local.
+					For those thinking beyond the move, DiasporaJunxion also explores the bridge into
+					investment intrigue, local partnerships, and African entrepreneurship over time.
 				</p>
 			</div>
 		</div>
 
 		<p class="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed mt-16">
-			Together, these movements form one ecosystem — a place where creativity, culture, and
-			community converge to build the future.
+			Together, these layers create a more grounded path into Ghana — one built on context,
+			connection, and the possibility of deeper participation.
 		</p>
 	</section>
 
@@ -210,25 +156,8 @@
 		</h2>
 
 		<div class="space-y-20 max-w-6xl mx-auto px-6 md:px-8 overflow-hidden">
-			{#each pillars as { title, description, image, icon }, i}
-				<div
-					class="pillar-card flex flex-col md:flex-row items-center gap-10 max-w-full mx-auto overflow-hidden"
-					class:md:flex-row-reverse={i % 2 !== 0}
-				>
-					<div class="pillar-text flex-1 text-center md:text-left">
-						<h3 class="text-2xl font-bold mb-4 flex items-center justify-center md:justify-start">
-							<span class="mr-2">{icon}</span>{title}
-						</h3>
-						<p class="text-gray-300 leading-relaxed">{description}</p>
-					</div>
-					<div class="pillar-image flex-1">
-						<img
-							src={image}
-							alt={title}
-							class="rounded-2xl shadow-lg w-full h-[300px] object-cover"
-						/>
-					</div>
-				</div>
+			{#each pillars as pillar, i}
+				<PillarCard {...pillar} reverse={i % 2 !== 0} />
 			{/each}
 		</div>
 	</section>
@@ -237,48 +166,48 @@
 	<section id="approach" class="bg-white text-black py-20 px-6 md:px-16 text-center">
 		<h2 class="text-4xl md:text-5xl font-extrabold mb-10 text-[#D9042B]">Our Approach</h2>
 		<p class="text-lg text-gray-700 max-w-3xl mx-auto mb-12 leading-relaxed">
-			We help creators go from idea to impact through a simple three-step model —
-			<span class="text-[#038C25] font-semibold">Development</span>,
-			<span class="text-[#FFBC03] font-semibold">Exposure</span>, and
-			<span class="text-[#D9042B] font-semibold">Delivery</span>.
+			We help people move toward Ghana through a simple three-step path —
+			<span class="text-[#038C25] font-semibold">Orient</span>,
+			<span class="text-[#FFBC03] font-semibold">Connect</span>, and
+			<span class="text-[#D9042B] font-semibold">Build</span>.
 		</p>
 
 		<div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
 			<div
 				class="approach-card bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition text-center"
 			>
-				<div class="text-4xl mb-4">⚙️</div>
-				<h4 class="text-xl font-semibold text-[#038C25] mb-2">Development</h4>
+				<div class="text-4xl mb-4">🧭</div>
+				<h4 class="text-xl font-semibold text-[#038C25] mb-2">Orient</h4>
 				<p class="text-gray-700 text-sm leading-relaxed">
-					We help refine projects and products to meet global standards through mentorship and
-					structure.
+					We help you understand the terrain — the emotional, practical, and cultural realities of
+					moving toward life in Ghana.
+				</p>
+			</div>
+			<div
+				class="approach-card bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition text-center"
+			>
+				<div class="text-4xl mb-4">🤝</div>
+				<h4 class="text-xl font-semibold text-[#FFBC03] mb-2">Connect</h4>
+				<p class="text-gray-700 text-sm leading-relaxed">
+					We create pathways into community, trusted context, and the social rhythm that helps the
+					move feel more human and less isolating.
 				</p>
 			</div>
 			<div
 				class="approach-card bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition text-center"
 			>
 				<div class="text-4xl mb-4">🌍</div>
-				<h4 class="text-xl font-semibold text-[#FFBC03] mb-2">Exposure</h4>
+				<h4 class="text-xl font-semibold text-[#D9042B] mb-2">Build</h4>
 				<p class="text-gray-700 text-sm leading-relaxed">
-					We build the outlets and networks for creators to gain visibility on a global stage.
-				</p>
-			</div>
-			<div
-				class="approach-card bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition text-center"
-			>
-				<div class="text-4xl mb-4">🚀</div>
-				<h4 class="text-xl font-semibold text-[#D9042B] mb-2">Delivery</h4>
-				<p class="text-gray-700 text-sm leading-relaxed">
-					We establish pipelines that connect Ghanaian-made creations directly to international
-					markets.
+					For those thinking long-term, we hold space for opportunity, participation, and the bridge
+					between diaspora presence and African possibility.
 				</p>
 			</div>
 		</div>
 
 		<p class="mt-12 text-gray-700 max-w-3xl mx-auto text-lg">
-			From concept to commerce — <span class="text-[#038C25] font-semibold"
-				>we build the bridge</span
-			>.
+			From first questions to deeper roots —
+			<span class="text-[#038C25] font-semibold">we help build the bridge</span>.
 		</p>
 	</section>
 
@@ -287,18 +216,19 @@
 		<h3 class="text-3xl font-bold text-black mb-8">Why We Exist</h3>
 		<div class="max-w-3xl mx-auto text-gray-700 space-y-4 text-lg">
 			<p>
-				We built DiasporaJunxion to close the gap between <span class="text-[#038C25] font-semibold"
-					>inspiration</span
-				>
-				and <span class="text-[#D9042B] font-semibold">access</span>. To create a hub where the
-				diaspora and Ghana’s creators meet — to collaborate, build, and grow together.
+				We built DiasporaJunxion because more people in the diaspora are feeling the pull toward
+				Ghana — not just as a place to visit, but as a place to reconnect, relocate, and possibly
+				build a different kind of life.
 			</p>
 			<p>
-				Our goal is to make Ghana feel like <em>home</em> for anyone chasing creative expression or purpose.
-				Whether you’re an artist, a traveler, or an entrepreneur, you’ll find space here to connect,
-				contribute, and belong.
+				That pull is real. But inspiration without context can turn into confusion. We exist to help
+				people move with more clarity, connection, and trust — so Ghana can feel less like an
+				abstract dream and more like a lived, grounded possibility.
 			</p>
-			<p>This is more than an accelerator — it’s a new cultural OS for Africa and her diaspora.</p>
+			<p>
+				This is more than a relocation brand. It is a bridge between diaspora belonging and the
+				larger future of participation, culture, and African opportunity.
+			</p>
 		</div>
 	</section>
 
@@ -307,34 +237,14 @@
 </div>
 
 <style>
-	body,
-	html {
-		margin: 0;
-		padding: 0;
-		width: 100%;
-		max-width: 100vw;
-		overflow-x: hidden;
-		font-family: 'Inter', sans-serif;
-	}
-
-	/* Responsive tweaks */
 	@media (max-width: 768px) {
 		h2 {
 			font-size: 1.8rem;
-		}
-		.pillar-card {
-			flex-direction: column !important;
-		}
-		.pillar-image img {
-			height: 220px !important;
 		}
 	}
 	@media (orientation: landscape) and (max-width: 900px) {
 		.landing {
 			padding-bottom: 4rem;
-		}
-		.pillar-card {
-			gap: 2rem;
 		}
 	}
 	@media (min-width: 1024px) {

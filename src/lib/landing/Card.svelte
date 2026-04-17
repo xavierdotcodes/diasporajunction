@@ -1,6 +1,16 @@
 <script>
-	export let card;
-	export let index = 0;
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/landing/Card.svelte');
+
+	/**
+	 * @typedef {Object} Props
+	 * @property {any} card
+	 * @property {number} [index]
+	 */
+
+	/** @type {Props} */
+	let { card, index = 0 } = $props();
 </script>
 
 <div

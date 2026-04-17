@@ -1,10 +1,13 @@
 <script>
 	import UserItem from './UserItem.svelte';
 	import { createEventDispatcher } from 'svelte';
-	export let users = [];
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/admin/Subscribers.svelte');
+	let { users = [] } = $props();
 	const dispatch = createEventDispatcher();
 
-	$: subscribers = users.filter((u) => u.subscribed);
+	let subscribers = $derived(users.filter((u) => u.subscribed));
 
 	function handleRemove(id) {
 		dispatch('remove', id);

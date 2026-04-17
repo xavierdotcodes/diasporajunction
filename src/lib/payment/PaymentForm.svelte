@@ -1,9 +1,11 @@
 <script>
 	import { onMount } from 'svelte';
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/payment/PaymentForm.svelte');
 	import { getStripe } from '$lib/client/stripe.js'; // your existing module
 
-	export let clientSecret;
-	export let cardElement; // parent can bind this
+	let { clientSecret, cardElement = $bindable() } = $props();
 
 	let stripe;
 	let elements;

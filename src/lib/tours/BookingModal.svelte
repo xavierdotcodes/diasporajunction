@@ -4,20 +4,23 @@
 	import SelectDate from './SelectDate.svelte';
 	import UserDetails from './UserDetails.svelte';
 	import PaymentOption from './PaymentOption.svelte';
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/tours/BookingModal.svelte');
 
 	const dispatch = createEventDispatcher();
 
-	export let tours = [];
+	let { tours = [] } = $props();
 
-	let step = 1;
-	let formData = {
+	let step = $state(1);
+	let formData = $state({
 		tourDate: '',
 		paymentOption: '',
 		name: '',
 		email: '',
 		phone: '',
 		notes: ''
-	};
+	});
 
 	const next = () => (step = Math.min(step + 1, 3));
 	const back = () => (step = Math.max(step - 1, 1));
@@ -28,14 +31,21 @@
 	};
 
 	// validation flags
-	$: canProceed =
-		(step === 1 && tours.length > 0 && formData.tourDate) ||
+	let canProceed =
+		$derived((step === 1 && tours.length > 0 && formData.tourDate) ||
 		(step === 2 && formData.name && formData.email) ||
-		step === 3; // always can submit
+		step === 3); // always can submit
 
 	// handle overlay click
 	function handleOverlayClick(e) {
 		if (e.target === e.currentTarget) {
+			dispatch('close');
+		}
+	}
+
+	function handleOverlayKeydown(event) {
+		if (event.key === 'Escape' || event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
 			dispatch('close');
 		}
 	}
@@ -44,20 +54,29 @@
 <!-- Modal Overlay -->
 <div
 	class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4 py-6 sm:px-6 backdrop-blur-sm"
-	on:click={handleOverlayClick}
+	role="button"
+	tabindex="0"
+	aria-label="Close booking modal"
+	onclick={handleOverlayClick}
+	onkeydown={handleOverlayKeydown}
 	in:fade={{ duration: 200 }}
 	out:fade={{ duration: 200 }}
 >
 	<!-- Modal Card -->
 	<div
 		class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl relative p-6 sm:p-8 lg:p-10 overflow-y-auto max-h-[90vh]"
+		role="dialog"
+		aria-modal="true"
+		aria-label="Tour booking modal"
+		tabindex="-1"
+		onkeydown={(event) => event.stopPropagation()}
 		in:scale={{ start: 0.96, duration: 250 }}
 		out:scale={{ end: 0.96, duration: 200 }}
 	>
 		<!-- Close Button -->
 		<button
 			class="absolute top-4 right-4 text-gray-500 hover:text-black text-2xl"
-			on:click={() => dispatch('close')}
+			onclick={() => dispatch('close')}
 		>
 			✕
 		</button>
@@ -94,7 +113,7 @@
 		<div class="flex justify-between mt-8 pt-4 border-t">
 			{#if step > 1}
 				<button
-					on:click={back}
+					onclick={back}
 					class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
 				>
 					Back
@@ -103,7 +122,7 @@
 
 			{#if step < 3}
 				<button
-					on:click={next}
+					onclick={next}
 					class="ml-auto px-6 py-2 rounded-lg font-semibold text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
 					class:bg-green-600={canProceed}
 					class:hover:bg-green-700={canProceed}
@@ -114,7 +133,7 @@
 				</button>
 			{:else}
 				<button
-					on:click={submit}
+					onclick={submit}
 					class="ml-auto px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
 				>
 					Submit ✔

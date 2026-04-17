@@ -1,41 +1,46 @@
 <script>
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';
+	import { fileLogger } from '$lib/utils/logger';
 
-	export let features = [
+	fileLogger('src/lib/space/FeatureBlock.svelte');
+	let { features = [
 		{
 			title: 'Premium Sound',
 			description:
-				'Experience crystal clear audio with deep bass and vibrant highs, crafted for true music lovers.',
+				'Feel the beat. Every note, every bass drop, crystal clear. Your music, elevated.',
 			image: 'images/space/speaker1.jpeg'
 		},
-
 		{
 			title: 'Minimalist Design',
-			description:
-				'Our SP△CE mini speakers blend seamlessly into any home or studio with timeless elegance.',
+			description: 'Looks as good as it sounds. Complements any room or setup seamlessly.',
 			image: 'images/space/speaker2.jpeg'
 		},
 		{
 			title: 'Built for Portability',
-			description:
-				'Take your music anywhere. Compact, durable, and always reliable for your adventures.',
+			description: 'Take your soundtrack anywhere. Compact, durable, adventure-ready.',
 			image: 'images/space/speaker3.jpeg'
 		},
 		{
 			title: 'Wireless Freedom',
-			description:
-				'No more tangled wires. Enjoy effortless Bluetooth connectivity with long-lasting battery life.',
+			description: 'Cut the cords. Effortless Bluetooth connection wherever you go.',
 			image: 'images/space/speaker4.jpeg'
 		}
-	]; // array of { title, description, image }
+	] } = $props();
 
-	// Make sure blocks has an object for each feature
-	let blocks = features.map(() => ({
-		blockEl: null,
-		textEl: null,
-		imageEl: null
-	}));
+	// Keep a stable ref bucket per feature so bind:this assignments survive updates.
+	let blocks = $state([]);
+
+	$effect(() => {
+		blocks = features.map(
+			(_, index) =>
+				blocks[index] ?? {
+					blockEl: null,
+					textEl: null,
+					imageEl: null
+				}
+		);
+	});
 
 	onMount(async () => {
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');

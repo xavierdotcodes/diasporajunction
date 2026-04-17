@@ -2,6 +2,9 @@
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';
 	import Fa from 'svelte-fa';
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/team/TeamMember.svelte');
 	import {
 		faInstagram,
 		faTiktok,
@@ -14,12 +17,25 @@
 		faGithub
 	} from '@fortawesome/free-brands-svg-icons';
 
-	export let name;
-	export let role;
-	export let image;
-	export let bio;
-	export let socials = {};
-	export let index = 0; // pass index so we can alternate direction
+	/**
+	 * @typedef {Object} Props
+	 * @property {any} name
+	 * @property {any} role
+	 * @property {any} image
+	 * @property {any} bio
+	 * @property {any} [socials]
+	 * @property {number} [index] - pass index so we can alternate direction
+	 */
+
+	/** @type {Props} */
+	let {
+		name,
+		role,
+		image,
+		bio,
+		socials = {},
+		index = 0
+	} = $props();
 
 	const icons = {
 		instagram: faInstagram,
@@ -33,9 +49,9 @@
 		github: faGithub
 	};
 
-	let section;
-	let img;
-	let text;
+	let section = $state();
+	let img = $state();
+	let text = $state();
 
 	onMount(async () => {
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');

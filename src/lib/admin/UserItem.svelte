@@ -1,6 +1,11 @@
 <script>
+	import { stopPropagation } from 'svelte/legacy';
+
 	import { createEventDispatcher } from 'svelte';
-	export let user;
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/admin/UserItem.svelte');
+	let { user } = $props();
 
 	const dispatch = createEventDispatcher();
 
@@ -19,7 +24,16 @@
 
 <div
 	class="user-item flex justify-between items-center p-4 rounded-lg shadow-md hover:shadow-xl transition-all bg-white cursor-pointer border border-gray-200"
-	on:click={openModal}
+	role="button"
+	tabindex="0"
+	aria-label={`Open details for ${user.name}`}
+	onclick={openModal}
+	onkeydown={(event) => {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			openModal();
+		}
+	}}
 >
 	<div class="flex-1 min-w-0">
 		<p class="font-semibold text-gray-900 truncate text-lg">{user.name}</p>
@@ -43,8 +57,9 @@
 	<div class="flex flex-row sm:flex-col gap-2 sm:gap-1 flex-shrink-0 ml-4">
 		{#if user.subscribed}
 			<button
+				type="button"
 				class="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-1 px-3 rounded-lg transition"
-				on:click|stopPropagation={handleUnsubscribe}
+				onclick={stopPropagation(handleUnsubscribe)}
 			>
 				Unsubscribe
 			</button>
@@ -52,8 +67,9 @@
 
 		{#if !user.roles?.some((r) => r.role === 'ADMIN')}
 			<button
+				type="button"
 				class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded-lg transition"
-				on:click|stopPropagation={handleRemove}
+				onclick={stopPropagation(handleRemove)}
 			>
 				Remove
 			</button>

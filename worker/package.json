@@ -1,0 +1,9 @@
+{
+  "name": "tour-payments-worker",
+  "type": "module",
+  "dependencies": {
+    "@prisma/client": "^7.7.0",
+    "stripe": "^22.0.1",
+    "dotenv": "^16.0.0"
+  }
+}

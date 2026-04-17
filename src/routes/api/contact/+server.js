@@ -2,6 +2,9 @@
 import { json } from '@sveltejs/kit';
 import { getRedis } from '$lib/server/redis';
 import { env } from '$env/dynamic/private';
+import { fileLogger } from '$lib/utils/logger';
+
+fileLogger('src/routes/api/contact/+server.js');
 
 export async function POST({ request, getClientAddress }) {
 	try {

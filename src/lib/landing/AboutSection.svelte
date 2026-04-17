@@ -1,6 +1,16 @@
 <script>
-	export let title = 'What is DiasporaJunxion?';
-	export let paragraphs = [];
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/landing/AboutSection.svelte');
+
+	/**
+	 * @typedef {Object} Props
+	 * @property {string} [title]
+	 * @property {any} [paragraphs]
+	 */
+
+	/** @type {Props} */
+	let { title = 'What is DiasporaJunxion?', paragraphs = [] } = $props();
 </script>
 
 <section class="py-12 sm:py-16 px-4 sm:px-6 text-center bg-gradient-to-b from-black to-gray-900">

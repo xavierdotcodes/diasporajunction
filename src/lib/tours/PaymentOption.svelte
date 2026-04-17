@@ -1,5 +1,9 @@
 <script>
-	export let formData;
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/tours/PaymentOption.svelte');
+
+	let { formData = $bindable() } = $props();
 </script>
 
 <h2 class="text-xl font-bold mb-4">Payment Option</h2>

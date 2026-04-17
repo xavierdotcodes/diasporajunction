@@ -1,14 +1,20 @@
 <script>
+	import { createBubbler, stopPropagation } from 'svelte/legacy';
+
+	const bubble = createBubbler();
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { subscribe } from '$lib/client/helpers';
 	import { gsap } from 'gsap';
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/landing/SubscribeModal.svelte');
 
 	const dispatch = createEventDispatcher();
 
-	let email = '';
-	let name = '';
-	let error = '';
-	let success = false;
+	let email = $state('');
+	let name = $state('');
+	let error = $state('');
+	let success = $state(false);
 
 	// Animate modal in on mount
 	onMount(() => {
@@ -65,15 +71,37 @@
 			error = err.message || 'Something went wrong.';
 		}
 	}
+
+	function handleBackdropKeydown(event) {
+		if (event.key === 'Escape' || event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			closeModal();
+		}
+	}
 </script>
 
-<div class="modal-backdrop" on:click={closeModal}>
-	<div class="modal-content" on:click|stopPropagation>
-		<button class="close-btn" on:click={closeModal}>✕</button>
+<div
+	class="modal-backdrop"
+	role="button"
+	tabindex="0"
+	aria-label="Close subscribe modal"
+	onclick={closeModal}
+	onkeydown={handleBackdropKeydown}
+>
+	<div
+		class="modal-content"
+		role="dialog"
+		aria-modal="true"
+		aria-labelledby="subscribe-modal-title"
+		tabindex="-1"
+		onclick={stopPropagation(bubble('click'))}
+		onkeydown={stopPropagation}
+	>
+		<button class="close-btn" onclick={closeModal} aria-label="Close subscribe modal">✕</button>
 
 		<img src="/images/keys.jpg" alt="Subscribe" class="modal-image" />
 
-		<h3 class="text-xl font-bold mb-2">Subscribe to our Newsletter</h3>
+		<h3 id="subscribe-modal-title" class="text-xl font-bold mb-2">Subscribe to our Newsletter</h3>
 		<p class="text-sm mb-4">Stay updated with DiasporaJunxion news and events.</p>
 
 		{#if error}
@@ -83,7 +111,7 @@
 		<input type="text" bind:value={name} placeholder="Your Name (optional)" class="name-input" />
 		<input type="email" bind:value={email} placeholder="Your Email" class="email-input" />
 
-		<button class="submit-btn" on:click={submitForm}>Subscribe</button>
+		<button class="submit-btn" onclick={submitForm}>Subscribe</button>
 		{#if success}
 			<p class="text-green-400 mt-2">Subscribed successfully!</p>
 		{/if}

@@ -1,16 +1,31 @@
 <script>
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';
+	import { fileLogger } from '$lib/utils/logger';
 
-	export let title;
-	export let subtitle;
-	export let description;
-	export let image;
-	export let index = 0;
+	fileLogger('src/lib/ui/PillarCard.svelte');
 
-	$: reverse = index % 2 === 0 ? true : false;
+	/**
+	 * @typedef {Object} Props
+	 * @property {any} title
+	 * @property {any} subtitle
+	 * @property {any} description
+	 * @property {any} image
+	 * @property {number} [index]
+	 */
 
-	let card, imageEl, textEl;
+	/** @type {Props} */
+	let {
+		title,
+		subtitle,
+		description,
+		image,
+		index = 0
+	} = $props();
+
+	let reverse = $derived(index % 2 === 0 ? true : false);
+
+	let card = $state(), imageEl = $state(), textEl = $state();
 
 	onMount(async () => {
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');

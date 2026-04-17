@@ -1,4 +1,7 @@
 import { loadStripe } from '@stripe/stripe-js';
+import { fileLogger } from '$lib/utils/logger';
+
+fileLogger('src/lib/client/stripe.js');
 
 let stripePromise;
 

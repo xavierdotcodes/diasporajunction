@@ -1,9 +1,11 @@
 <script>
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';
+	import { fileLogger } from '$lib/utils/logger';
 
-	export let step;
-	export let index;
+	fileLogger('src/lib/tours/ItineraryStep.svelte');
+
+	let { step, index } = $props();
 
 	onMount(async () => {
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');

@@ -1,8 +1,17 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/admin/UserFilter.svelte');
 	const dispatch = createEventDispatcher();
 
-	export let filterType = 'all';
+	/**
+	 * @typedef {Object} Props
+	 * @property {string} [filterType]
+	 */
+
+	/** @type {Props} */
+	let { filterType = $bindable('all') } = $props();
 
 	function handleChange(e) {
 		dispatch('change', e.target.value);
@@ -10,10 +19,11 @@
 </script>
 
 <div class="user-filter flex items-center gap-3 mb-4 sm:mb-6 justify-center">
-	<label class="font-semibold text-gray-700 whitespace-nowrap">Show:</label>
+	<label for="user-filter" class="font-semibold text-gray-700 whitespace-nowrap">Show:</label>
 	<select
+		id="user-filter"
 		bind:value={filterType}
-		on:change={handleChange}
+		onchange={handleChange}
 		class="px-4 py-1 rounded-full border border-gray-300 bg-white text-gray-800 text-sm font-medium shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition-all w-auto min-w-[140px]"
 	>
 		<option value="all">All Users</option>

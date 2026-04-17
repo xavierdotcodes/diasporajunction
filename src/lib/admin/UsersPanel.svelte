@@ -1,18 +1,27 @@
 <script>
 	import UserItem from './UserItem.svelte';
 	import { createEventDispatcher } from 'svelte';
+	import { fileLogger } from '$lib/utils/logger';
 
-	export let users = [];
-	export let filterType = 'all'; // comes from parent
+	fileLogger('src/lib/admin/UsersPanel.svelte');
+
+	/**
+	 * @typedef {Object} Props
+	 * @property {any} [users]
+	 * @property {string} [filterType] - comes from parent
+	 */
+
+	/** @type {Props} */
+	let { users = [], filterType = 'all' } = $props();
 	const dispatch = createEventDispatcher();
 
-	$: filteredUsers = users.filter((user) => {
+	let filteredUsers = $derived(users.filter((user) => {
 		if (filterType === 'subscribers') return user.subscribed;
 		if (filterType === 'ndgo') return user.registrations?.length > 0;
 		if (filterType === 'tourees') return user.reservations?.length > 0;
 		if (filterType === 'customers') return user.orders?.length > 0;
 		return true;
-	});
+	}));
 
 	function handleRemove(id) {
 		dispatch('remove', id);

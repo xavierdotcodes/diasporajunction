@@ -1,6 +1,9 @@
 <script>
-	export let tours = [];
-	export let formData;
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/tours/SelectDate.svelte');
+
+	let { tours = [], formData = $bindable() } = $props();
 </script>
 
 <h2 class="text-xl font-bold mb-4 text-gray-800">Select Tour Date</h2>

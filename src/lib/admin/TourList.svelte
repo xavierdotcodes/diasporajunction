@@ -2,8 +2,11 @@
 	import { createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import TourItem from './TourItem.svelte';
+	import { fileLogger } from '$lib/utils/logger';
 
-	export let tours = [];
+	fileLogger('src/lib/admin/TourList.svelte');
+
+	let { tours = [] } = $props();
 	const dispatch = createEventDispatcher();
 
 	function handleSelect(tour) {

@@ -1,6 +1,9 @@
 // src/routes/api/create-payment-intent/+server.js
 import { json } from '@sveltejs/kit';
 import { getStripe } from '$lib/server/stripe';
+import { fileLogger } from '$lib/utils/logger';
+
+fileLogger('src/routes/api/space/create-payment-intent/+server.js');
 
 export async function POST({ request }) {
 	try {

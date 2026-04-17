@@ -1,3 +1,7 @@
+import { fileLogger } from '$lib/utils/logger';
+
+fileLogger('src/lib/server/helpers.js');
+
 /**
  * Safely parses a date string into a Date object.
  * Returns null if invalid.

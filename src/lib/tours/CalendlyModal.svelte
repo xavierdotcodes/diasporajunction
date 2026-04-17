@@ -1,14 +1,22 @@
 <script>
 	import { onMount } from 'svelte';
 	import { fade, scale } from 'svelte/transition';
+	import { fileLogger } from '$lib/utils/logger';
 
-	export let show = false;
-	export let calendlyUrl =
-		'https://calendly.com/diasporajunxion/discovery-call-ghana-immersion-experience';
-	export let onClose;
+	fileLogger('src/lib/tours/CalendlyModal.svelte');
 
-	let modalEl;
-	let ready = false;
+	/**
+	 * @typedef {Object} Props
+	 * @property {boolean} [show]
+	 * @property {string} [calendlyUrl]
+	 * @property {any} onClose
+	 */
+
+	/** @type {Props} */
+	let { show = false, calendlyUrl = 'https://calendly.com/diasporajunxion/discovery-call-ghana-immersion-experience', onClose } = $props();
+
+	let modalEl = $state();
+	let ready = $state(false);
 
 	async function waitForCalendly() {
 		console.log('[CalendlyModal] waitForCalendly...');
@@ -72,6 +80,13 @@
 	function closeModal() {
 		if (onClose) onClose();
 	}
+
+	function handleBackdropKeydown(event) {
+		if (event.key === 'Escape' || event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			closeModal();
+		}
+	}
 </script>
 
 <svelte:head>
@@ -83,29 +98,38 @@
 	<div
 		bind:this={modalEl}
 		class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-		on:click={(e) => e.target === modalEl && closeModal()}
+		role="button"
+		tabindex="0"
+		aria-label="Close Calendly modal"
+		onclick={(e) => e.target === modalEl && closeModal()}
+		onkeydown={handleBackdropKeydown}
 		in:fade={{ duration: 250 }}
 		out:fade={{ duration: 200 }}
 	>
 		<!-- Modal Card -->
 		<div
 			class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl p-6 sm:p-8 relative overflow-hidden"
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="calendly-modal-title"
+			tabindex="-1"
+			onkeydown={(event) => event.stopPropagation()}
 			in:scale={{ start: 0.95, duration: 250, easing: (t) => t * t }}
 			out:scale={{ end: 0.95, duration: 200, easing: (t) => t * t }}
-			on:introend={() => {
+			onintroend={() => {
 				if (ready) initCalendly();
 			}}
 		>
 			<!-- Close Button -->
 			<button
 				class="absolute top-3 right-3 text-gray-500 hover:text-black text-2xl transition-transform hover:scale-110"
-				on:click={closeModal}
+				onclick={closeModal}
 			>
 				✕
 			</button>
 
 			<!-- Header -->
-			<h2 class="text-2xl font-bold text-center mb-2 text-[#038C25]">Book Your Discovery Call</h2>
+			<h2 id="calendly-modal-title" class="text-2xl font-bold text-center mb-2 text-[#038C25]">Book Your Discovery Call</h2>
 			<p class="text-gray-600 text-center mb-6">
 				Choose a time that works best for you to learn more about the Ghana Immersion Experience.
 			</p>
@@ -120,9 +144,4 @@
 	</div>
 {/if}
 
-<style>
-	.calendly-inline-widget {
-		border-radius: 1rem;
-		overflow: hidden;
-	}
-</style>
+<style></style>

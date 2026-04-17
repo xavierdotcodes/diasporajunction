@@ -1,7 +1,10 @@
 <script>
 	import { onMount } from 'svelte';
 	import { revealOnScroll } from '$lib/animations/scrollReveal';
-	let section;
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/diasporaU/JoinSection.svelte');
+	let section = $state();
 
 	onMount(() => revealOnScroll(section));
 </script>

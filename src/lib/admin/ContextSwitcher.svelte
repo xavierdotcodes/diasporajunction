@@ -1,8 +1,11 @@
 <script>
-	export let currentContext;
-	export let onSwitch;
+	import { fileLogger } from '$lib/utils/logger';
 
-	let open = false;
+	fileLogger('src/lib/admin/ContextSwitcher.svelte');
+
+	let { currentContext = $bindable(), onSwitch } = $props();
+
+	let open = $state(false);
 
 	const contexts = [
 		{ id: 'tours', label: 'Tours', color: 'from-yellow-400 to-yellow-500' },
@@ -25,7 +28,7 @@
 			class={`px-6 py-2 rounded-full text-white font-semibold shadow-md bg-gradient-to-r ${context.color}
 				transition-all duration-200 transform
 				${currentContext === context.id ? 'scale-105 shadow-xl' : 'opacity-80 hover:scale-105 hover:shadow-lg'}`}
-			on:click={() => selectContext(context.id)}
+			onclick={() => selectContext(context.id)}
 		>
 			{context.label}
 		</button>
@@ -37,7 +40,7 @@
 	<!-- Trigger button -->
 	<button
 		class="w-full p-3 rounded-full bg-gray-800 text-white font-semibold shadow-md flex justify-between items-center"
-		on:click={() => (open = !open)}
+		onclick={() => (open = !open)}
 	>
 		{contexts.find((c) => c.id === currentContext)?.label}
 		<span class="ml-2 transition-transform duration-200" class:rotate-180={open}> ▼ </span>
@@ -50,7 +53,7 @@
 					class={`w-full text-left px-5 py-4 text-white font-semibold bg-gradient-to-r ${context.color} 
 						transition-all duration-200 transform
 						${currentContext === context.id ? 'scale-105 shadow-lg' : 'opacity-90 hover:scale-105 hover:shadow-md'}`}
-					on:click={() => selectContext(context.id)}
+					onclick={() => selectContext(context.id)}
 					style="border-bottom: {i !== contexts.length - 1
 						? '1px solid rgba(255,255,255,0.1)'
 						: 'none'};"

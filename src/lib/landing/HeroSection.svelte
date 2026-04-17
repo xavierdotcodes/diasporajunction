@@ -1,11 +1,21 @@
 <script>
-	export let title = 'DiasporaJunxion';
-	export let subtitle = 'The Junction of Diaspora Power and African Innovation';
-	export let description = `
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/landing/HeroSection.svelte');
+
+	/**
+	 * @typedef {Object} Props
+	 * @property {string} [title]
+	 * @property {string} [subtitle]
+	 * @property {any} [description]
+	 */
+
+	/** @type {Props} */
+	let { title = 'DiasporaJunxion', subtitle = 'The Junction of Diaspora Power and African Innovation', description = `
 		Diaspora is more than a word — it’s a people.
 		Africans at home and abroad, carrying the roots of the continent into every corner of the world.
 		From music, to style, to tech, to culture — the Diaspora is Africa in motion.
-	`;
+	` } = $props();
 </script>
 
 <section class="relative min-h-screen flex flex-col items-center justify-center px-6 text-center">

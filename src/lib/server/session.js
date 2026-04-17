@@ -1,5 +1,8 @@
 import Redis from 'ioredis';
 import crypto from 'crypto';
+import { fileLogger } from '$lib/utils/logger';
+
+fileLogger('src/lib/server/session.js');
 
 const redis = new Redis(process.env.REDIS_URL);
 

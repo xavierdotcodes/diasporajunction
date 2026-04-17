@@ -1,10 +1,13 @@
 <script>
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';
+	import { fileLogger } from '$lib/utils/logger';
 
-	let section;
-	let heroVideoSrc = '';
-	let heroPoster = '';
+	fileLogger('src/lib/diasporaU/HeroSection.svelte');
+
+	let section = $state();
+	let heroVideoSrc = $state('');
+	let heroPoster = $state('');
 
 	function updateHeroSources() {
 		if (window.innerWidth <= 768) {

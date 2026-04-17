@@ -1,0 +1,600 @@
+Script started on Sun Oct 19 11:38:40 2025
+[1m[3m%[23m[1m[0m                                                                      [0m[23m[24m[J[0m[49m[39m[0m[49m[38;2;87;199;255m~/diasporajunxion[0m[38;2;87;199;255m[49m[38;2;87;199;255m[0m[38;2;87;199;255m[49m [0m[38;2;87;199;255m[49m[38;2;255;106;193m❯[0m[38;2;255;106;193m[49m[38;2;255;106;193m[0m[38;2;255;106;193m[49m[30m[0m[38;2;0;0;0m[49m[39m [0m[49m[39m[K[41C[0m[49m[38;5;242m11:38:41[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[39m[49D[?1h=[?2004h[?25l[0m[23m[24m[J[0m[38;5;242m[49m[39m[0m[49m[38;2;87;199;255m~/diasporajunxion[0m[38;2;87;199;255m[49m[38;2;87;199;255m[0m[38;2;87;199;255m[49m [0m[38;2;87;199;255m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242mmain[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m [0m[38;2;0;0;242m[49m[38;2;255;106;193m❯[0m[38;2;255;106;193m[49m[38;2;255;106;193m[0m[38;2;255;106;193m[49m[30m[0m[38;2;0;0;0m[49m[39m [0m[49m[39m[K[36C[0m[49m[38;5;242m11:38:41[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[39m[44D[?25h[?25l[0m[23m[24m[J[0m[38;5;242m[49m[39m[0m[49m[38;2;87;199;255m~/diasporajunxion[0m[38;2;87;199;255m[49m[38;2;87;199;255m[0m[38;2;87;199;255m[49m [0m[38;2;87;199;255m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242mmain[0m[38;2;0;0;242m[49m[38;5;242m*[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m [0m[38;2;0;0;242m[49m[38;2;255;106;193m❯[0m[38;2;255;106;193m[49m[38;2;255;106;193m[0m[38;2;255;106;193m[49m[30m[0m[38;2;0;0;0m[49m[39m [0m[49m[39m[K[35C[0m[49m[38;5;242m11:38:41[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[39m[43D[?25hssci ripts[?1l>[?25l[?2004l[0m[23m[24m[J[0m[49m[23m[24m[38;2;255;106;193m❯[0m[38;2;255;106;193m[49m[39m[23m[24m scripts[K[?25h
+[1m[3m%[23m[1m[0m                                                                      [0m[23m[24m[J[0m[38;5;242m[49m[39m[0m[49m[38;2;87;199;255m~/diasporajunxion/scripts[0m[38;2;87;199;255m[49m[38;2;87;199;255m[0m[38;2;87;199;255m[49m [0m[38;2;87;199;255m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242mmain[0m[38;2;0;0;242m[49m[38;5;242m*[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m [0m[38;2;0;0;242m[49m[38;2;255;106;193m❯[0m[38;2;255;106;193m[49m[38;2;255;106;193m[0m[38;2;255;106;193m[49m[30m[0m[38;2;0;0;0m[49m[39m [0m[49m[39m[K[27C[0m[49m[38;5;242m11:38:46[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[39m[35D[?1h=[?2004h[?25l[0m[23m[24m[J[0m[38;5;242m[49m[39m[0m[49m[38;2;87;199;255m~/diasporajunxion/scripts[0m[38;2;87;199;255m[49m[38;2;87;199;255m[0m[38;2;87;199;255m[49m [0m[38;2;87;199;255m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242mmain[0m[38;2;0;0;242m[49m[38;5;242m*[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m [0m[38;2;0;0;242m[49m[38;2;255;106;193m❯[0m[38;2;255;106;193m[49m[38;2;255;106;193m[0m[38;2;255;106;193m[49m[30m[0m[38;2;0;0;0m[49m[39m [0m[49m[39m[K[27C[0m[49m[38;5;242m11:38:46[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[39m[35D[?25h[3m./scripts/generate-covers.sh[23m[K[28D[23m.[23m/[23ms[23mc[23mr[23mi[23mp[23mt[23ms[23m/[23mg[23me[23mn[23me[23mr[23ma[23mt[23me[23m-[23mc[23mo[23mv[23me[23mr[23ms[23m.[23ms[23mh[?1l>[?25l[?2004l[0m[23m[24m[J[0m[49m[23m[24m[38;2;255;106;193m❯[0m[38;2;255;106;193m[49m[39m[23m[24m ./scripts/generate-covers.sh[K[?25h
+zsh: no such file or directory: ./scripts/generate-covers.sh
+[1m[3m%[23m[1m[0m                                                                      [0m[23m[24m[J[0m[38;5;242m[49m[39m[0m[49m[38;2;87;199;255m~/diasporajunxion/scripts[0m[38;2;87;199;255m[49m[38;2;87;199;255m[0m[38;2;87;199;255m[49m [0m[38;2;87;199;255m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242mmain[0m[38;2;0;0;242m[49m[38;5;242m*[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m [0m[38;2;0;0;242m[49m[38;2;255;92;87m❯[0m[38;2;255;92;87m[49m[38;2;255;92;87m[0m[38;2;255;92;87m[49m[30m[0m[38;2;0;0;0m[49m[39m [0m[49m[39m[K[27C[0m[49m[38;5;242m11:38:47[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[39m[35D[?1h=[?2004h[?25l[0m[23m[24m[J[0m[38;5;242m[49m[39m[0m[49m[38;2;87;199;255m~/diasporajunxion/scripts[0m[38;2;87;199;255m[49m[38;2;87;199;255m[0m[38;2;87;199;255m[49m [0m[38;2;87;199;255m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242mmain[0m[38;2;0;0;242m[49m[38;5;242m*[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m [0m[38;2;0;0;242m[49m[38;2;255;92;87m❯[0m[38;2;255;92;87m[49m[38;2;255;92;87m[0m[38;2;255;92;87m[49m[30m[0m[38;2;0;0;0m[49m[39m [0m[49m[39m[K[27C[0m[49m[38;5;242m11:38:47[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[39m[35D[?25hj ...[?1l>[?25l[?2004l[0m[23m[24m[J[0m[49m[23m[24m[38;2;255;92;87m❯[0m[38;2;255;92;87m[49m[39m[23m[24m ..[K[?25h
+[1m[3m%[23m[1m[0m                                                                      [0m[23m[24m[J[0m[38;5;242m[49m[39m[0m[49m[38;2;87;199;255m~/diasporajunxion[0m[38;2;87;199;255m[49m[38;2;87;199;255m[0m[38;2;87;199;255m[49m [0m[38;2;87;199;255m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242mmain[0m[38;2;0;0;242m[49m[38;5;242m*[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m [0m[38;2;0;0;242m[49m[38;2;255;106;193m❯[0m[38;2;255;106;193m[49m[38;2;255;106;193m[0m[38;2;255;106;193m[49m[30m[0m[38;2;0;0;0m[49m[39m [0m[49m[39m[K[35C[0m[49m[38;5;242m11:40:27[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[39m[43D[?1h=[?2004h[?25l[0m[23m[24m[J[0m[38;5;242m[49m[39m[0m[49m[38;2;87;199;255m~/diasporajunxion[0m[38;2;87;199;255m[49m[38;2;87;199;255m[0m[38;2;87;199;255m[49m [0m[38;2;87;199;255m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242mmain[0m[38;2;0;0;242m[49m[38;5;242m*[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m [0m[38;2;0;0;242m[49m[38;2;255;106;193m❯[0m[38;2;255;106;193m[49m[38;2;255;106;193m[0m[38;2;255;106;193m[49m[30m[0m[38;2;0;0;0m[49m[39m [0m[49m[39m[K[35C[0m[49m[38;5;242m11:40:27[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[39m[43D[?25h[3mchmod +x scripts/generate-covers.sh[23m[K[35D[23mc[23mh[23mm[23mo[23md[23m [23m+[23mx[23m [23ms[23mc[23mr[23mi[23mp[23mt[23ms[23m/[23mg[23me[23mn[23me[23mr[23ma[23mt[23me[23m-[23mc[23mo[23mv[23me[23mr[23ms[23m.[23ms[23mh[?1l>[?25l[?2004l[0m[23m[24m[J[0m[49m[23m[24m[38;2;255;106;193m❯[0m[38;2;255;106;193m[49m[39m[23m[24m chmod +x scripts/generate-covers.sh[K[?25h
+[1m[3m%[23m[1m[0m                                                                      [0m[23m[24m[J[0m[38;5;242m[49m[39m[0m[49m[38;2;87;199;255m~/diasporajunxion[0m[38;2;87;199;255m[49m[38;2;87;199;255m[0m[38;2;87;199;255m[49m [0m[38;2;87;199;255m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242mmain[0m[38;2;0;0;242m[49m[38;5;242m*[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m [0m[38;2;0;0;242m[49m[38;2;255;106;193m❯[0m[38;2;255;106;193m[49m[38;2;255;106;193m[0m[38;2;255;106;193m[49m[30m[0m[38;2;0;0;0m[49m[39m [0m[49m[39m[K[35C[0m[49m[38;5;242m11:40:28[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[39m[43D[?1h=[?2004h[?25l[0m[23m[24m[J[0m[38;5;242m[49m[39m[0m[49m[38;2;87;199;255m~/diasporajunxion[0m[38;2;87;199;255m[49m[38;2;87;199;255m[0m[38;2;87;199;255m[49m [0m[38;2;87;199;255m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242mmain[0m[38;2;0;0;242m[49m[38;5;242m*[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m [0m[38;2;0;0;242m[49m[38;2;255;106;193m❯[0m[38;2;255;106;193m[49m[38;2;255;106;193m[0m[38;2;255;106;193m[49m[30m[0m[38;2;0;0;0m[49m[39m [0m[49m[39m[K[35C[0m[49m[38;5;242m11:40:28[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[39m[43D[?25h[3m./scripts/generate-covers.sh[23m[28D[23m.[23m/[23ms[23mc[23mr[23mi[23mp[23mt[23ms[23m/[23mg[23me[23mn[23me[23mr[23ma[23mt[23me[23m-[23mc[23mo[23mv[23me[23mr[23ms[23m.[23ms[23mh[?1l>[?25l[?2004l[0m[23m[24m[J[0m[49m[23m[24m[38;2;255;106;193m❯[0m[38;2;255;106;193m[49m[39m[23m[24m ./scripts/generate-covers.sh[K[?25h
+ffmpeg version 8.0 Copyright (c) 2000-2025 the FFmpeg developers
+  built with Apple clang version 17.0.0 (clang-1700.0.13.3)
+  configuration: --prefix=/opt/homebrew/Cellar/ffmpeg/8.0_1 --enable-shared --enable-pthreads --enable-version3 --cc=clang --host-cflags= --host-ldflags='-Wl,-ld_classic' --enable-ffplay --enable-gnutls --enable-gpl --enable-libaom --enable-libaribb24 --enable-libbluray --enable-libdav1d --enable-libharfbuzz --enable-libjxl --enable-libmp3lame --enable-libopus --enable-librav1e --enable-librist --enable-librubberband --enable-libsnappy --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libtesseract --enable-libtheora --enable-libvidstab --enable-libvmaf --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libxvid --enable-lzma --enable-libfontconfig --enable-libfreetype --enable-frei0r --enable-libass --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libspeex --enable-libsoxr --enable-libzmq --enable-libzimg --disable-libjack --disable-indev=jack --enable-videotoolbox --enable-audiotoolbox --enable-neon
+  libavutil      60.  8.100 / 60.  8.100
+  libavcodec     62. 11.100 / 62. 11.100
+  libavformat    62.  3.100 / 62.  3.100
+  libavdevice    62.  1.100 / 62.  1.100
+  libavfilter    11.  4.100 / 11.  4.100
+  libswscale      9.  1.100 /  9.  1.100
+  libswresample   6.  1.100 /  6.  1.100
+[48;5;0m[38;5;207m[in#0 @ 0x120e06580] [0m[48;5;0m[38;5;196mError opening input: No such file or directory
+[0m[48;5;0m[38;5;196mError opening input file ../static/videos/*.mp4.
+[0m[48;5;0m[38;5;208mError opening input files: No such file or directory
+[0mGenerated cover for ../static/videos/*.mp4 → ../static/videos/covers/*-cover.jpg
+[1m[3m%[23m[1m[0m                                                                      [0m[23m[24m[J[0m[38;5;242m[49m[39m[0m[49m[38;2;87;199;255m~/diasporajunxion[0m[38;2;87;199;255m[49m[38;2;87;199;255m[0m[38;2;87;199;255m[49m [0m[38;2;87;199;255m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242mmain[0m[38;2;0;0;242m[49m[38;5;242m*[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m [0m[38;2;0;0;242m[49m[38;2;255;106;193m❯[0m[38;2;255;106;193m[49m[38;2;255;106;193m[0m[38;2;255;106;193m[49m[30m[0m[38;2;0;0;0m[49m[39m [0m[49m[39m[K[35C[0m[49m[38;5;242m11:40:39[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[39m[43D[?1h=[?2004h[?25l[0m[23m[24m[J[0m[38;5;242m[49m[39m[0m[49m[38;2;87;199;255m~/diasporajunxion[0m[38;2;87;199;255m[49m[38;2;87;199;255m[0m[38;2;87;199;255m[49m [0m[38;2;87;199;255m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242mmain[0m[38;2;0;0;242m[49m[38;5;242m*[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m [0m[38;2;0;0;242m[49m[38;2;255;106;193m❯[0m[38;2;255;106;193m[49m[38;2;255;106;193m[0m[38;2;255;106;193m[49m[30m[0m[38;2;0;0;0m[49m[39m [0m[49m[39m[K[35C[0m[49m[38;5;242m11:40:39[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[39m[43D[?25hlls sta[33m[39mtic[1m/[0m[0m/vid[33m[39meos[1m/[0m[0m [?1l>[?25l[?2004l[0m[23m[24m[J[0m[49m[23m[24m[38;2;255;106;193m❯[0m[38;2;255;106;193m[49m[39m[23m[24m ls static/videos[K[?25h
+[34mcovers[39;49m[0m                     mobile_approach-hero.mp4
+desktop_approach-hero.mp4  mobile_diasporau-hero.mp4
+desktop_diasporau-hero.mp4 mobile_landing-hero.mp4
+desktop_landing-hero.mp4   mobile_ndgo-hero1.mp4
+desktop_ndgo-hero1.mp4     mobile_tours-hero.mp4
+desktop_tours-hero.mp4     ndgo-hero1.mp4
+[1m[3m%[23m[1m[0m                                                                      [0m[23m[24m[J[0m[38;5;242m[49m[39m[0m[49m[38;2;87;199;255m~/diasporajunxion[0m[38;2;87;199;255m[49m[38;2;87;199;255m[0m[38;2;87;199;255m[49m [0m[38;2;87;199;255m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242mmain[0m[38;2;0;0;242m[49m[38;5;242m*[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m [0m[38;2;0;0;242m[49m[38;2;255;106;193m❯[0m[38;2;255;106;193m[49m[38;2;255;106;193m[0m[38;2;255;106;193m[49m[30m[0m[38;2;0;0;0m[49m[39m [0m[49m[39m[K[35C[0m[49m[38;5;242m11:41:17[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[39m[43D[?1h=[?2004h[?25l[0m[23m[24m[J[0m[38;5;242m[49m[39m[0m[49m[38;2;87;199;255m~/diasporajunxion[0m[38;2;87;199;255m[49m[38;2;87;199;255m[0m[38;2;87;199;255m[49m [0m[38;2;87;199;255m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242mmain[0m[38;2;0;0;242m[49m[38;5;242m*[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m [0m[38;2;0;0;242m[49m[38;2;255;106;193m❯[0m[38;2;255;106;193m[49m[38;2;255;106;193m[0m[38;2;255;106;193m[49m[30m[0m[38;2;0;0;0m[49m[39m [0m[49m[39m[K[35C[0m[49m[38;5;242m11:41:17[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[39m[43D[?25hls static/videos[16D./scripts/generate-covers.sh[?1l>[?25l[?2004l[0m[23m[24m[J[0m[49m[23m[24m[38;2;255;106;193m❯[0m[38;2;255;106;193m[49m[39m[23m[24m ./scripts/generate-covers.sh[K[?25h
+ffmpeg version 8.0 Copyright (c) 2000-2025 the FFmpeg developers
+  built with Apple clang version 17.0.0 (clang-1700.0.13.3)
+  configuration: --prefix=/opt/homebrew/Cellar/ffmpeg/8.0_1 --enable-shared --enable-pthreads --enable-version3 --cc=clang --host-cflags= --host-ldflags='-Wl,-ld_classic' --enable-ffplay --enable-gnutls --enable-gpl --enable-libaom --enable-libaribb24 --enable-libbluray --enable-libdav1d --enable-libharfbuzz --enable-libjxl --enable-libmp3lame --enable-libopus --enable-librav1e --enable-librist --enable-librubberband --enable-libsnappy --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libtesseract --enable-libtheora --enable-libvidstab --enable-libvmaf --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libxvid --enable-lzma --enable-libfontconfig --enable-libfreetype --enable-frei0r --enable-libass --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libspeex --enable-libsoxr --enable-libzmq --enable-libzimg --disable-libjack --disable-indev=jack --enable-videotoolbox --enable-audiotoolbox --enable-neon
+  libavutil      60.  8.100 / 60.  8.100
+  libavcodec     62. 11.100 / 62. 11.100
+  libavformat    62.  3.100 / 62.  3.100
+  libavdevice    62.  1.100 / 62.  1.100
+  libavfilter    11.  4.100 / 11.  4.100
+  libswscale      9.  1.100 /  9.  1.100
+  libswresample   6.  1.100 /  6.  1.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from './static/videos/desktop_approach-hero.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    date            : 2025/10/19 08:05:20
+    encoder         : Lavf62.3.100
+  Duration: 00:00:08.34, start: 0.000000, bitrate: 6800 kb/s
+  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 1920x1080 [SAR 1:1 DAR 16:9], 6796 kb/s, 29.97 fps, 29.97 tbr, 30k tbn (default)
+    Metadata:
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+      encoder         : Lavc62.11.100 libx264
+Stream mapping:
+  Stream #0:0 -> #0:0 (h264 (native) -> mjpeg (native))
+Press [q] to stop, [?] for help
+Output #0, image2, to './static/videos/covers/desktop_approach-hero-cover.jpg':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    date            : 2025/10/19 08:05:20
+    encoder         : Lavf62.3.100
+  Stream #0:0(und): Video: mjpeg, yuv420p(pc, progressive), 1920x1080 [SAR 1:1 DAR 16:9], q=2-31, 200 kb/s, 29.97 fps, 29.97 tbn (default)
+    Metadata:
+      encoder         : Lavc62.11.100 mjpeg
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/200000 buffer size: 0 vbv_delay: N/A
+[48;5;0m[38;5;213m[image2 @ 0x128e05650] [0m[48;5;0m[38;5;226mThe specified filename './static/videos/covers/desktop_approach-hero-cover.jpg' does not contain an image sequence pattern or a pattern is invalid.
+[0m[48;5;0m[38;5;213m[image2 @ 0x128e05650] [0m[48;5;0m[38;5;226mUse a pattern such as %03d for an image sequence or use the -update option (with -frames:v 1 if needed) to write a single image.
+[0m[48;5;0m[38;5;213m[out#0/image2 @ 0x6000002c4240] [0mvideo:216KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+frame=    1 fps=0.0 q=9.9 Lsize=N/A time=00:00:00.03 bitrate=N/A speed=0.327x elapsed=0:00:00.10    
+Generated cover for ./static/videos/desktop_approach-hero.mp4 → ./static/videos/covers/desktop_approach-hero-cover.jpg
+ffmpeg version 8.0 Copyright (c) 2000-2025 the FFmpeg developers
+  built with Apple clang version 17.0.0 (clang-1700.0.13.3)
+  configuration: --prefix=/opt/homebrew/Cellar/ffmpeg/8.0_1 --enable-shared --enable-pthreads --enable-version3 --cc=clang --host-cflags= --host-ldflags='-Wl,-ld_classic' --enable-ffplay --enable-gnutls --enable-gpl --enable-libaom --enable-libaribb24 --enable-libbluray --enable-libdav1d --enable-libharfbuzz --enable-libjxl --enable-libmp3lame --enable-libopus --enable-librav1e --enable-librist --enable-librubberband --enable-libsnappy --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libtesseract --enable-libtheora --enable-libvidstab --enable-libvmaf --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libxvid --enable-lzma --enable-libfontconfig --enable-libfreetype --enable-frei0r --enable-libass --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libspeex --enable-libsoxr --enable-libzmq --enable-libzimg --disable-libjack --disable-indev=jack --enable-videotoolbox --enable-audiotoolbox --enable-neon
+  libavutil      60.  8.100 / 60.  8.100
+  libavcodec     62. 11.100 / 62. 11.100
+  libavformat    62.  3.100 / 62.  3.100
+  libavdevice    62.  1.100 / 62.  1.100
+  libavfilter    11.  4.100 / 11.  4.100
+  libswscale      9.  1.100 /  9.  1.100
+  libswresample   6.  1.100 /  6.  1.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from './static/videos/desktop_diasporau-hero.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf62.3.100
+  Duration: 00:00:10.00, start: 0.000000, bitrate: 2008 kb/s
+  Stream #0:0[0x1](eng): Video: h264 (High) (avc1 / 0x31637661), yuv420p(tv, bt709, progressive), 1920x1080 [SAR 1:1 DAR 16:9], 2005 kb/s, 25 fps, 25 tbr, 12800 tbn (default)
+    Metadata:
+      handler_name    : VideoHandle
+      vendor_id       : [0][0][0][0]
+      encoder         : Lavc62.11.100 libx264
+Stream mapping:
+  Stream #0:0 -> #0:0 (h264 (native) -> mjpeg (native))
+Press [q] to stop, [?] for help
+Output #0, image2, to './static/videos/covers/desktop_diasporau-hero-cover.jpg':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf62.3.100
+  Stream #0:0(eng): Video: mjpeg, yuv420p(pc, bt709, progressive), 1920x1080 [SAR 1:1 DAR 16:9], q=2-31, 200 kb/s, 25 fps, 25 tbn (default)
+    Metadata:
+      encoder         : Lavc62.11.100 mjpeg
+      handler_name    : VideoHandle
+      vendor_id       : [0][0][0][0]
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/200000 buffer size: 0 vbv_delay: N/A
+[48;5;0m[38;5;213m[image2 @ 0x12de06f20] [0m[48;5;0m[38;5;226mThe specified filename './static/videos/covers/desktop_diasporau-hero-cover.jpg' does not contain an image sequence pattern or a pattern is invalid.
+[0m[48;5;0m[38;5;213m[image2 @ 0x12de06f20] [0m[48;5;0m[38;5;226mUse a pattern such as %03d for an image sequence or use the -update option (with -frames:v 1 if needed) to write a single image.
+[0m[48;5;0m[38;5;213m[out#0/image2 @ 0x6000016e0240] [0mvideo:63KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+frame=    1 fps=0.0 q=5.5 Lsize=N/A time=00:00:00.04 bitrate=N/A speed=0.468x elapsed=0:00:00.08    
+Generated cover for ./static/videos/desktop_diasporau-hero.mp4 → ./static/videos/covers/desktop_diasporau-hero-cover.jpg
+ffmpeg version 8.0 Copyright (c) 2000-2025 the FFmpeg developers
+  built with Apple clang version 17.0.0 (clang-1700.0.13.3)
+  configuration: --prefix=/opt/homebrew/Cellar/ffmpeg/8.0_1 --enable-shared --enable-pthreads --enable-version3 --cc=clang --host-cflags= --host-ldflags='-Wl,-ld_classic' --enable-ffplay --enable-gnutls --enable-gpl --enable-libaom --enable-libaribb24 --enable-libbluray --enable-libdav1d --enable-libharfbuzz --enable-libjxl --enable-libmp3lame --enable-libopus --enable-librav1e --enable-librist --enable-librubberband --enable-libsnappy --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libtesseract --enable-libtheora --enable-libvidstab --enable-libvmaf --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libxvid --enable-lzma --enable-libfontconfig --enable-libfreetype --enable-frei0r --enable-libass --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libspeex --enable-libsoxr --enable-libzmq --enable-libzimg --disable-libjack --disable-indev=jack --enable-videotoolbox --enable-audiotoolbox --enable-neon
+  libavutil      60.  8.100 / 60.  8.100
+  libavcodec     62. 11.100 / 62. 11.100
+  libavformat    62.  3.100 / 62.  3.100
+  libavdevice    62.  1.100 / 62.  1.100
+  libavfilter    11.  4.100 / 11.  4.100
+  libswscale      9.  1.100 /  9.  1.100
+  libswresample   6.  1.100 /  6.  1.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from './static/videos/desktop_landing-hero.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    date            : 2025/10/19 08:21:58
+    encoder         : Lavf62.3.100
+  Duration: 00:00:08.34, start: 0.000000, bitrate: 6028 kb/s
+  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 1920x1080 [SAR 1:1 DAR 16:9], 6024 kb/s, 29.97 fps, 29.97 tbr, 30k tbn (default)
+    Metadata:
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+      encoder         : Lavc62.11.100 libx264
+Stream mapping:
+  Stream #0:0 -> #0:0 (h264 (native) -> mjpeg (native))
+Press [q] to stop, [?] for help
+Output #0, image2, to './static/videos/covers/desktop_landing-hero-cover.jpg':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    date            : 2025/10/19 08:21:58
+    encoder         : Lavf62.3.100
+  Stream #0:0(und): Video: mjpeg, yuv420p(pc, progressive), 1920x1080 [SAR 1:1 DAR 16:9], q=2-31, 200 kb/s, 29.97 fps, 29.97 tbn (default)
+    Metadata:
+      encoder         : Lavc62.11.100 mjpeg
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/200000 buffer size: 0 vbv_delay: N/A
+[48;5;0m[38;5;213m[image2 @ 0x123604560] [0m[48;5;0m[38;5;226mThe specified filename './static/videos/covers/desktop_landing-hero-cover.jpg' does not contain an image sequence pattern or a pattern is invalid.
+[0m[48;5;0m[38;5;213m[image2 @ 0x123604560] [0m[48;5;0m[38;5;226mUse a pattern such as %03d for an image sequence or use the -update option (with -frames:v 1 if needed) to write a single image.
+[0m[48;5;0m[38;5;213m[out#0/image2 @ 0x600001598000] [0mvideo:193KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+frame=    1 fps=0.0 q=10.6 Lsize=N/A time=00:00:00.03 bitrate=N/A speed=0.355x elapsed=0:00:00.09    
+Generated cover for ./static/videos/desktop_landing-hero.mp4 → ./static/videos/covers/desktop_landing-hero-cover.jpg
+ffmpeg version 8.0 Copyright (c) 2000-2025 the FFmpeg developers
+  built with Apple clang version 17.0.0 (clang-1700.0.13.3)
+  configuration: --prefix=/opt/homebrew/Cellar/ffmpeg/8.0_1 --enable-shared --enable-pthreads --enable-version3 --cc=clang --host-cflags= --host-ldflags='-Wl,-ld_classic' --enable-ffplay --enable-gnutls --enable-gpl --enable-libaom --enable-libaribb24 --enable-libbluray --enable-libdav1d --enable-libharfbuzz --enable-libjxl --enable-libmp3lame --enable-libopus --enable-librav1e --enable-librist --enable-librubberband --enable-libsnappy --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libtesseract --enable-libtheora --enable-libvidstab --enable-libvmaf --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libxvid --enable-lzma --enable-libfontconfig --enable-libfreetype --enable-frei0r --enable-libass --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libspeex --enable-libsoxr --enable-libzmq --enable-libzimg --disable-libjack --disable-indev=jack --enable-videotoolbox --enable-audiotoolbox --enable-neon
+  libavutil      60.  8.100 / 60.  8.100
+  libavcodec     62. 11.100 / 62. 11.100
+  libavformat    62.  3.100 / 62.  3.100
+  libavdevice    62.  1.100 / 62.  1.100
+  libavfilter    11.  4.100 / 11.  4.100
+  libswscale      9.  1.100 /  9.  1.100
+  libswresample   6.  1.100 /  6.  1.100
+[48;5;0m[38;5;207m[mov,mp4,m4a,3gp,3g2,mj2 @ 0x143e06690] [0m[48;5;0m[38;5;226mFormat mov,mp4,m4a,3gp,3g2,mj2 detected only with low score of 1, misdetection possible!
+[0m[48;5;0m[38;5;207m[mov,mp4,m4a,3gp,3g2,mj2 @ 0x143e06690] [0m[48;5;0m[38;5;196mmoov atom not found
+[0m[48;5;0m[38;5;207m[in#0 @ 0x143e06580] [0m[48;5;0m[38;5;196mError opening input: Invalid data found when processing input
+[0m[48;5;0m[38;5;196mError opening input file ./static/videos/desktop_ndgo-hero1.mp4.
+[0m[48;5;0m[38;5;208mError opening input files: Invalid data found when processing input
+[0mGenerated cover for ./static/videos/desktop_ndgo-hero1.mp4 → ./static/videos/covers/desktop_ndgo-hero1-cover.jpg
+ffmpeg version 8.0 Copyright (c) 2000-2025 the FFmpeg developers
+  built with Apple clang version 17.0.0 (clang-1700.0.13.3)
+  configuration: --prefix=/opt/homebrew/Cellar/ffmpeg/8.0_1 --enable-shared --enable-pthreads --enable-version3 --cc=clang --host-cflags= --host-ldflags='-Wl,-ld_classic' --enable-ffplay --enable-gnutls --enable-gpl --enable-libaom --enable-libaribb24 --enable-libbluray --enable-libdav1d --enable-libharfbuzz --enable-libjxl --enable-libmp3lame --enable-libopus --enable-librav1e --enable-librist --enable-librubberband --enable-libsnappy --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libtesseract --enable-libtheora --enable-libvidstab --enable-libvmaf --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libxvid --enable-lzma --enable-libfontconfig --enable-libfreetype --enable-frei0r --enable-libass --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libspeex --enable-libsoxr --enable-libzmq --enable-libzimg --disable-libjack --disable-indev=jack --enable-videotoolbox --enable-audiotoolbox --enable-neon
+  libavutil      60.  8.100 / 60.  8.100
+  libavcodec     62. 11.100 / 62. 11.100
+  libavformat    62.  3.100 / 62.  3.100
+  libavdevice    62.  1.100 / 62.  1.100
+  libavfilter    11.  4.100 / 11.  4.100
+  libswscale      9.  1.100 /  9.  1.100
+  libswresample   6.  1.100 /  6.  1.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from './static/videos/desktop_tours-hero.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    date            : 2025/10/19 07:51:17
+    encoder         : Lavf62.3.100
+  Duration: 00:00:08.34, start: 0.000000, bitrate: 4577 kb/s
+  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 1920x1080 [SAR 1:1 DAR 16:9], 4573 kb/s, 29.97 fps, 29.97 tbr, 30k tbn (default)
+    Metadata:
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+      encoder         : Lavc62.11.100 libx264
+Stream mapping:
+  Stream #0:0 -> #0:0 (h264 (native) -> mjpeg (native))
+Press [q] to stop, [?] for help
+Output #0, image2, to './static/videos/covers/desktop_tours-hero-cover.jpg':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    date            : 2025/10/19 07:51:17
+    encoder         : Lavf62.3.100
+  Stream #0:0(und): Video: mjpeg, yuv420p(pc, progressive), 1920x1080 [SAR 1:1 DAR 16:9], q=2-31, 200 kb/s, 29.97 fps, 29.97 tbn (default)
+    Metadata:
+      encoder         : Lavc62.11.100 mjpeg
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/200000 buffer size: 0 vbv_delay: N/A
+[48;5;0m[38;5;213m[image2 @ 0x134e07470] [0m[48;5;0m[38;5;226mThe specified filename './static/videos/covers/desktop_tours-hero-cover.jpg' does not contain an image sequence pattern or a pattern is invalid.
+[0m[48;5;0m[38;5;213m[image2 @ 0x134e07470] [0m[48;5;0m[38;5;226mUse a pattern such as %03d for an image sequence or use the -update option (with -frames:v 1 if needed) to write a single image.
+[0m[48;5;0m[38;5;213m[out#0/image2 @ 0x6000031b0240] [0mvideo:94KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+frame=    1 fps=0.0 q=6.8 Lsize=N/A time=00:00:00.03 bitrate=N/A speed=0.454x elapsed=0:00:00.07    
+Generated cover for ./static/videos/desktop_tours-hero.mp4 → ./static/videos/covers/desktop_tours-hero-cover.jpg
+ffmpeg version 8.0 Copyright (c) 2000-2025 the FFmpeg developers
+  built with Apple clang version 17.0.0 (clang-1700.0.13.3)
+  configuration: --prefix=/opt/homebrew/Cellar/ffmpeg/8.0_1 --enable-shared --enable-pthreads --enable-version3 --cc=clang --host-cflags= --host-ldflags='-Wl,-ld_classic' --enable-ffplay --enable-gnutls --enable-gpl --enable-libaom --enable-libaribb24 --enable-libbluray --enable-libdav1d --enable-libharfbuzz --enable-libjxl --enable-libmp3lame --enable-libopus --enable-librav1e --enable-librist --enable-librubberband --enable-libsnappy --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libtesseract --enable-libtheora --enable-libvidstab --enable-libvmaf --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libxvid --enable-lzma --enable-libfontconfig --enable-libfreetype --enable-frei0r --enable-libass --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libspeex --enable-libsoxr --enable-libzmq --enable-libzimg --disable-libjack --disable-indev=jack --enable-videotoolbox --enable-audiotoolbox --enable-neon
+  libavutil      60.  8.100 / 60.  8.100
+  libavcodec     62. 11.100 / 62. 11.100
+  libavformat    62.  3.100 / 62.  3.100
+  libavdevice    62.  1.100 / 62.  1.100
+  libavfilter    11.  4.100 / 11.  4.100
+  libswscale      9.  1.100 /  9.  1.100
+  libswresample   6.  1.100 /  6.  1.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from './static/videos/mobile_approach-hero.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    date            : 2025/10/19 08:05:20
+    encoder         : Lavf62.3.100
+  Duration: 00:00:08.34, start: 0.000000, bitrate: 2108 kb/s
+  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 1280x720 [SAR 1:1 DAR 16:9], 2105 kb/s, 29.97 fps, 29.97 tbr, 30k tbn (default)
+    Metadata:
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+      encoder         : Lavc62.11.100 libx264
+Stream mapping:
+  Stream #0:0 -> #0:0 (h264 (native) -> mjpeg (native))
+Press [q] to stop, [?] for help
+Output #0, image2, to './static/videos/covers/mobile_approach-hero-cover.jpg':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    date            : 2025/10/19 08:05:20
+    encoder         : Lavf62.3.100
+  Stream #0:0(und): Video: mjpeg, yuv420p(pc, progressive), 1280x720 [SAR 1:1 DAR 16:9], q=2-31, 200 kb/s, 29.97 fps, 29.97 tbn (default)
+    Metadata:
+      encoder         : Lavc62.11.100 mjpeg
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/200000 buffer size: 0 vbv_delay: N/A
+[48;5;0m[38;5;213m[image2 @ 0x13c7050f0] [0m[48;5;0m[38;5;226mThe specified filename './static/videos/covers/mobile_approach-hero-cover.jpg' does not contain an image sequence pattern or a pattern is invalid.
+[0m[48;5;0m[38;5;213m[image2 @ 0x13c7050f0] [0m[48;5;0m[38;5;226mUse a pattern such as %03d for an image sequence or use the -update option (with -frames:v 1 if needed) to write a single image.
+[0m[48;5;0m[38;5;213m[out#0/image2 @ 0x60000371c000] [0mvideo:120KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+frame=    1 fps=0.0 q=8.0 Lsize=N/A time=00:00:00.03 bitrate=N/A speed=0.785x elapsed=0:00:00.04    
+Generated cover for ./static/videos/mobile_approach-hero.mp4 → ./static/videos/covers/mobile_approach-hero-cover.jpg
+ffmpeg version 8.0 Copyright (c) 2000-2025 the FFmpeg developers
+  built with Apple clang version 17.0.0 (clang-1700.0.13.3)
+  configuration: --prefix=/opt/homebrew/Cellar/ffmpeg/8.0_1 --enable-shared --enable-pthreads --enable-version3 --cc=clang --host-cflags= --host-ldflags='-Wl,-ld_classic' --enable-ffplay --enable-gnutls --enable-gpl --enable-libaom --enable-libaribb24 --enable-libbluray --enable-libdav1d --enable-libharfbuzz --enable-libjxl --enable-libmp3lame --enable-libopus --enable-librav1e --enable-librist --enable-librubberband --enable-libsnappy --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libtesseract --enable-libtheora --enable-libvidstab --enable-libvmaf --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libxvid --enable-lzma --enable-libfontconfig --enable-libfreetype --enable-frei0r --enable-libass --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libspeex --enable-libsoxr --enable-libzmq --enable-libzimg --disable-libjack --disable-indev=jack --enable-videotoolbox --enable-audiotoolbox --enable-neon
+  libavutil      60.  8.100 / 60.  8.100
+  libavcodec     62. 11.100 / 62. 11.100
+  libavformat    62.  3.100 / 62.  3.100
+  libavdevice    62.  1.100 / 62.  1.100
+  libavfilter    11.  4.100 / 11.  4.100
+  libswscale      9.  1.100 /  9.  1.100
+  libswresample   6.  1.100 /  6.  1.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from './static/videos/mobile_diasporau-hero.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf62.3.100
+  Duration: 00:00:10.00, start: 0.000000, bitrate: 487 kb/s
+  Stream #0:0[0x1](eng): Video: h264 (High) (avc1 / 0x31637661), yuv420p(tv, bt709, progressive), 1280x720 [SAR 1:1 DAR 16:9], 484 kb/s, 25 fps, 25 tbr, 12800 tbn (default)
+    Metadata:
+      handler_name    : VideoHandle
+      vendor_id       : [0][0][0][0]
+      encoder         : Lavc62.11.100 libx264
+Stream mapping:
+  Stream #0:0 -> #0:0 (h264 (native) -> mjpeg (native))
+Press [q] to stop, [?] for help
+Output #0, image2, to './static/videos/covers/mobile_diasporau-hero-cover.jpg':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf62.3.100
+  Stream #0:0(eng): Video: mjpeg, yuv420p(pc, bt709, progressive), 1280x720 [SAR 1:1 DAR 16:9], q=2-31, 200 kb/s, 25 fps, 25 tbn (default)
+    Metadata:
+      encoder         : Lavc62.11.100 mjpeg
+      handler_name    : VideoHandle
+      vendor_id       : [0][0][0][0]
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/200000 buffer size: 0 vbv_delay: N/A
+[48;5;0m[38;5;213m[image2 @ 0x150f050f0] [0m[48;5;0m[38;5;226mThe specified filename './static/videos/covers/mobile_diasporau-hero-cover.jpg' does not contain an image sequence pattern or a pattern is invalid.
+[0m[48;5;0m[38;5;213m[image2 @ 0x150f050f0] [0m[48;5;0m[38;5;226mUse a pattern such as %03d for an image sequence or use the -update option (with -frames:v 1 if needed) to write a single image.
+[0m[48;5;0m[38;5;213m[out#0/image2 @ 0x600002940000] [0mvideo:35KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+frame=    1 fps=0.0 q=4.7 Lsize=N/A time=00:00:00.04 bitrate=N/A speed=1.48x elapsed=0:00:00.02    
+Generated cover for ./static/videos/mobile_diasporau-hero.mp4 → ./static/videos/covers/mobile_diasporau-hero-cover.jpg
+ffmpeg version 8.0 Copyright (c) 2000-2025 the FFmpeg developers
+  built with Apple clang version 17.0.0 (clang-1700.0.13.3)
+  configuration: --prefix=/opt/homebrew/Cellar/ffmpeg/8.0_1 --enable-shared --enable-pthreads --enable-version3 --cc=clang --host-cflags= --host-ldflags='-Wl,-ld_classic' --enable-ffplay --enable-gnutls --enable-gpl --enable-libaom --enable-libaribb24 --enable-libbluray --enable-libdav1d --enable-libharfbuzz --enable-libjxl --enable-libmp3lame --enable-libopus --enable-librav1e --enable-librist --enable-librubberband --enable-libsnappy --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libtesseract --enable-libtheora --enable-libvidstab --enable-libvmaf --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libxvid --enable-lzma --enable-libfontconfig --enable-libfreetype --enable-frei0r --enable-libass --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libspeex --enable-libsoxr --enable-libzmq --enable-libzimg --disable-libjack --disable-indev=jack --enable-videotoolbox --enable-audiotoolbox --enable-neon
+  libavutil      60.  8.100 / 60.  8.100
+  libavcodec     62. 11.100 / 62. 11.100
+  libavformat    62.  3.100 / 62.  3.100
+  libavdevice    62.  1.100 / 62.  1.100
+  libavfilter    11.  4.100 / 11.  4.100
+  libswscale      9.  1.100 /  9.  1.100
+  libswresample   6.  1.100 /  6.  1.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from './static/videos/mobile_landing-hero.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    date            : 2025/10/19 08:21:58
+    encoder         : Lavf62.3.100
+  Duration: 00:00:08.34, start: 0.000000, bitrate: 2009 kb/s
+  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 1280x720 [SAR 1:1 DAR 16:9], 2005 kb/s, 29.97 fps, 29.97 tbr, 30k tbn (default)
+    Metadata:
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+      encoder         : Lavc62.11.100 libx264
+Stream mapping:
+  Stream #0:0 -> #0:0 (h264 (native) -> mjpeg (native))
+Press [q] to stop, [?] for help
+Output #0, image2, to './static/videos/covers/mobile_landing-hero-cover.jpg':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    date            : 2025/10/19 08:21:58
+    encoder         : Lavf62.3.100
+  Stream #0:0(und): Video: mjpeg, yuv420p(pc, progressive), 1280x720 [SAR 1:1 DAR 16:9], q=2-31, 200 kb/s, 29.97 fps, 29.97 tbn (default)
+    Metadata:
+      encoder         : Lavc62.11.100 mjpeg
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/200000 buffer size: 0 vbv_delay: N/A
+[48;5;0m[38;5;213m[image2 @ 0x14ef050f0] [0m[48;5;0m[38;5;226mThe specified filename './static/videos/covers/mobile_landing-hero-cover.jpg' does not contain an image sequence pattern or a pattern is invalid.
+[0m[48;5;0m[38;5;213m[image2 @ 0x14ef050f0] [0m[48;5;0m[38;5;226mUse a pattern such as %03d for an image sequence or use the -update option (with -frames:v 1 if needed) to write a single image.
+[0m[48;5;0m[38;5;213m[out#0/image2 @ 0x6000021a0000] [0mvideo:109KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+frame=    1 fps=0.0 q=8.7 Lsize=N/A time=00:00:00.03 bitrate=N/A speed=0.864x elapsed=0:00:00.03    
+Generated cover for ./static/videos/mobile_landing-hero.mp4 → ./static/videos/covers/mobile_landing-hero-cover.jpg
+ffmpeg version 8.0 Copyright (c) 2000-2025 the FFmpeg developers
+  built with Apple clang version 17.0.0 (clang-1700.0.13.3)
+  configuration: --prefix=/opt/homebrew/Cellar/ffmpeg/8.0_1 --enable-shared --enable-pthreads --enable-version3 --cc=clang --host-cflags= --host-ldflags='-Wl,-ld_classic' --enable-ffplay --enable-gnutls --enable-gpl --enable-libaom --enable-libaribb24 --enable-libbluray --enable-libdav1d --enable-libharfbuzz --enable-libjxl --enable-libmp3lame --enable-libopus --enable-librav1e --enable-librist --enable-librubberband --enable-libsnappy --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libtesseract --enable-libtheora --enable-libvidstab --enable-libvmaf --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libxvid --enable-lzma --enable-libfontconfig --enable-libfreetype --enable-frei0r --enable-libass --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libspeex --enable-libsoxr --enable-libzmq --enable-libzimg --disable-libjack --disable-indev=jack --enable-videotoolbox --enable-audiotoolbox --enable-neon
+  libavutil      60.  8.100 / 60.  8.100
+  libavcodec     62. 11.100 / 62. 11.100
+  libavformat    62.  3.100 / 62.  3.100
+  libavdevice    62.  1.100 / 62.  1.100
+  libavfilter    11.  4.100 / 11.  4.100
+  libswscale      9.  1.100 /  9.  1.100
+  libswresample   6.  1.100 /  6.  1.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from './static/videos/mobile_ndgo-hero1.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf62.3.100
+  Duration: 00:00:10.01, start: 0.000000, bitrate: 3335 kb/s
+  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(tv, bt709, progressive), 1280x2276, 3331 kb/s, 29.97 fps, 29.97 tbr, 30k tbn (default)
+    Metadata:
+      handler_name    : L-SMASH Video Handler
+      vendor_id       : [0][0][0][0]
+      encoder         : Lavc62.11.100 libx264
+Stream mapping:
+  Stream #0:0 -> #0:0 (h264 (native) -> mjpeg (native))
+Press [q] to stop, [?] for help
+Output #0, image2, to './static/videos/covers/mobile_ndgo-hero1-cover.jpg':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf62.3.100
+  Stream #0:0(und): Video: mjpeg, yuv420p(pc, bt709, progressive), 1280x2276, q=2-31, 200 kb/s, 29.97 fps, 29.97 tbn (default)
+    Metadata:
+      encoder         : Lavc62.11.100 mjpeg
+      handler_name    : L-SMASH Video Handler
+      vendor_id       : [0][0][0][0]
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/200000 buffer size: 0 vbv_delay: N/A
+[48;5;0m[38;5;213m[image2 @ 0x12ee044b0] [0m[48;5;0m[38;5;226mThe specified filename './static/videos/covers/mobile_ndgo-hero1-cover.jpg' does not contain an image sequence pattern or a pattern is invalid.
+[0m[48;5;0m[38;5;213m[image2 @ 0x12ee044b0] [0m[48;5;0m[38;5;226mUse a pattern such as %03d for an image sequence or use the -update option (with -frames:v 1 if needed) to write a single image.
+[0m[48;5;0m[38;5;213m[out#0/image2 @ 0x600002450000] [0mvideo:104KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+frame=    1 fps=0.0 q=8.0 Lsize=N/A time=00:00:00.03 bitrate=N/A speed=0.323x elapsed=0:00:00.10    
+Generated cover for ./static/videos/mobile_ndgo-hero1.mp4 → ./static/videos/covers/mobile_ndgo-hero1-cover.jpg
+ffmpeg version 8.0 Copyright (c) 2000-2025 the FFmpeg developers
+  built with Apple clang version 17.0.0 (clang-1700.0.13.3)
+  configuration: --prefix=/opt/homebrew/Cellar/ffmpeg/8.0_1 --enable-shared --enable-pthreads --enable-version3 --cc=clang --host-cflags= --host-ldflags='-Wl,-ld_classic' --enable-ffplay --enable-gnutls --enable-gpl --enable-libaom --enable-libaribb24 --enable-libbluray --enable-libdav1d --enable-libharfbuzz --enable-libjxl --enable-libmp3lame --enable-libopus --enable-librav1e --enable-librist --enable-librubberband --enable-libsnappy --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libtesseract --enable-libtheora --enable-libvidstab --enable-libvmaf --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libxvid --enable-lzma --enable-libfontconfig --enable-libfreetype --enable-frei0r --enable-libass --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libspeex --enable-libsoxr --enable-libzmq --enable-libzimg --disable-libjack --disable-indev=jack --enable-videotoolbox --enable-audiotoolbox --enable-neon
+  libavutil      60.  8.100 / 60.  8.100
+  libavcodec     62. 11.100 / 62. 11.100
+  libavformat    62.  3.100 / 62.  3.100
+  libavdevice    62.  1.100 / 62.  1.100
+  libavfilter    11.  4.100 / 11.  4.100
+  libswscale      9.  1.100 /  9.  1.100
+  libswresample   6.  1.100 /  6.  1.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from './static/videos/mobile_tours-hero.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    date            : 2025/10/19 07:51:17
+    encoder         : Lavf62.3.100
+  Duration: 00:00:08.34, start: 0.000000, bitrate: 1598 kb/s
+  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 1280x720 [SAR 1:1 DAR 16:9], 1594 kb/s, 29.97 fps, 29.97 tbr, 30k tbn (default)
+    Metadata:
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+      encoder         : Lavc62.11.100 libx264
+Stream mapping:
+  Stream #0:0 -> #0:0 (h264 (native) -> mjpeg (native))
+Press [q] to stop, [?] for help
+Output #0, image2, to './static/videos/covers/mobile_tours-hero-cover.jpg':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    date            : 2025/10/19 07:51:17
+    encoder         : Lavf62.3.100
+  Stream #0:0(und): Video: mjpeg, yuv420p(pc, progressive), 1280x720 [SAR 1:1 DAR 16:9], q=2-31, 200 kb/s, 29.97 fps, 29.97 tbn (default)
+    Metadata:
+      encoder         : Lavc62.11.100 mjpeg
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/200000 buffer size: 0 vbv_delay: N/A
+[48;5;0m[38;5;213m[image2 @ 0x13df06830] [0m[48;5;0m[38;5;226mThe specified filename './static/videos/covers/mobile_tours-hero-cover.jpg' does not contain an image sequence pattern or a pattern is invalid.
+[0m[48;5;0m[38;5;213m[image2 @ 0x13df06830] [0m[48;5;0m[38;5;226mUse a pattern such as %03d for an image sequence or use the -update option (with -frames:v 1 if needed) to write a single image.
+[0m[48;5;0m[38;5;213m[out#0/image2 @ 0x6000039b0000] [0mvideo:55KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+frame=    1 fps=0.0 q=5.8 Lsize=N/A time=00:00:00.03 bitrate=N/A speed=0.965x elapsed=0:00:00.03    
+Generated cover for ./static/videos/mobile_tours-hero.mp4 → ./static/videos/covers/mobile_tours-hero-cover.jpg
+ffmpeg version 8.0 Copyright (c) 2000-2025 the FFmpeg developers
+  built with Apple clang version 17.0.0 (clang-1700.0.13.3)
+  configuration: --prefix=/opt/homebrew/Cellar/ffmpeg/8.0_1 --enable-shared --enable-pthreads --enable-version3 --cc=clang --host-cflags= --host-ldflags='-Wl,-ld_classic' --enable-ffplay --enable-gnutls --enable-gpl --enable-libaom --enable-libaribb24 --enable-libbluray --enable-libdav1d --enable-libharfbuzz --enable-libjxl --enable-libmp3lame --enable-libopus --enable-librav1e --enable-librist --enable-librubberband --enable-libsnappy --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libtesseract --enable-libtheora --enable-libvidstab --enable-libvmaf --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libxvid --enable-lzma --enable-libfontconfig --enable-libfreetype --enable-frei0r --enable-libass --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libspeex --enable-libsoxr --enable-libzmq --enable-libzimg --disable-libjack --disable-indev=jack --enable-videotoolbox --enable-audiotoolbox --enable-neon
+  libavutil      60.  8.100 / 60.  8.100
+  libavcodec     62. 11.100 / 62. 11.100
+  libavformat    62.  3.100 / 62.  3.100
+  libavdevice    62.  1.100 / 62.  1.100
+  libavfilter    11.  4.100 / 11.  4.100
+  libswscale      9.  1.100 /  9.  1.100
+  libswresample   6.  1.100 /  6.  1.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from './static/videos/ndgo-hero1.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf62.3.100
+  Duration: 00:00:10.01, start: 0.000000, bitrate: 10296 kb/s
+  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(tv, bt709, progressive), 2160x3840, 10293 kb/s, 29.97 fps, 29.97 tbr, 30k tbn (default)
+    Metadata:
+      handler_name    : L-SMASH Video Handler
+      vendor_id       : [0][0][0][0]
+      encoder         : Lavc62.11.100 libx264
+Stream mapping:
+  Stream #0:0 -> #0:0 (h264 (native) -> mjpeg (native))
+Press [q] to stop, [?] for help
+Output #0, image2, to './static/videos/covers/ndgo-hero1-cover.jpg':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf62.3.100
+  Stream #0:0(und): Video: mjpeg, yuv420p(pc, bt709, progressive), 2160x3840, q=2-31, 200 kb/s, 29.97 fps, 29.97 tbn (default)
+    Metadata:
+      encoder         : Lavc62.11.100 mjpeg
+      handler_name    : L-SMASH Video Handler
+      vendor_id       : [0][0][0][0]
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/200000 buffer size: 0 vbv_delay: N/A
+[48;5;0m[38;5;213m[image2 @ 0x15bf04ba0] [0m[48;5;0m[38;5;226mThe specified filename './static/videos/covers/ndgo-hero1-cover.jpg' does not contain an image sequence pattern or a pattern is invalid.
+[0m[48;5;0m[38;5;213m[image2 @ 0x15bf04ba0] [0m[48;5;0m[38;5;226mUse a pattern such as %03d for an image sequence or use the -update option (with -frames:v 1 if needed) to write a single image.
+[0m[48;5;0m[38;5;213m[out#0/image2 @ 0x600003c4c000] [0mvideo:215KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+frame=    1 fps=0.0 q=9.2 Lsize=N/A time=00:00:00.03 bitrate=N/A speed=0.134x elapsed=0:00:00.24    
+Generated cover for ./static/videos/ndgo-hero1.mp4 → ./static/videos/covers/ndgo-hero1-cover.jpg
+[1m[3m%[23m[1m[0m                                                                      [0m[23m[24m[J[0m[38;5;242m[49m[39m[0m[49m[38;2;87;199;255m~/diasporajunxion[0m[38;2;87;199;255m[49m[38;2;87;199;255m[0m[38;2;87;199;255m[49m [0m[38;2;87;199;255m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242mmain[0m[38;2;0;0;242m[49m[38;5;242m*[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m [0m[38;2;0;0;242m[49m[38;2;255;106;193m❯[0m[38;2;255;106;193m[49m[38;2;255;106;193m[0m[38;2;255;106;193m[49m[30m[0m[38;2;0;0;0m[49m[39m [0m[49m[39m[K[35C[0m[49m[38;5;242m11:42:02[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[39m[43D[?1h=[?2004h[?25l[0m[23m[24m[J[0m[38;5;242m[49m[39m[0m[49m[38;2;87;199;255m~/diasporajunxion[0m[38;2;87;199;255m[49m[38;2;87;199;255m[0m[38;2;87;199;255m[49m [0m[38;2;87;199;255m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242mmain[0m[38;2;0;0;242m[49m[38;5;242m*[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m [0m[38;2;0;0;242m[49m[38;2;255;106;193m❯[0m[38;2;255;106;193m[49m[38;2;255;106;193m[0m[38;2;255;106;193m[49m[30m[0m[38;2;0;0;0m[49m[39m [0m[49m[39m[K[35C[0m[49m[38;5;242m11:42:02[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[38;5;242m[0m[38;5;242m[49m[39m[43D[?25hjjkjkhhjjkj        j  vvi[?1l>[?25l[?2004l[0m[23m[24m[J[0m[49m[23m[24m[38;2;255;106;193m❯[0m[38;2;255;106;193m[49m[39m[23m[24m vi[K[?25h
+[?1049h[?1h=[H[J[?2004h[?2026$p[?u[c[34h[?25h]11;?[?25l[>4;2m[m[H[J[?1004h[34h[?25h[?25l]112[1 q[?1002h[?1006h[14B[93m[lspconfig] config "tl_ls" not found. Ensure it is listed in `configs.[13;15r[13;1H[m[38;2;224;226;234m[48;2;20;22;27m[2M[1;15r[12;1H                                                                      
+
+[m[38;2;252;224;148m[48;2;30;29;45mmd` or added as a custom server.[m[38;2;191;198;212m[48;2;30;29;45m                                      
+Press ENTER or type command to continue                               ]112[2 q]112[2 q[?1002l[?1006l[H                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+[m[38;2;252;224;148m[48;2;30;29;45m[lspconfig] config "tl_ls" not found. Ensure it is listed in `configs.
+md` or added as a custom server.[m[38;2;191;198;212m[48;2;30;29;45m                                      
+Press ENTER or type command to continue                               [15;40H[34h[?25h[?25l[H[m[38;2;56;55;71m[48;2;30;29;45m  [m[38;2;217;224;238m[48;2;30;29;45m1 [m[38;2;191;198;212m[48;2;37;36;52m                                                                  
+[m[38;2;56;55;71m[48;2;30;29;45m                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+[0;1m[38;2;30;29;45m[48;2;139;194;240m [14;3H NORMAL[m[38;2;139;194;240m[48;2;71;70;86m[14;11H[m[38;2;71;70;86m[48;2;47;46;62m[14;12H[m[38;2;217;224;238m[48;2;47;46;62m 󰈚[14;14H Empty [m[38;2;47;46;62m[48;2;35;34;50m[14;22H[0;1m[38;2;115;113;132m[48;2;35;34;50m                    [m[38;2;171;233;179m[48;2;35;34;50m                     [m[38;2;171;233;179m[48;2;47;46;62m[14;64H[m[38;2;30;29;45m[48;2;171;233;179m[14;65H [m[38;2;171;233;179m[48;2;47;46;62m 0/1 [m[38;2;191;198;212m[48;2;30;29;45m
+                                                                      [15;60H^N[?1002h[?1006h[1;5H[34h[?25h[?25l[15;60H  [1;5H[34h[?25h[?25l[14BMCP Hub started on port 3000[1;5H[34h[?25h[?25l[15;60Hj[1;5H[34h[?25h[?25l[15;60H [1;5H[34h[?25h[?25l[15;60Hj[1;5H[34h[?25h[?25l[15;60H [1;5H[34h[?25h[?25l[15;60H:[1;5H[34h[?25h[?25l[14B                                                            [15;1H:M[0;1m[38;2;30;29;45m[48;2;171;233;179m [14;3H COMMAND[m[38;2;171;233;179m[48;2;71;70;86m[14;12H[m[38;2;71;70;86m[48;2;47;46;62m[14;13H[m[38;2;217;224;238m[48;2;47;46;62m 󰈚[14;15H Empty [m[38;2;47;46;62m[48;2;35;34;50m]112[2 q[15;2H[34h[?25h[?25l[m[38;2;191;198;212m[48;2;30;29;45mabbreviate[10A[m[38;2;78;77;93m[48;2;30;29;45m┌[5;2H─[5;3H─[5;4H─[5;5H─[5;6H─[5;7H─[5;8H─[5;9H─[5;10H─[5;11H─[5;12H─[5;13H─[5;14H─[5;15H─[5;16H─[5;17H─[5;18H─[5;19H─[5;20H─[5;21H─[5;22H─[5;23H─[5;24H─[5;25H─[5;26H─[5;27H─[5;28H─[5;29H─[5;30H─[5;31H─[5;32H─[5;33H─[5;34H─[5;35H─[5;36H─[5;37H─[5;38H─[5;39H─[5;40H─[5;41H─[5;42H─[5;43H┐[6;1H│[6;2H[m[38;2;30;29;45m[48;2;171;233;179m abbreviate                   󰜢[6;33H Property [m[38;2;78;77;93m[48;2;30;29;45m│[7;1H│[7;2H[m[38;2;191;198;212m[48;2;30;29;45m [m[38;2;217;224;238m[48;2;30;29;45mabclear[m[38;2;191;198;212m[48;2;30;29;45m                      [m[38;2;243;139;168m[48;2;30;29;45m󰜢[7;33H[m[38;2;191;198;212m[48;2;30;29;45m Property [m[38;2;78;77;93m[48;2;30;29;45m│[8;1H│[8;2H[m[38;2;191;198;212m[48;2;30;29;45m [m[38;2;217;224;238m[48;2;30;29;45maboveleft[m[38;2;191;198;212m[48;2;30;29;45m                    [m[38;2;243;139;168m[48;2;30;29;45m󰜢[8;33H[m[38;2;191;198;212m[48;2;30;29;45m Property [m[38;2;78;77;93m[48;2;30;29;45m│[9;1H│[9;2H[m[38;2;191;198;212m[48;2;30;29;45m [m[38;2;217;224;238m[48;2;30;29;45mall[m[38;2;191;198;212m[48;2;30;29;45m                          [m[38;2;243;139;168m[48;2;30;29;45m󰜢[9;33H[m[38;2;191;198;212m[48;2;30;29;45m Property [m[38;2;78;77;93m[48;2;30;29;45m│[10;1H│[10;2H[m[38;2;191;198;212m[48;2;30;29;45m [m[38;2;217;224;238m[48;2;30;29;45mamenu[m[38;2;191;198;212m[48;2;30;29;45m                        [m[38;2;243;139;168m[48;2;30;29;45m󰜢[10;33H[m[38;2;191;198;212m[48;2;30;29;45m Property [m[38;2;78;77;93m[48;2;30;29;45m│[11;1H│[11;2H[m[38;2;191;198;212m[48;2;30;29;45m [m[38;2;217;224;238m[48;2;30;29;45manoremenu[m[38;2;191;198;212m[48;2;30;29;45m                    [m[38;2;243;139;168m[48;2;30;29;45m󰜢[11;33H[m[38;2;191;198;212m[48;2;30;29;45m Property [m[38;2;78;77;93m[48;2;30;29;45m│[12;1H│[12;2H[m[38;2;191;198;212m[48;2;30;29;45m [m[38;2;217;224;238m[48;2;30;29;45mappend[m[38;2;191;198;212m[48;2;30;29;45m                       [m[38;2;243;139;168m[48;2;30;29;45m󰜢[12;33H[m[38;2;191;198;212m[48;2;30;29;45m Property [m[38;2;78;77;93m[48;2;30;29;45m│[13;1H│[13;2H[m[38;2;191;198;212m[48;2;30;29;45m [m[38;2;217;224;238m[48;2;30;29;45margadd[m[38;2;191;198;212m[48;2;30;29;45m                       [m[38;2;243;139;168m[48;2;30;29;45m󰜢[13;33H[m[38;2;191;198;212m[48;2;30;29;45m Property [m[38;2;78;77;93m[48;2;30;29;45m│[14;1H└[14;2H─[14;3H─[14;4H─[14;5H─[14;6H─[14;7H─[14;8H─[14;9H─[14;10H─[14;11H─[14;12H─[14;13H─[14;14H─[14;15H─[14;16H─[14;17H─[14;18H─[14;19H─[14;20H─[14;21H─[14;22H─[14;23H─[14;24H─[14;25H─[14;26H─[14;27H─[14;28H─[14;29H─[14;30H─[14;31H─[14;32H─[14;33H─[14;34H─[14;35H─[14;36H─[14;37H─[14;38H─[14;39H─[14;40H─[14;41H─[14;42H─[14;43H┘[15;12H[34h[?25h[?25l[m[38;2;191;198;212m[48;2;30;29;45m [34h[?25h[?25l [34h[?25h[?25l [34h[?25h[?25l [34h[?25h[?25l [34h[?25h[?25l [34h[?25h[?25l [34h[?25h[?25l [34h[?25h[?25l [34h[?25h[?25l [34h[?25h[?25l[15;1H [10A[m[38;2;56;55;71m[48;2;30;29;45m                                           
+                                           
+                                           
+                                           
+                                           
+                                           
+                                           
+                                           
+                                           
+[0;1m[38;2;30;29;45m[48;2;171;233;179m [14;3H COMMAND[m[38;2;171;233;179m[48;2;71;70;86m[14;12H[m[38;2;71;70;86m[48;2;47;46;62m[14;13H[m[38;2;217;224;238m[48;2;47;46;62m 󰈚[14;15H Empty [m[38;2;47;46;62m[48;2;35;34;50m[14;23H[0;1m[38;2;115;113;132m[48;2;35;34;50m                   [m[38;2;171;233;179m[48;2;35;34;50m  [14;1H[0;1m[38;2;30;29;45m[48;2;139;194;240m [14;3H NORMAL[m[38;2;139;194;240m[48;2;71;70;86m[14;11H[m[38;2;71;70;86m[48;2;47;46;62m[14;12H[m[38;2;217;224;238m[48;2;47;46;62m 󰈚[14;14H Empty [m[38;2;47;46;62m[48;2;35;34;50m[14;22H[0;1m[38;2;115;113;132m[48;2;35;34;50m ]112[2 q[1;5H[34h[?25h[?25l[15;60H[m[38;2;191;198;212m[48;2;30;29;45m:[1;5H[34h[?25h[?25l[15;60H [15;1H:M[0;1m[38;2;30;29;45m[48;2;171;233;179m [14;3H COMMAND[m[38;2;171;233;179m[48;2;71;70;86m[14;12H[m[38;2;71;70;86m[48;2;47;46;62m[14;13H[m[38;2;217;224;238m[48;2;47;46;62m 󰈚[14;15H Empty [m[38;2;47;46;62m[48;2;35;34;50m]112[2 q[15;2H[34h[?25h[?25l[m[38;2;191;198;212m[48;2;30;29;45mq[34h[?25h[?25l![34h[?25h[?25l[15;1H[34h[?25h[?25l]112[2 q[34h[?25h[?25l]112[2 q[?1002l[?1006l[m[34h[?25h[?1l>[>4;0m[?1049l[?2004l[?1004l[34h[?25h[1m[3m%[23m[1m[0m                                                                      [0m[23m[24m[J[0m[38;5;242m[49m[39m[0m[49m[38;2;87;199;255m~/diasporajunxion[0m[38;2;87;199;255m[49m[38;2;87;199;255m[0m[38;2;87;199;255m[49m [0m[38;2;87;199;255m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242mmain[0m[38;2;0;0;242m[49m[38;5;242m*[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m [0m[38;2;0;0;242m[49m[38;2;255;106;193m❯[0m[38;2;255;106;193m[49m[38;2;255;106;193m[0m[38;2;255;106;193m[49m[30m[0m[38;2;0;0;0m[49m[39m [0m[49m[39m[K[31C[0m[49m[38;2;243;249;157m17s[0m[38;2;243;249;157m[49m[38;2;243;249;157m[0m[38;2;243;249;157m[49m[38;2;243;249;157m[0m[38;2;243;249;157m[49m[38;5;242m 12:12:05[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m[39m[43D[?1h=[?2004h[?25l[0m[23m[24m[J[0m[38;5;242m[49m[39m[0m[49m[38;2;87;199;255m~/diasporajunxion[0m[38;2;87;199;255m[49m[38;2;87;199;255m[0m[38;2;87;199;255m[49m [0m[38;2;87;199;255m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242mmain[0m[38;2;0;0;242m[49m[38;5;242m*[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m [0m[38;2;0;0;242m[49m[38;2;255;106;193m❯[0m[38;2;255;106;193m[49m[38;2;255;106;193m[0m[38;2;255;106;193m[49m[30m[0m[38;2;0;0;0m[49m[39m [0m[49m[39m[K[31C[0m[49m[38;2;243;249;157m17s[0m[38;2;243;249;157m[49m[38;2;243;249;157m[0m[38;2;243;249;157m[49m[38;2;243;249;157m[0m[38;2;243;249;157m[49m[38;5;242m 12:12:05[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m[38;5;242m[0m[38;2;0;0;242m[49m[39m[43D[?25hvvi[?1l>[?25l[?2004l[0m[23m[24m[J[0m[49m[23m[24m[38;2;255;106;193m❯[0m[38;2;255;106;193m[49m[39m[23m[24m vi[K[?25h
+[?1049h[?1h=[H[J[?2004h[?2026$p[?u[c[34h[?25h]11;?[?25l[>4;2m[m[H[J[?1004h[34h[?25h[?25l]112[1 q[?1002h[?1006h[14B[93m[lspconfig] config "tl_ls" not found. Ensure it is listed in `configs.[13;15r[13;1H[m[38;2;224;226;234m[48;2;20;22;27m[2M[1;15r[12;1H                                                                      
+
+[m[38;2;252;224;148m[48;2;30;29;45mmd` or added as a custom server.[m[38;2;191;198;212m[48;2;30;29;45m                                      
+Press ENTER or type command to continue                               ]112[2 q]112[2 q[?1002l[?1006l[H                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+[m[38;2;252;224;148m[48;2;30;29;45m[lspconfig] config "tl_ls" not found. Ensure it is listed in `configs.
+md` or added as a custom server.[m[38;2;191;198;212m[48;2;30;29;45m                                      
+Press ENTER or type command to continue                               [15;40H[34h[?25h[?25l[H[m[38;2;56;55;71m[48;2;30;29;45m  [m[38;2;217;224;238m[48;2;30;29;45m1 [m[38;2;191;198;212m[48;2;37;36;52m                                                                  
+[m[38;2;56;55;71m[48;2;30;29;45m                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+[0;1m[38;2;30;29;45m[48;2;139;194;240m [14;3H NORMAL[m[38;2;139;194;240m[48;2;71;70;86m[14;11H[m[38;2;71;70;86m[48;2;47;46;62m[14;12H[m[38;2;217;224;238m[48;2;47;46;62m 󰈚[14;14H Empty [m[38;2;47;46;62m[48;2;35;34;50m[14;22H[0;1m[38;2;115;113;132m[48;2;35;34;50m                    [m[38;2;171;233;179m[48;2;35;34;50m                     [m[38;2;171;233;179m[48;2;47;46;62m[14;64H[m[38;2;30;29;45m[48;2;171;233;179m[14;65H [m[38;2;171;233;179m[48;2;47;46;62m 0/1 [m[38;2;191;198;212m[48;2;30;29;45m
+                                                                      [?1002h[?1006h[1;5H[34h[?25h[?25l[14BMCP Hub started on port 3000[1;5H[34h[?25h[?25l[15;60Hj[1;5H[34h[?25h[?25l[15;60H [1;5H[34h[?25h[?25l[15;60Hj[1;5H[34h[?25h[?25l[15;60H [1;5H[34h[?25h[?25l[15;60Hj[1;5H[34h[?25h[?25l[15;60H [1;5H[34h[?25h[?25l[15;60Hk[1;5H[34h[?25h[?25l[15;60H [1;5H[34h[?25h[?25l[34h[?25h[?25l[H[m[38;2;191;198;212m[48;2;25;24;40m  [m[38;2;78;77;93m[48;2;30;29;45m[1;4H [m[38;2;137;180;250m[48;2;30;29;45m[1;6H[m[38;2;191;198;212m[48;2;30;29;45m [m[38;2;137;180;250m[48;2;30;29;45m.git[m[38;2;191;198;212m[48;2;30;29;45m                    
+[m[38;2;191;198;212m[48;2;25;24;40m  [m[38;2;78;77;93m[48;2;25;24;40m[2;4H [m[38;2;137;180;250m[48;2;25;24;40m[2;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;137;180;250m[48;2;25;24;40m.github[m[38;2;191;198;212m[48;2;25;24;40m                 
+  [m[38;2;78;77;93m[48;2;25;24;40m[3;4H [m[38;2;137;180;250m[48;2;25;24;40m[3;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;137;180;250m[48;2;25;24;40me2e[m[38;2;191;198;212m[48;2;25;24;40m                     
+  [m[38;2;78;77;93m[48;2;25;24;40m[4;4H [m[38;2;137;180;250m[48;2;25;24;40m[4;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;137;180;250m[48;2;25;24;40mprisma[m[38;2;191;198;212m[48;2;25;24;40m                  
+  [m[38;2;78;77;93m[48;2;25;24;40m[5;4H [m[38;2;137;180;250m[48;2;25;24;40m[5;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40m★[5;8H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40mscripts[m[38;2;191;198;212m[48;2;25;24;40m               
+  [m[38;2;78;77;93m[48;2;25;24;40m[6;4H [m[38;2;137;180;250m[48;2;25;24;40m[6;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;243;139;168m[48;2;25;24;40m✗[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40m★[6;10H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;243;139;168m[48;2;25;24;40msrc[m[38;2;191;198;212m[48;2;25;24;40m                 
+  [m[38;2;78;77;93m[48;2;25;24;40m[7;4H [m[38;2;137;180;250m[48;2;25;24;40m[7;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40m★[7;8H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40mstatic[m[38;2;191;198;212m[48;2;25;24;40m                
+  [m[38;2;78;77;93m[48;2;25;24;40m[8;4H [m[38;2;137;180;250m[48;2;25;24;40m[8;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40m★[8;8H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40mworker[m[38;2;191;198;212m[48;2;25;24;40m                
+  [m[38;2;51;50;65m[48;2;25;24;40m  [m[38;2;245;77;39m[48;2;25;24;40m[9;6H[m[38;2;191;198;212m[48;2;25;24;40m .gitattributes          
+  [m[38;2;51;50;65m[48;2;25;24;40m  [m[38;2;245;77;39m[48;2;25;24;40m[10;6H[m[38;2;191;198;212m[48;2;25;24;40m .gitignore              
+  [m[38;2;51;50;65m[48;2;25;24;40m  [m[38;2;232;39;75m[48;2;25;24;40m[11;6H[m[38;2;191;198;212m[48;2;25;24;40m .npmrc                  
+  [m[38;2;51;50;65m[48;2;25;24;40m  [m[38;2;66;133;244m[48;2;25;24;40m[12;6H[m[38;2;191;198;212m[48;2;25;24;40m .prettierignore         
+  [m[38;2;51;50;65m[48;2;25;24;40m  [m[38;2;66;133;244m[48;2;25;24;40m[13;6H[m[38;2;191;198;212m[48;2;25;24;40m .prettierrc             [12A[m[38;2;25;24;40m[48;2;25;24;40m│[2;31H│[3;31H│[4;31H│[5;31H│[6;31H│[7;31H│[8;31H│[9;31H│[10;31H│[11;31H│[12;31H│[13;31H│[14;15H[m[38;2;217;224;238m[48;2;47;46;62mNvimTree_1 [m[38;2;47;46;62m[48;2;35;34;50m[14;27H[0;1m[38;2;115;113;132m[48;2;35;34;50m                 [m[38;2;171;233;179m[48;2;35;34;50m                   [m[38;2;171;233;179m[48;2;47;46;62m[14;64H[m[38;2;30;29;45m[48;2;171;233;179m[14;65H [m[38;2;171;233;179m[48;2;47;46;62m 1/5[1;32H[m[38;2;56;55;71m[48;2;30;29;45m  [m[38;2;217;224;238m[48;2;30;29;45m1 [29D[34h[?25h[?25l[15;60H[m[38;2;191;198;212m[48;2;30;29;45mj[1;7H[34h[?25h[?25l[15;60H [1;3H[m[38;2;78;77;93m[48;2;25;24;40m[1;4H [m[38;2;137;180;250m[48;2;25;24;40m[1;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;137;180;250m[48;2;25;24;40m.git[m[38;2;191;198;212m[48;2;25;24;40m                    [2;3H[m[38;2;78;77;93m[48;2;30;29;45m[2;4H [m[38;2;137;180;250m[48;2;30;29;45m[2;6H[m[38;2;191;198;212m[48;2;30;29;45m [m[38;2;137;180;250m[48;2;30;29;45m.github[m[38;2;191;198;212m[48;2;30;29;45m                 [14;67H[m[38;2;171;233;179m[48;2;47;46;62m2[2;7H[34h[?25h[?25l[15;60H[m[38;2;191;198;212m[48;2;30;29;45mj[2;7H[34h[?25h[?25l[15;60H [2;3H[m[38;2;78;77;93m[48;2;25;24;40m[2;4H [m[38;2;137;180;250m[48;2;25;24;40m[2;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;137;180;250m[48;2;25;24;40m.github[m[38;2;191;198;212m[48;2;25;24;40m                 [3;3H[m[38;2;78;77;93m[48;2;30;29;45m[3;4H [m[38;2;137;180;250m[48;2;30;29;45m[3;6H[m[38;2;191;198;212m[48;2;30;29;45m [m[38;2;137;180;250m[48;2;30;29;45me2e[m[38;2;191;198;212m[48;2;30;29;45m                     [14;67H[m[38;2;171;233;179m[48;2;47;46;62m3[3;7H[34h[?25h[?25l[15;60H[m[38;2;191;198;212m[48;2;30;29;45mj[3;7H[34h[?25h[?25l[15;60H [3;3H[m[38;2;78;77;93m[48;2;25;24;40m[3;4H [m[38;2;137;180;250m[48;2;25;24;40m[3;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;137;180;250m[48;2;25;24;40me2e[m[38;2;191;198;212m[48;2;25;24;40m                     [4;3H[m[38;2;78;77;93m[48;2;30;29;45m[4;4H [m[38;2;137;180;250m[48;2;30;29;45m[4;6H[m[38;2;191;198;212m[48;2;30;29;45m [m[38;2;137;180;250m[48;2;30;29;45mprisma[m[38;2;191;198;212m[48;2;30;29;45m                  [14;67H[m[38;2;171;233;179m[48;2;47;46;62m4[4;7H[34h[?25h[?25l[15;60H[m[38;2;191;198;212m[48;2;30;29;45mj[4;7H[34h[?25h[?25l[15;60H [4;3H[m[38;2;78;77;93m[48;2;25;24;40m[4;4H [m[38;2;137;180;250m[48;2;25;24;40m[4;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;137;180;250m[48;2;25;24;40mprisma[m[38;2;191;198;212m[48;2;25;24;40m                  [5;3H[m[38;2;78;77;93m[48;2;30;29;45m[5;4H [m[38;2;137;180;250m[48;2;30;29;45m[5;6H[m[38;2;191;198;212m[48;2;30;29;45m [m[38;2;250;227;176m[48;2;30;29;45m★[5;8H[m[38;2;191;198;212m[48;2;30;29;45m [m[38;2;250;227;176m[48;2;30;29;45mscripts[m[38;2;191;198;212m[48;2;30;29;45m               [14;67H[m[38;2;171;233;179m[48;2;47;46;62m5/7[5;9H[34h[?25h[?25l[15;60H[m[38;2;191;198;212m[48;2;30;29;45mj[5;9H[34h[?25h[?25l[15;60H [5;3H[m[38;2;78;77;93m[48;2;25;24;40m[5;4H [m[38;2;137;180;250m[48;2;25;24;40m[5;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40m★[5;8H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40mscripts[m[38;2;191;198;212m[48;2;25;24;40m               [6;3H[m[38;2;78;77;93m[48;2;30;29;45m[6;4H [m[38;2;137;180;250m[48;2;30;29;45m[6;6H[m[38;2;191;198;212m[48;2;30;29;45m [m[38;2;243;139;168m[48;2;30;29;45m✗[m[38;2;191;198;212m[48;2;30;29;45m [m[38;2;250;227;176m[48;2;30;29;45m★[6;10H[m[38;2;191;198;212m[48;2;30;29;45m [m[38;2;243;139;168m[48;2;30;29;45msrc[m[38;2;191;198;212m[48;2;30;29;45m                 [14;67H[m[38;2;171;233;179m[48;2;47;46;62m6/9[6;11H[34h[?25h[?25l[15;60H[m[38;2;191;198;212m[48;2;30;29;45mj[6;11H[34h[?25h[?25l[15;60H [6;3H[m[38;2;78;77;93m[48;2;25;24;40m[6;4H [m[38;2;137;180;250m[48;2;25;24;40m[6;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;243;139;168m[48;2;25;24;40m✗[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40m★[6;10H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;243;139;168m[48;2;25;24;40msrc[m[38;2;191;198;212m[48;2;25;24;40m                 [7;3H[m[38;2;78;77;93m[48;2;30;29;45m[7;4H [m[38;2;137;180;250m[48;2;30;29;45m[7;6H[m[38;2;191;198;212m[48;2;30;29;45m [m[38;2;250;227;176m[48;2;30;29;45m★[7;8H[m[38;2;191;198;212m[48;2;30;29;45m [m[38;2;250;227;176m[48;2;30;29;45mstatic[m[38;2;191;198;212m[48;2;30;29;45m                [14;67H[m[38;2;171;233;179m[48;2;47;46;62m7/7[7;9H[34h[?25h[?25l[15;60H[m[38;2;191;198;212m[48;2;30;29;45mj[7;9H[34h[?25h[?25l[15;60H [7;3H[m[38;2;78;77;93m[48;2;25;24;40m[7;4H [m[38;2;137;180;250m[48;2;25;24;40m[7;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40m★[7;8H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40mstatic[m[38;2;191;198;212m[48;2;25;24;40m                [8;3H[m[38;2;78;77;93m[48;2;30;29;45m[8;4H [m[38;2;137;180;250m[48;2;30;29;45m[8;6H[m[38;2;191;198;212m[48;2;30;29;45m [m[38;2;250;227;176m[48;2;30;29;45m★[8;8H[m[38;2;191;198;212m[48;2;30;29;45m [m[38;2;250;227;176m[48;2;30;29;45mworker[m[38;2;191;198;212m[48;2;30;29;45m                [14;67H[m[38;2;171;233;179m[48;2;47;46;62m8[8;9H[34h[?25h[?25l[15;60H[m[38;2;191;198;212m[48;2;30;29;45mj[8;9H[34h[?25h[?25l[15;60H [8;3H[m[38;2;78;77;93m[48;2;25;24;40m[8;4H [m[38;2;137;180;250m[48;2;25;24;40m[8;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40m★[8;8H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40mworker[m[38;2;191;198;212m[48;2;25;24;40m                [9;3H[m[38;2;51;50;65m[48;2;30;29;45m  [m[38;2;245;77;39m[48;2;30;29;45m[9;6H[m[38;2;191;198;212m[48;2;30;29;45m .gitattributes          [14;67H[m[38;2;171;233;179m[48;2;47;46;62m9/5[9;7H[34h[?25h[?25l[15;60H[m[38;2;191;198;212m[48;2;30;29;45mj[9;7H[34h[?25h[?25l[15;60H [9;3H[m[38;2;51;50;65m[48;2;25;24;40m  [m[38;2;245;77;39m[48;2;25;24;40m[9;6H[m[38;2;191;198;212m[48;2;25;24;40m .gitattributes          [10;3H[m[38;2;51;50;65m[48;2;30;29;45m  [m[38;2;245;77;39m[48;2;30;29;45m[10;6H[m[38;2;191;198;212m[48;2;30;29;45m .gitignore              [14;62H[m[38;2;171;233;179m[48;2;47;46;62m[14;63H[m[38;2;30;29;45m[48;2;171;233;179m[14;64H [m[38;2;171;233;179m[48;2;47;46;62m 10[10;7H[34h[?25h[?25l[15;60H[m[38;2;191;198;212m[48;2;30;29;45mj[10;7H[34h[?25h[?25l[15;60H [10;3H[m[38;2;51;50;65m[48;2;25;24;40m  [m[38;2;245;77;39m[48;2;25;24;40m[10;6H[m[38;2;191;198;212m[48;2;25;24;40m .gitignore              [11;3H[m[38;2;51;50;65m[48;2;30;29;45m  [m[38;2;232;39;75m[48;2;30;29;45m[11;6H[m[38;2;191;198;212m[48;2;30;29;45m .npmrc                  [14;67H[m[38;2;171;233;179m[48;2;47;46;62m1[11;7H[34h[?25h[?25l[15;60H[m[38;2;191;198;212m[48;2;30;29;45mj[11;7H[34h[?25h[?25l[15;60H [11;3H[m[38;2;51;50;65m[48;2;25;24;40m  [m[38;2;232;39;75m[48;2;25;24;40m[11;6H[m[38;2;191;198;212m[48;2;25;24;40m .npmrc                  [12;3H[m[38;2;51;50;65m[48;2;30;29;45m  [m[38;2;66;133;244m[48;2;30;29;45m[12;6H[m[38;2;191;198;212m[48;2;30;29;45m .prettierignore         [14;67H[m[38;2;171;233;179m[48;2;47;46;62m2[12;7H[34h[?25h[?25l[15;60H[m[38;2;191;198;212m[48;2;30;29;45mj[12;7H[34h[?25h[?25l[15;60H [12;3H[m[38;2;51;50;65m[48;2;25;24;40m  [m[38;2;66;133;244m[48;2;25;24;40m[12;6H[m[38;2;191;198;212m[48;2;25;24;40m .prettierignore         [13;3H[m[38;2;51;50;65m[48;2;30;29;45m  [m[38;2;66;133;244m[48;2;30;29;45m[13;6H[m[38;2;191;198;212m[48;2;30;29;45m .prettierrc             [14;67H[m[38;2;171;233;179m[48;2;47;46;62m3[13;7H[34h[?25h[?25l[15;60H[m[38;2;191;198;212m[48;2;30;29;45mj[13;7H[34h[?25h[?25l[15;60H [12;3H[m[38;2;51;50;65m[48;2;25;24;40m  [m[38;2;66;133;244m[48;2;25;24;40m[12;6H[m[38;2;191;198;212m[48;2;25;24;40m .prettierrc             
+  [m[38;2;51;50;65m[48;2;30;29;45m  [m[38;2;234;220;209m[48;2;30;29;45m[13;6H[m[38;2;191;198;212m[48;2;30;29;45m [m[38;2;250;227;176m[48;2;30;29;45m★[13;8H[m[38;2;191;198;212m[48;2;30;29;45m [m[38;2;250;227;176m[48;2;30;29;45mbun.lockb[m[38;2;191;198;212m[48;2;30;29;45m             [14;67H[m[38;2;171;233;179m[48;2;47;46;62m4/7[H[m[38;2;191;198;212m[48;2;25;24;40m  [m[38;2;78;77;93m[48;2;25;24;40m[1;4H [m[38;2;137;180;250m[48;2;25;24;40m[1;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;137;180;250m[48;2;25;24;40m.github[m[38;2;191;198;212m[48;2;25;24;40m                 
+  [m[38;2;78;77;93m[48;2;25;24;40m[2;4H [m[38;2;137;180;250m[48;2;25;24;40m[2;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;137;180;250m[48;2;25;24;40me2e[m[38;2;191;198;212m[48;2;25;24;40m                     
+  [m[38;2;78;77;93m[48;2;25;24;40m[3;4H [m[38;2;137;180;250m[48;2;25;24;40m[3;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;137;180;250m[48;2;25;24;40mprisma[m[38;2;191;198;212m[48;2;25;24;40m                  
+  [m[38;2;78;77;93m[48;2;25;24;40m[4;4H [m[38;2;137;180;250m[48;2;25;24;40m[4;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40m★[4;8H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40mscripts[m[38;2;191;198;212m[48;2;25;24;40m               
+  [m[38;2;78;77;93m[48;2;25;24;40m[5;4H [m[38;2;137;180;250m[48;2;25;24;40m[5;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;243;139;168m[48;2;25;24;40m✗[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40m★[5;10H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;243;139;168m[48;2;25;24;40msrc[m[38;2;191;198;212m[48;2;25;24;40m                 
+  [m[38;2;78;77;93m[48;2;25;24;40m[6;4H [m[38;2;137;180;250m[48;2;25;24;40m[6;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40m★[6;8H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40mstatic[m[38;2;191;198;212m[48;2;25;24;40m                
+  [m[38;2;78;77;93m[48;2;25;24;40m[7;4H [m[38;2;137;180;250m[48;2;25;24;40m[7;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40m★[7;8H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40mworker[m[38;2;191;198;212m[48;2;25;24;40m                
+  [m[38;2;51;50;65m[48;2;25;24;40m  [m[38;2;245;77;39m[48;2;25;24;40m[8;6H[m[38;2;191;198;212m[48;2;25;24;40m .gitattributes          
+  [m[38;2;51;50;65m[48;2;25;24;40m  [m[38;2;245;77;39m[48;2;25;24;40m[9;6H[m[38;2;191;198;212m[48;2;25;24;40m .gitignore              
+  [m[38;2;51;50;65m[48;2;25;24;40m  [m[38;2;232;39;75m[48;2;25;24;40m[10;6H[m[38;2;191;198;212m[48;2;25;24;40m .npmrc                  
+  [m[38;2;51;50;65m[48;2;25;24;40m  [m[38;2;66;133;244m[48;2;25;24;40m[11;6H[m[38;2;191;198;212m[48;2;25;24;40m .prettierignore         
+  [m[38;2;51;50;65m[48;2;25;24;40m  [m[38;2;66;133;244m[48;2;25;24;40m[12;6H[m[38;2;191;198;212m[48;2;25;24;40m .prettierrc             [13;9H[34h[?25h[?25l[15;60H[m[38;2;191;198;212m[48;2;30;29;45mj[13;9H[34h[?25h[?25l[15;60H [12;3H[m[38;2;51;50;65m[48;2;25;24;40m  [m[38;2;234;220;209m[48;2;25;24;40m[12;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40m★[12;8H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40mbun.lockb[m[38;2;191;198;212m[48;2;25;24;40m             
+  [m[38;2;51;50;65m[48;2;30;29;45m  [m[38;2;75;50;195m[48;2;30;29;45m[13;6H[m[38;2;191;198;212m[48;2;30;29;45m eslint.config.js        [14;67H[m[38;2;171;233;179m[48;2;47;46;62m5/5[H[m[38;2;191;198;212m[48;2;25;24;40m  [m[38;2;78;77;93m[48;2;25;24;40m[1;4H [m[38;2;137;180;250m[48;2;25;24;40m[1;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;137;180;250m[48;2;25;24;40me2e[m[38;2;191;198;212m[48;2;25;24;40m                     
+  [m[38;2;78;77;93m[48;2;25;24;40m[2;4H [m[38;2;137;180;250m[48;2;25;24;40m[2;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;137;180;250m[48;2;25;24;40mprisma[m[38;2;191;198;212m[48;2;25;24;40m                  
+  [m[38;2;78;77;93m[48;2;25;24;40m[3;4H [m[38;2;137;180;250m[48;2;25;24;40m[3;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40m★[3;8H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40mscripts[m[38;2;191;198;212m[48;2;25;24;40m               
+  [m[38;2;78;77;93m[48;2;25;24;40m[4;4H [m[38;2;137;180;250m[48;2;25;24;40m[4;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;243;139;168m[48;2;25;24;40m✗[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40m★[4;10H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;243;139;168m[48;2;25;24;40msrc[m[38;2;191;198;212m[48;2;25;24;40m                 
+  [m[38;2;78;77;93m[48;2;25;24;40m[5;4H [m[38;2;137;180;250m[48;2;25;24;40m[5;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40m★[5;8H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40mstatic[m[38;2;191;198;212m[48;2;25;24;40m                
+  [m[38;2;78;77;93m[48;2;25;24;40m[6;4H [m[38;2;137;180;250m[48;2;25;24;40m[6;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40m★[6;8H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40mworker[m[38;2;191;198;212m[48;2;25;24;40m                
+  [m[38;2;51;50;65m[48;2;25;24;40m  [m[38;2;245;77;39m[48;2;25;24;40m[7;6H[m[38;2;191;198;212m[48;2;25;24;40m .gitattributes          
+  [m[38;2;51;50;65m[48;2;25;24;40m  [m[38;2;245;77;39m[48;2;25;24;40m[8;6H[m[38;2;191;198;212m[48;2;25;24;40m .gitignore              
+  [m[38;2;51;50;65m[48;2;25;24;40m  [m[38;2;232;39;75m[48;2;25;24;40m[9;6H[m[38;2;191;198;212m[48;2;25;24;40m .npmrc                  
+  [m[38;2;51;50;65m[48;2;25;24;40m  [m[38;2;66;133;244m[48;2;25;24;40m[10;6H[m[38;2;191;198;212m[48;2;25;24;40m .prettierignore         
+  [m[38;2;51;50;65m[48;2;25;24;40m  [m[38;2;66;133;244m[48;2;25;24;40m[11;6H[m[38;2;191;198;212m[48;2;25;24;40m .prettierrc             
+  [m[38;2;51;50;65m[48;2;25;24;40m  [m[38;2;234;220;209m[48;2;25;24;40m[12;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40m★[12;8H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40mbun.lockb[m[38;2;191;198;212m[48;2;25;24;40m             [13;7H[34h[?25h[?25l[15;60H[m[38;2;191;198;212m[48;2;30;29;45mj[13;7H[34h[?25h[?25l[15;60H [12;3H[m[38;2;51;50;65m[48;2;25;24;40m  [m[38;2;75;50;195m[48;2;25;24;40m[12;6H[m[38;2;191;198;212m[48;2;25;24;40m eslint.config.js        
+  [m[38;2;51;50;65m[48;2;30;29;45m  [m[38;2;203;203;65m[48;2;30;29;45m[13;6H[m[38;2;191;198;212m[48;2;30;29;45m jsconfig.json           [14;67H[m[38;2;171;233;179m[48;2;47;46;62m6[H[m[38;2;191;198;212m[48;2;25;24;40m  [m[38;2;78;77;93m[48;2;25;24;40m[1;4H [m[38;2;137;180;250m[48;2;25;24;40m[1;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;137;180;250m[48;2;25;24;40mprisma[m[38;2;191;198;212m[48;2;25;24;40m                  
+  [m[38;2;78;77;93m[48;2;25;24;40m[2;4H [m[38;2;137;180;250m[48;2;25;24;40m[2;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40m★[2;8H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40mscripts[m[38;2;191;198;212m[48;2;25;24;40m               
+  [m[38;2;78;77;93m[48;2;25;24;40m[3;4H [m[38;2;137;180;250m[48;2;25;24;40m[3;6H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;243;139;168m[48;2;25;24;40m✗[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;250;227;176m[48;2;25;24;40m★[3;10H[m[38;2;191;198;212m[48;2;25;24;40m [m[38;2;243;139;168m[48;2;25;24;40

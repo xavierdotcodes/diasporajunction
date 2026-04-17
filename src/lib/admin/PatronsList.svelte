@@ -1,8 +1,11 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
 	import PatronItem from './PatronItem.svelte';
+	import { fileLogger } from '$lib/utils/logger';
 
-	export let patrons = [];
+	fileLogger('src/lib/admin/PatronsList.svelte');
+
+	let { patrons = [] } = $props();
 	const dispatch = createEventDispatcher();
 
 	function handleHover(patron) {

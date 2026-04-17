@@ -3,13 +3,15 @@
 	import TourList from './TourList.svelte';
 	import PatronsList from './PatronsList.svelte';
 	import PatronModal from './PatronModal.svelte';
+	import { fileLogger } from '$lib/utils/logger';
 
-	export let tours = [];
-	export let patrons = [];
+	fileLogger('src/lib/admin/ToursPanel.svelte');
 
-	let selectedTour = null;
-	let hoveredPatron = null;
-	let showModal = false;
+	let { tours = [], patrons = [] } = $props();
+
+	let selectedTour = $state(null);
+	let hoveredPatron = $state(null);
+	let showModal = $state(false);
 
 	function handleTourSelect(tour) {
 		selectedTour = tour;

@@ -1,3 +1,7 @@
+import { fileLogger } from '$lib/utils/logger';
+
+fileLogger('src/lib/client/helpers.js');
+
 /**
  * Add a new tour
  */

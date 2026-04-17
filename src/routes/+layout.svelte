@@ -1,7 +1,63 @@
 <script>
-	import Navbar from '$lib/layout/Navbar.svelte';
+	import { browser } from '$app/environment';
+	import { afterNavigate } from '$app/navigation';
+	import { page } from '$app/state';
+	import Navbar from '$lib/ui/Navbar.svelte';
+	import {
+		initPostHog,
+		capturePageview,
+		identifyPostHogUser,
+		resetPostHogUser
+	} from '$lib/analytics/posthog';
+	import LeadCaptureModal from '$lib/components/lead/LeadCaptureModal.svelte';
 	import Footer from '$lib/layout/Footer.svelte';
+	import { persistLeadAttribution } from '$lib/lead/attribution';
+	import { autoReveal } from '$lib/motion/reveal';
+	import { pageFade } from '$lib/motion/transitions';
 	import '../app.css';
+	import { fileLogger } from '$lib/utils/logger';
+	import { onMount } from 'svelte';
+	/**
+	 * @typedef {Object} Props
+	 * @property {{ user?: { id: string, email?: string | null, name?: string | null, roles?: string[] } | null }} [data]
+	 * @property {import('svelte').Snippet} [children]
+	 */
+
+	/** @type {Props} */
+	let { children, data } = $props();
+	let skipInitialAfterNavigate = true;
+
+	fileLogger('src/routes/+layout.svelte');
+
+	if (browser) {
+		afterNavigate(({ to }) => {
+			if (skipInitialAfterNavigate) {
+				skipInitialAfterNavigate = false;
+			} else {
+				capturePageview(to?.url ?? window.location);
+			}
+
+			persistLeadAttribution(to?.url ?? window.location);
+		});
+	}
+
+	onMount(() => {
+		persistLeadAttribution(window.location);
+
+		if (!initPostHog()) return;
+
+		if (data?.user?.id) {
+			identifyPostHogUser(data.user.id, {
+				email: data.user.email ?? undefined,
+				name: data.user.name ?? undefined,
+				roles: data.user.roles ?? []
+			});
+		} else {
+			resetPostHogUser();
+		}
+
+		capturePageview(window.location);
+	});
 </script>
 
 <svelte:head>
@@ -37,14 +93,29 @@
 	<meta name="apple-mobile-web-app-title" content="DiasporaJunxion" />
 	<link rel="manifest" href="/site.webmanifest" />
 	<link rel="preload" as="video" href="/videos/tours-hero.mp4" type="video/mp4" />
+	<script
+		defer
+		src="https://cloud.umami.is/script.js"
+		data-website-id="b4bcbb63-1d88-41da-8000-cfc37f06b1ba"
+	></script>
 </svelte:head>
 
 <div class="flex flex-col min-h-screen">
 	<Navbar />
 
-	<main class="flex-1">
-		<slot />
+	<main class="flex-1 overflow-x-clip">
+		{#key page.url.pathname}
+			<div
+				use:autoReveal
+				in:pageFade={{ duration: 440, y: 24, blur: 10 }}
+				out:pageFade={{ duration: 300, y: 10, blur: 6, outro: true }}
+				class="route-shell relative will-change-[opacity,transform,filter]"
+			>
+				{@render children?.()}
+			</div>
+		{/key}
 	</main>
 
 	<Footer />
+	<LeadCaptureModal />
 </div>

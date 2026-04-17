@@ -1,58 +1,68 @@
 <script>
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
+	import { autoReveal } from '$lib/motion/reveal';
+	import { fileLogger } from '$lib/utils/logger';
 
-	export let title = 'DiasporaJunxion';
-	export let subtitle = 'The meeting point of Diaspora Power and African Innovation.';
-	export let description = '';
-	export let desktopVideoSrc;
-	export let desktopPosterSrc;
-	export let mobileVideoSrc;
-	export let mobilePosterSrc;
+	fileLogger('src/lib/ui/Hero.svelte');
 
-	let videoSrc = '';
-	let posterSrc = '';
-	let showLogo = false;
+	/**
+	 * @typedef {Object} Props
+	 * @property {string} [subtitle]
+	 * @property {string} [description]
+	 * @property {string} desktopVideoSrc
+	 * @property {string} desktopPosterSrc
+	 * @property {string} mobileVideoSrc
+	 * @property {string} mobilePosterSrc
+	 * @property {import('svelte').Snippet} [logo]
+	 * @property {import('svelte').Snippet} [title]
+	 * @property {import('svelte').Snippet} [cta]
+	 */
 
-	// Split title into prefix + highlight
-	$: titleParts = (() => {
-		const idx = title.indexOf('Junxion');
-		if (idx !== -1) {
-			return {
-				prefix: title.slice(0, idx),
-				highlight: 'Junxion',
-				suffix: title.slice(idx + 'Junxion'.length)
-			};
-		}
-		return { prefix: title, highlight: '', suffix: '' };
-	})();
+	/** @type {Props} */
+	let {
+		subtitle = 'A bridge for diaspora relocation, belonging, and opportunity in Ghana.',
+		description = '',
+		desktopVideoSrc,
+		desktopPosterSrc,
+		mobileVideoSrc,
+		mobilePosterSrc,
+		logo,
+		title,
+		cta
+	} = $props();
+
+	let videoSrc = $state('');
+	let posterSrc = $state('');
+	let showLogo = $state(false);
 
 	function updateDevice() {
 		if (!browser) return;
-		const ua = navigator.userAgent || '';
-		const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobi/i.test(
-			ua
-		);
-		showLogo = isMobileUA;
-		videoSrc = isMobileUA ? mobileVideoSrc : desktopVideoSrc;
-		posterSrc = isMobileUA ? mobilePosterSrc : desktopPosterSrc;
+
+		const isMobileViewport = window.innerWidth <= 768;
+		showLogo = isMobileViewport;
+		videoSrc = isMobileViewport ? mobileVideoSrc : desktopVideoSrc;
+		posterSrc = isMobileViewport ? mobilePosterSrc : desktopPosterSrc;
 	}
 
 	onMount(() => {
 		if (!browser) return;
+
 		updateDevice();
 		window.addEventListener('resize', updateDevice);
+
 		return () => window.removeEventListener('resize', updateDevice);
 	});
 </script>
 
 <section
-	class="hero-section relative flex flex-col items-center justify-center text-center font-sans bg-black text-white overflow-hidden"
+	data-no-reveal
+	class="relative isolate flex min-h-[100dvh] w-full items-center justify-center overflow-hidden bg-[#0B0B0B] text-white"
 >
 	<!-- Background Video -->
-	<div class="absolute inset-0 w-full h-full pointer-events-none">
+	<div class="pointer-events-none absolute inset-0">
 		<video
-			class="hero-video w-full h-full object-cover object-center"
+			class="h-full w-full object-cover object-center"
 			autoplay
 			muted
 			loop
@@ -66,172 +76,89 @@
 	</div>
 
 	<!-- Overlay -->
+	<div class="pointer-events-none absolute inset-0 bg-black/50"></div>
 	<div
-		class="absolute inset-0 bg-gradient-to-b from-black/70 to-black/90 pointer-events-none"
+		class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(11,11,11,0.2),rgba(11,11,11,0.78),rgba(11,11,11,0.94))]"
+	></div>
+	<div
+		class="pointer-events-none absolute inset-x-0 top-0 h-48 bg-[radial-gradient(circle_at_top,rgba(242,183,5,0.22),transparent_68%)]"
+	></div>
+	<div
+		class="pointer-events-none absolute inset-y-0 left-0 w-56 bg-[radial-gradient(circle_at_left,rgba(3,140,37,0.12),transparent_70%)]"
 	></div>
 
 	<!-- Content -->
 	<div
-		class="hero-content relative z-10 flex flex-col items-center justify-center max-w-6xl mx-auto px-4 sm:px-6 md:px-8 space-y-6"
+		use:autoReveal={{ stagger: 110, threshold: 0.05 }}
+		data-reveal-group
+		class="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center px-6 py-24 text-center sm:px-8 md:px-10 md:py-32"
 	>
 		{#if showLogo}
-			<div class="logo">
-				<slot name="logo" />
+			<div class="mb-6 flex justify-center" data-reveal-item>
+				{@render logo?.()}
 			</div>
 		{/if}
 
-		<h1 class="hero-title font-extrabold tracking-tight leading-tight text-white">
-			<span class="text-white">{titleParts.prefix}</span><span class="text-[#D9042B]"
-				>{titleParts.highlight}</span
-			><span class="text-white">{titleParts.suffix}</span>
-		</h1>
-
 		{#if subtitle}
-			<h2 class="hero-subtitle font-light text-white max-w-3xl">{subtitle}</h2>
-		{/if}
-
-		{#if description}
-			<p class="hero-description text-white max-w-3xl">
-				{@html description}
+			<p
+				data-reveal-item
+				class="mb-4 max-w-3xl font-mono text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[#F2B705] sm:text-xs"
+			>
+				{subtitle}
 			</p>
 		{/if}
 
-		<slot name="cta" />
+		<div class="hero-title-slot max-w-5xl font-heading" data-reveal-item>
+			{@render title?.()}
+		</div>
+
+		{#if description}
+			<div
+				data-reveal-item
+				class="hero-description mt-6 max-w-3xl text-sm leading-7 text-white/85 sm:text-base md:mt-8 md:text-lg md:leading-8"
+			>
+				{@html description}
+			</div>
+		{/if}
+
+		{#if cta}
+			<div class="mt-8 flex flex-wrap items-center justify-center gap-3 md:mt-10" data-reveal-item>
+				{@render cta?.()}
+			</div>
+		{/if}
 	</div>
 </section>
 
 <style>
-	:global(html, body) {
+	.hero-title-slot :global(h1) {
+		font-family: var(--font-heading);
+		font-size: clamp(2.75rem, 7vw, 5.75rem);
+		font-weight: 900;
+		line-height: 0.96;
+		letter-spacing: -0.04em;
+		text-wrap: balance;
+		color: white;
 		margin: 0;
-		padding: 0;
-		width: 100%;
-		max-width: 100vw;
-		overflow-x: hidden;
-		font-family: 'Inter', sans-serif;
-		background-color: #000;
-		color: #fff;
-		scroll-behavior: smooth;
 	}
 
-	.hero-section {
-		position: relative;
-		width: 100%;
-		max-width: 100vw;
-		min-height: 100dvh;
-		overflow: hidden;
+	.hero-title-slot :global(.highlight) {
+		color: #F2B705;
 	}
 
-	video.hero-video {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		object-position: center;
+	.hero-description :global(strong) {
+		color: white;
+		font-weight: 700;
 	}
 
-	.hero-content {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
+	.hero-description :global(em) {
+		font-style: italic;
+		color: #F2B705;
 	}
 
-	.hero-title {
-		font-size: 5rem;
-		line-height: 1.1;
-		word-break: break-word;
-		color: #fff;
-	}
-
-	.hero-subtitle {
-		font-size: 1.75rem;
-		color: #ffffff;
-	}
-
-	.hero-description {
-		font-size: 1.125rem;
-		line-height: 1.6;
-		color: #ffffff;
-	}
-
-	/* Mobile Portrait */
-	@media (max-width: 480px) and (orientation: portrait) {
-		.hero-title {
-			font-size: 2.4rem;
-		}
-		.hero-subtitle {
-			font-size: 1rem;
-		}
-		.hero-description {
-			font-size: 0.95rem;
-			line-height: 1.45;
-			margin-bottom: 1.5rem;
-		}
-		video.hero-video {
-			object-position: top center;
-		}
-		.hero-content {
-			padding-left: 1rem;
-			padding-right: 1rem;
-		}
-	}
-
-	/* Mobile Landscape */
-	@media (max-height: 480px) and (orientation: landscape) {
-		.hero-title {
-			font-size: 2.2rem;
-			margin-bottom: 0.5rem;
-			white-space: normal;
-		}
-		.hero-subtitle {
-			font-size: 0.95rem;
-			line-height: 1.2;
-		}
-		.hero-description {
-			display: none;
-		}
-		video.hero-video {
-			object-position: center center;
-		}
-		.hero-content {
-			max-width: 100%;
-			padding: 0;
-			margin: 0 auto;
-		}
-	}
-
-	/* Tablet */
-	@media (min-width: 481px) and (max-width: 1024px) {
-		.hero-title {
-			font-size: 3.5rem;
-		}
-		.hero-subtitle {
-			font-size: 1.25rem;
-		}
-		.hero-description {
-			font-size: 1rem;
-			max-width: 600px;
-		}
-		video.hero-video {
-			object-position: center 20%;
-		}
-		.hero-content {
-			padding: 0 2rem;
-		}
-	}
-
-	/* Desktop */
-	@media (min-width: 1025px) {
-		.hero-title {
-			font-size: 5rem;
-		}
-		.hero-subtitle {
-			font-size: 1.75rem;
-		}
-		.hero-description {
-			font-size: 1.125rem;
-		}
-		video.hero-video {
-			object-position: center center;
+	@media (max-width: 640px) {
+		.hero-title-slot :global(h1) {
+			line-height: 1;
+			letter-spacing: -0.03em;
 		}
 	}
 </style>

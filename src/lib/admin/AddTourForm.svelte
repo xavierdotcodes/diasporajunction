@@ -1,17 +1,20 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
 	import { addTour } from '$lib/client/helpers.js';
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/admin/AddTourForm.svelte');
 
 	const dispatch = createEventDispatcher();
 
-	let tour = {
+	let tour = $state({
 		price: '',
 		startDate: '',
 		endDate: ''
-	};
+	});
 
-	let error = '';
-	let loading = false;
+	let error = $state('');
+	let loading = $state(false);
 
 	async function handleSubmit(e) {
 		e.preventDefault();
@@ -55,13 +58,14 @@
 		<p class="text-red-400 text-center mb-4">{error}</p>
 	{/if}
 
-	<form on:submit={handleSubmit} class="space-y-5">
+	<form onsubmit={handleSubmit} class="space-y-5">
 		<!-- Price -->
 		<div>
-			<label class="block mb-2 text-white font-medium">Price (USD)</label>
+			<label for="tour-price" class="block mb-2 text-white font-medium">Price (USD)</label>
 			<div class="flex">
 				<span class="px-4 py-3 bg-gray-700 text-white rounded-l-lg">$</span>
 				<input
+					id="tour-price"
 					type="number"
 					bind:value={tour.price}
 					min="0"
@@ -75,8 +79,9 @@
 
 		<!-- Start Date -->
 		<div>
-			<label class="block mb-2 text-white font-medium">Start Date</label>
+			<label for="tour-start-date" class="block mb-2 text-white font-medium">Start Date</label>
 			<input
+				id="tour-start-date"
 				type="date"
 				bind:value={tour.startDate}
 				class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400"
@@ -86,8 +91,9 @@
 
 		<!-- End Date -->
 		<div>
-			<label class="block mb-2 text-white font-medium">End Date</label>
+			<label for="tour-end-date" class="block mb-2 text-white font-medium">End Date</label>
 			<input
+				id="tour-end-date"
 				type="date"
 				bind:value={tour.endDate}
 				class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400"
@@ -122,8 +128,7 @@
 </div>
 
 <style>
-	input:focus,
-	textarea:focus {
+	input:focus {
 		outline: none;
 	}
 </style>

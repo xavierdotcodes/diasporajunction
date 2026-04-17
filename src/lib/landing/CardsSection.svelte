@@ -2,8 +2,11 @@
 	import { onMount } from 'svelte';
 	import Card from './Card.svelte';
 	import gsap from 'gsap';
+	import { fileLogger } from '$lib/utils/logger';
 
-	export let cards = [];
+	fileLogger('src/lib/landing/CardsSection.svelte');
+
+	let { cards = [] } = $props();
 
 	onMount(async () => {
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');

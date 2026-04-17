@@ -1,6 +1,9 @@
 import { json } from '@sveltejs/kit';
 import { getStripe } from '$lib/server/stripe';
 import { prisma } from '$lib/server/prisma';
+import { fileLogger } from '$lib/utils/logger';
+
+fileLogger('src/routes/api/space/complete-order/+server.js');
 
 export async function POST({ request }) {
 	try {

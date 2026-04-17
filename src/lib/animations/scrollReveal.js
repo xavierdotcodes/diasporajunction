@@ -1,3 +1,7 @@
+import { fileLogger } from '$lib/utils/logger';
+
+fileLogger('src/lib/animations/scrollReveal.js');
+
 export async function revealOnScroll(target, opts = {}) {
 	// guard for SSR
 	if (typeof window === 'undefined') return;

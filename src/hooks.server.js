@@ -1,7 +1,19 @@
-import { prisma } from '$lib/server/prisma';
+import prisma from '$lib/server/prisma';
+import { applyOriginCacheHeaders } from '$lib/server/cache';
 import { getRedis } from '$lib/server/redis';
+import { fileLogger } from '$lib/utils/logger';
+import { startEmailWorker } from '$lib/server/workers/email.worker.js';
+
+fileLogger('src/hooks.server.js');
+
+let workerStarted = false;
 
 export async function handle({ event, resolve }) {
+	if (!workerStarted) {
+		startEmailWorker();
+		workerStarted = true;
+	}
+
 	const sessionId = event.cookies.get('session');
 
 	if (sessionId) {
@@ -22,5 +34,6 @@ export async function handle({ event, resolve }) {
 		}
 	}
 
-	return resolve(event);
+	const response = await resolve(event);
+	return applyOriginCacheHeaders(response, event.request);
 }

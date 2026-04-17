@@ -1,13 +1,21 @@
 <script>
 	import { onMount, tick } from 'svelte';
 	import gsap from 'gsap';
+	import { fileLogger } from '$lib/utils/logger';
 
-	export let introText = 'Introducing DiasporaJunxion’s flagship product…';
-	export let heroText = ['S', 'P', '▲', 'C', 'E'];
-	export let taglineText =
-		'Immersive sound. Futuristic design. Experience music like never before.';
+	fileLogger('src/lib/space/Hero.svelte');
 
-	let introLine, heroTitle, tagline, heroImg;
+	/**
+	 * @typedef {Object} Props
+	 * @property {string} [introText]
+	 * @property {any} [heroText]
+	 * @property {string} [taglineText]
+	 */
+
+	/** @type {Props} */
+	let { introText = 'Introducing DiasporaJunxion’s flagship product…', heroText = ['S', 'P', '▲', 'C', 'E'], taglineText = 'Immersive sound. Futuristic design. Experience music like never before.' } = $props();
+
+	let introLine = $state(), heroTitle = $state(), tagline = $state(), heroImg = $state();
 	const isDev = import.meta.env.MODE === 'development';
 
 	onMount(async () => {
@@ -115,11 +123,6 @@
 </section>
 
 <style>
-	html,
-	body {
-		overflow-x: hidden;
-	}
-
 	.hero-centered {
 		text-align: center;
 		display: flex;
@@ -134,10 +137,6 @@
 		font-size: clamp(1rem, 4vw, 1.25rem);
 		color: #ccc;
 	}
-	.intro-line .word {
-		display: inline-block;
-	}
-
 	.hero-title {
 		font-size: clamp(3rem, 12vw, 6rem);
 		font-weight: 900;

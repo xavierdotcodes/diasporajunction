@@ -1,4 +1,7 @@
 <script>
+	import { createBubbler, stopPropagation } from 'svelte/legacy';
+
+	const bubble = createBubbler();
 	import { onMount, onDestroy } from 'svelte';
 	import gsap from 'gsap';
 	import CustomerInfoForm from './CustomerInfoForm.svelte';
@@ -6,17 +9,20 @@
 	import { startPayment, completePayment, cancelPaymentIntent } from '$lib/client/stripe.js';
 	import { createEventDispatcher } from 'svelte';
 	import { getStripe } from '$lib/client/stripe';
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/payment/CheckoutModal.svelte');
 
 	const dispatch = createEventDispatcher();
 
-	let step = 1;
-	let clientSecret = null;
-	let orderid = null;
-	let loading = false;
-	let continueLoading = false;
-	let modalEl, overlayEl;
+	let step = $state(1);
+	let clientSecret = $state(null);
+	let orderid = $state(null);
+	let loading = $state(false);
+	let continueLoading = $state(false);
+	let modalEl = $state(), overlayEl = $state();
 
-	let customer = {
+	let customer = $state({
 		name: '',
 		email: '',
 		street: '',
@@ -25,9 +31,9 @@
 		state: '',
 		country: '',
 		zip: ''
-	};
+	});
 
-	let cardElement = null;
+	let cardElement = $state(null);
 
 	// --- GSAP open animation
 	onMount(() => {
@@ -68,6 +74,13 @@
 
 	function handleOverlayClick() {
 		close();
+	}
+
+	function handleOverlayKeydown(event) {
+		if (event.key === 'Escape' || event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			close();
+		}
 	}
 
 	async function nextStep() {
@@ -137,14 +150,31 @@
 </script>
 
 {#if step !== null}
-	<div class="modal-overlay" bind:this={overlayEl} on:click={handleOverlayClick}>
-		<div class="modal" bind:this={modalEl} on:click|stopPropagation>
-			<button class="close" on:click={close} aria-label="Close modal">✕</button>
+	<div
+		class="modal-overlay"
+		bind:this={overlayEl}
+		role="button"
+		tabindex="0"
+		aria-label="Close checkout modal"
+		onclick={handleOverlayClick}
+		onkeydown={handleOverlayKeydown}
+	>
+		<div
+			class="modal"
+			bind:this={modalEl}
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="checkout-modal-title"
+			tabindex="-1"
+			onclick={stopPropagation(bubble('click'))}
+			onkeydown={stopPropagation}
+		>
+			<button class="close" onclick={close} aria-label="Close modal">✕</button>
 
 			{#if step === 1}
-				<h2 class="title">Step 1: Enter Your Information</h2>
+				<h2 id="checkout-modal-title" class="title">Step 1: Enter Your Information</h2>
 				<CustomerInfoForm bind:customer />
-				<button class="primary" on:click={nextStep} disabled={continueLoading}>
+				<button class="primary" onclick={nextStep} disabled={continueLoading}>
 					{#if continueLoading}
 						<span class="loader"></span> Loading...
 					{:else}
@@ -152,11 +182,11 @@
 					{/if}
 				</button>
 			{:else if step === 2}
-				<h2 class="title">Step 2: Payment</h2>
+				<h2 id="checkout-modal-title" class="title">Step 2: Payment</h2>
 				<PaymentForm {clientSecret} bind:cardElement />
 				<div class="flex gap-3 mt-4">
-					<button class="secondary" on:click={backStep}>Back</button>
-					<button class="primary" on:click={nextStep} disabled={!cardElement || loading}>
+					<button class="secondary" onclick={backStep}>Back</button>
+					<button class="primary" onclick={nextStep} disabled={!cardElement || loading}>
 						{#if loading}
 							<span class="loader"></span> Processing...
 						{:else}
@@ -169,7 +199,7 @@
 					<h2>Thank You!</h2>
 					<p>Your payment was successful.</p>
 					<p><strong>Order ID:</strong> {orderid}</p>
-					<button class="primary" on:click={close}>Close</button>
+					<button class="primary" onclick={close}>Close</button>
 				</div>
 			{/if}
 		</div>

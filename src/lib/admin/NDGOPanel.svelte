@@ -1,5 +1,9 @@
 <script>
-	export let registrations = [];
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/admin/NDGOPanel.svelte');
+
+	let { registrations = [] } = $props();
 </script>
 
 {#each registrations as reg}

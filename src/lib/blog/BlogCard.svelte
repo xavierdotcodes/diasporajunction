@@ -1,8 +1,17 @@
 <script>
-	// instance script — this runs for each component instance (SSR + client)
-	export let post;
+	
 
 	import { goto } from '$app/navigation';
+	import { fileLogger } from '$lib/utils/logger';
+	/**
+	 * @typedef {Object} Props
+	 * @property {any} post - instance script — this runs for each component instance (SSR + client)
+	 */
+
+	/** @type {Props} */
+	let { post } = $props();
+
+	fileLogger('src/lib/blog/BlogCard.svelte');
 
 	function openPost() {
 		const el = document.getElementById(post.slug);
@@ -15,17 +24,18 @@
 	}
 </script>
 
-<article
+<button
+	type="button"
 	id={post.slug}
 	class="blog-card cursor-pointer relative overflow-hidden rounded-2xl shadow-md transition-transform duration-300 bg-white dark:bg-neutral-900"
-	on:click={openPost}
+	onclick={openPost}
 >
 	<img src={post.cover} alt={post.title} class="w-full object-cover rounded-t-2xl" loading="lazy" />
 	<div class="p-4">
 		<h2 class="text-xl font-semibold mb-2">{post.title}</h2>
 		<p class="text-sm text-neutral-500">{post.excerpt}</p>
 	</div>
-</article>
+</button>
 
 <style>
 	.blog-card {
@@ -37,7 +47,7 @@
 	.blog-card:hover {
 		transform: translateY(-4px);
 	}
-	.blog-card.zooming {
+	:global(.blog-card.zooming) {
 		transform: scale(1.05);
 	}
 </style>

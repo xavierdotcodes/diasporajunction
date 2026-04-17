@@ -1,14 +1,15 @@
 <script>
-	import { onMount, afterUpdate } from 'svelte';
 	import gsap from 'gsap';
+	import { fileLogger } from '$lib/utils/logger';
 
-	export let showModal = false;
-	export let onClose = () => {};
+	fileLogger('src/lib/ndgo/EnrollmentModal.svelte');
 
-	let modalEl; // ref for animation container
-	let backdropEl;
+	let { showModal = false, onClose = () => {} } = $props();
 
-	let formData = {
+	let modalEl = $state();
+	let backdropEl = $state();
+
+	let formData = $state({
 		fullName: '',
 		dob: '',
 		gender: '',
@@ -24,7 +25,7 @@
 		parentEmail: '',
 		motivation: '',
 		agree: false
-	};
+	});
 
 	const submitForm = () => {
 		if (!formData.agree) {
@@ -36,9 +37,13 @@
 		onClose();
 	};
 
-	// Animate when modal is shown
-	afterUpdate(() => {
-		if (showModal) {
+	function handleSubmit(event) {
+		event.preventDefault();
+		submitForm();
+	}
+
+	$effect(() => {
+		if (showModal && backdropEl && modalEl) {
 			gsap.fromTo(backdropEl, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: 'power2.out' });
 			gsap.fromTo(
 				modalEl,
@@ -60,12 +65,12 @@
 		>
 			<button
 				class="absolute top-4 right-4 text-gray-500 hover:text-black font-bold"
-				on:click={onClose}
+				onclick={onClose}
 			>
 				✕
 			</button>
 			<h3 class="text-2xl font-bold mb-4 text-center">NDGO Registration</h3>
-			<form on:submit|preventDefault={submitForm} class="space-y-4">
+			<form onsubmit={handleSubmit} class="space-y-4">
 				<!-- Form fields remain the same -->
 				<!-- ... -->
 				<div class="text-center">
@@ -81,10 +86,4 @@
 	</div>
 {/if}
 
-<style>
-	input,
-	select,
-	textarea {
-		outline: none;
-	}
-</style>
+<style></style>

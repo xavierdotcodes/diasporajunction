@@ -1,5 +1,9 @@
 <script>
-	export let hoveredPatron;
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/admin/PatronModal.svelte');
+
+	let { hoveredPatron } = $props();
 </script>
 
 <div class="p-4 bg-white rounded shadow-lg w-80">

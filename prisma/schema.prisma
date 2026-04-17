@@ -6,268 +6,50 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("MYSQL_URL")
+  provider = "postgres"
 }
 
-// --------------------
-// ENUMS
-// --------------------
-enum Role {
-  ADMIN
-  STUDENT
-  PROSPECT
-  TEACHER
-  TOUREE
+enum LeadStatus {
+  ACTIVE
+  UNSUBSCRIBED
+  CUSTOMER
 }
 
-enum PaymentStatus {
-  PENDING
-  SUCCESS
-  FAILED
-  REFUNDED
+model Lead {
+  id               String      @id @default(cuid())
+  email            String      @unique
+  firstName        String?
+  source           String?
+  leadMagnet       String?
+  entryPage        String?
+  referrer         String?
+  utmSource        String?
+  utmMedium        String?
+  utmCampaign      String?
+  utmContent       String?
+  status           LeadStatus  @default(ACTIVE)
+  subscribedAt     DateTime?
+  unsubscribedAt   DateTime?
+  ebookPurchasedAt DateTime?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  events           LeadEvent[]
+
+  @@index([status, createdAt])
+  @@index([source, createdAt])
+  @@index([leadMagnet, createdAt])
+  @@index([entryPage])
 }
 
-enum PaymentType {
-  FULL
-  DEPOSIT
-  INSTALLMENT
-}
-
-enum InstallmentStatus {
-  PENDING
-  DUE
-  PAID
-  OVERDUE
-  CANCELLED
-}
-
-enum BookingStatus {
-  PENDING
-  COMPLETED
-  CANCELLED
-}
-
-enum AssignmentType {
-  QUIZ
-  HOMEWORK
-}
-
-// --------------------
-// MODELS
-// --------------------
-model User {
-  id         Int       @id @default(autoincrement())
-  name       String?      
-  email      String    @unique
-  password   String?      
-  subscribed Boolean   @default(false)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  deletedAt  DateTime?
-
-  roles         UserRole[]
-  bookings      Booking[]
-  registrations Registration[]
-  spaceOrders   SpaceOrder[]
-  progresses    Progress[]
-  teaching      Course[]
-  submissions   Submission[]
-  addresses     Address[]
-}
-
-model UserRole {
-  id     Int   @id @default(autoincrement())
-  user   User  @relation(fields: [userId], references: [id])
-  userId Int
-  role   Role
-
-  @@unique([userId, role])
-}
-
-model Course {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String
-  price       Float
-  createdAt   DateTime @default(now())
-  
-  teacherId Int?
-  teacher   User? @relation(fields: [teacherId], references: [id])
-
-  modules       Module[]
-  registrations Registration[]
-}
-
-model Module {
-  id       Int    @id @default(autoincrement())
-  courseId Int
-  title    String
-  order    Int
-
-  course  Course   @relation(fields: [courseId], references: [id])
-  lessons Lesson[]
-}
-
-model Lesson {
-  id          Int       @id @default(autoincrement())
-  moduleId    Int
-  title       String
-  contentUrl  String?
-  contentType String?   // "video", "pdf", "text"
-  order       Int
-
-  module      Module        @relation(fields: [moduleId], references: [id])
-  progresses  Progress[]
-  assignments Assignment[]
-}
-
-model Progress {
-  id          Int       @id @default(autoincrement())
-  userId      Int
-  lessonId    Int
-  completed   Boolean   @default(false)
-  score       Float?
-  completedAt DateTime?
-
-  user   User   @relation(fields: [userId], references: [id])
-  lesson Lesson @relation(fields: [lessonId], references: [id])
-}
-
-model Registration {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  courseId  Int
+model LeadEvent {
+  id        String   @id @default(cuid())
+  leadId    String
+  type      String
+  page      String?
+  metadata  Json?
   createdAt DateTime @default(now())
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
-  user     User      @relation(fields: [userId], references: [id])
-  course   Course    @relation(fields: [courseId], references: [id])
-  payments Payment[] @relation("RegistrationPayments")
-}
-
-model Assignment {
-  id          Int            @id @default(autoincrement())
-  lessonId    Int
-  title       String
-  contentUrl  String?       
-  contentType String?       
-  type        AssignmentType @default(HOMEWORK)
-  createdAt   DateTime       @default(now())
-
-  lesson      Lesson        @relation(fields: [lessonId], references: [id])
-  submissions Submission[]
-}
-
-model Submission {
-  id            Int      @id @default(autoincrement())
-  assignmentId  Int
-  studentId     Int
-  contentUrl    String?
-  submittedAt   DateTime @default(now())
-  grade         Float?
-  notes         String?
-
-  assignment Assignment @relation(fields: [assignmentId], references: [id])
-  student    User       @relation(fields: [studentId], references: [id])
-}
-
-// --------------------
-// Tours & Bookings
-// --------------------
-model Tour {
-  id        Int      @id @default(autoincrement())
-  startDate DateTime
-  endDate   DateTime
-  price     Float
-
-  bookings Booking[]
-}
-
-model Booking {
-  id            Int           @id @default(autoincrement())
-  userId        Int
-  tourId        Int
-  paymentType   PaymentType   @default(FULL)
-  status        BookingStatus @default(PENDING)
-  totalAmount   Float
-  months        Int?
-  planStartDate DateTime?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @default(now())
-
-  user         User     @relation(fields: [userId], references: [id])
-  tour         Tour     @relation(fields: [tourId], references: [id])
-  payments     Payment[] @relation("BookingPayments")
-  installments Installment[]
-}
-
-model Installment {
-  id        Int               @id @default(autoincrement())
-  bookingId Int
-  dueDate   DateTime
-  amount    Float
-  status    InstallmentStatus @default(PENDING)
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @default(now())
-
-  booking   Booking           @relation(fields: [bookingId], references: [id])
-  payments  Payment[]         @relation("InstallmentPayments")
-}
-
-// --------------------
-// Payments
-// --------------------
-model Payment {
-  id                     Int           @id @default(autoincrement())
-  bookingId              Int?
-  installmentId          Int?
-  spaceOrderId           Int?
-  registrationId         Int?
-  amount                 Float
-  type                   PaymentType
-  status                 PaymentStatus @default(PENDING)
-  stripePaymentIntentId  String?
-  stripeChargeId         String?
-  createdAt              DateTime      @default(now())
-  updatedAt              DateTime      @default(now())
-
-  booking      Booking?      @relation("BookingPayments", fields: [bookingId], references: [id], map: "fk_payment_booking")
-  installment  Installment?  @relation("InstallmentPayments", fields: [installmentId], references: [id], map: "fk_payment_installment")
-  spaceOrder   SpaceOrder?   @relation("SpaceOrderPayments", fields: [spaceOrderId], references: [id], map: "fk_payment_spaceorder")
-  registration Registration? @relation("RegistrationPayments", fields: [registrationId], references: [id], map: "fk_payment_registration")
-}
-
-// --------------------
-// Space Orders
-// --------------------
-model SpaceOrder {
-  id        Int       @id @default(autoincrement())
-  userId    Int
-  notes     String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now()) @updatedAt
-
-  user     User      @relation(fields: [userId], references: [id])
-  payments Payment[] @relation("SpaceOrderPayments")
-}
-
-// --------------------
-// Addresses
-// --------------------
-model Address {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  street    String
-  apt       String?   // optional
-  city      String
-  state     String
-  country   String
-  zip       String
-  isPrimary Boolean   @default(false)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now())
-
-  user User @relation(fields: [userId], references: [id])
-
-  @@index([userId])
+  @@index([leadId, createdAt])
+  @@index([type, createdAt])
 }

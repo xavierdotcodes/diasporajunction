@@ -1,6 +1,9 @@
 <script>
 	import BlogCard from './BlogCard.svelte';
-	export let posts = [];
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/blog/BlogGrid.svelte');
+	let { posts = [] } = $props();
 </script>
 
 <div class="masonry-grid">

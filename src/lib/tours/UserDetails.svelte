@@ -1,14 +1,17 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/tours/UserDetails.svelte');
 	const dispatch = createEventDispatcher();
 
-	export let formData;
+	let { formData = $bindable() } = $props();
 
-	let errors = {
+	let errors = $state({
 		name: '',
 		email: '',
 		phone: ''
-	};
+	});
 
 	function validate() {
 		errors = { name: '', email: '', phone: '' };
@@ -38,7 +41,7 @@
 			type="text"
 			placeholder="Full Name"
 			bind:value={formData.name}
-			on:blur={validate}
+			onblur={validate}
 			class="w-full p-3 rounded border border-gray-400 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-400"
 		/>
 		{#if errors.name}
@@ -52,7 +55,7 @@
 			type="email"
 			placeholder="Email"
 			bind:value={formData.email}
-			on:blur={validate}
+			onblur={validate}
 			class="w-full p-3 rounded border border-gray-400 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-400"
 		/>
 		{#if errors.email}
@@ -66,7 +69,7 @@
 			type="tel"
 			placeholder="Phone (include country code)"
 			bind:value={formData.phone}
-			on:blur={validate}
+			onblur={validate}
 			class="w-full p-3 rounded border border-gray-400 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-400"
 		/>
 		{#if errors.phone}

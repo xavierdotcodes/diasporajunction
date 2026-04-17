@@ -1,6 +1,9 @@
 // src/routes/admin/subscribers/toggle/+server.js
 import { json } from '@sveltejs/kit';
 import { prisma } from '$lib/server/prisma';
+import { fileLogger } from '$lib/utils/logger';
+
+fileLogger('src/routes/api/subscribe/+server.js');
 
 /**
  * POST /admin/subscribers/toggle

@@ -1,5 +1,9 @@
 <script>
-	export let tour;
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/admin/TourItem.svelte');
+
+	let { tour } = $props();
 </script>
 
 <div

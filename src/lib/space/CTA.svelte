@@ -1,6 +1,9 @@
 <script>
 	import { createEventDispatcher, onMount, tick } from 'svelte';
 	import gsap from 'gsap';
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/space/CTA.svelte');
 
 	const dispatch = createEventDispatcher();
 
@@ -8,7 +11,7 @@
 		dispatch('openModal');
 	}
 
-	let wordContainer;
+	let wordContainer = $state();
 
 	onMount(async () => {
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
@@ -87,7 +90,7 @@
 			<span class="letter">.</span>
 		</strong>
 	</p>
-	<button class="cta-button" on:click={openModal}>Pre-Order Now</button>
+	<button class="cta-button" onclick={openModal}>Pre-Order Now</button>
 </section>
 
 <style>
@@ -152,25 +155,4 @@
 		display: block;
 	}
 
-	/* 🟣 ScrollTrigger Marker Color Coding for CTA */
-	#gspath-marker-cta-mobile-start,
-	#gspath-marker-cta-mobile-end {
-		color: #b794f4 !important;
-		border-color: #b794f4 !important;
-		background: rgba(183, 148, 244, 0.2) !important;
-	}
-
-	#gspath-marker-cta-tablet-start,
-	#gspath-marker-cta-tablet-end {
-		color: #d53f8c !important;
-		border-color: #d53f8c !important;
-		background: rgba(213, 63, 140, 0.2) !important;
-	}
-
-	#gspath-marker-cta-desktop-start,
-	#gspath-marker-cta-desktop-end {
-		color: #9f7aea !important;
-		border-color: #9f7aea !important;
-		background: rgba(159, 122, 234, 0.2) !important;
-	}
 </style>

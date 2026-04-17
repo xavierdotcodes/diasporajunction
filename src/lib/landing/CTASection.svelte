@@ -1,8 +1,11 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
 	import SubscribeModal from './SubscribeModal.svelte';
+	import { fileLogger } from '$lib/utils/logger';
 
-	let showModal = false;
+	fileLogger('src/lib/landing/CTASection.svelte');
+
+	let showModal = $state(false);
 
 	function openModal() {
 		showModal = true;
@@ -20,7 +23,7 @@
 			Whether you’re diaspora, local, or global fam, your energy is welcome here. Join us for tours,
 			events, or digital collabs — let’s make it real.
 		</p>
-		<button on:click={openModal} class="cta-btn">Get Involved</button>
+		<button onclick={openModal} class="cta-btn">Get Involved</button>
 	</div>
 
 	{#if showModal}

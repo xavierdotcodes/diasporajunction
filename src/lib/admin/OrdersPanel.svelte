@@ -1,5 +1,9 @@
 <script>
-	export let orders = [];
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/admin/OrdersPanel.svelte');
+
+	let { orders = [] } = $props();
 </script>
 
 {#if orders.length === 0}

@@ -1,11 +1,14 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
-	export let customer;
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/payment/CustomerInfoForm.svelte');
+	let { customer = $bindable() } = $props();
 
 	const dispatch = createEventDispatcher();
 
 	// Simple email validation
-	$: validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customer.email);
+	let validEmail = $derived(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customer.email));
 
 	function handleNext() {
 		if (
@@ -24,42 +27,42 @@
 
 <div class="form space-y-5">
 	<div class="field">
-		<label>Full Name</label>
-		<input bind:value={customer.name} placeholder="John Doe" />
+		<label for="customer-name">Full Name</label>
+		<input id="customer-name" bind:value={customer.name} placeholder="John Doe" />
 	</div>
 
 	<div class="field">
-		<label>Email</label>
-		<input bind:value={customer.email} type="email" placeholder="you@example.com" />
+		<label for="customer-email">Email</label>
+		<input id="customer-email" bind:value={customer.email} type="email" placeholder="you@example.com" />
 		{#if customer.email && !validEmail}
 			<p class="error">Please enter a valid email.</p>
 		{/if}
 	</div>
 
 	<div class="field">
-		<label>Street Address</label>
-		<input bind:value={customer.street} placeholder="123 Main St" />
+		<label for="customer-street">Street Address</label>
+		<input id="customer-street" bind:value={customer.street} placeholder="123 Main St" />
 	</div>
 
 	<div class="grid grid-cols-2 gap-4">
 		<div class="field">
-			<label>City</label>
-			<input bind:value={customer.city} placeholder="Accra" />
+			<label for="customer-city">City</label>
+			<input id="customer-city" bind:value={customer.city} placeholder="Accra" />
 		</div>
 		<div class="field">
-			<label>State</label>
-			<input bind:value={customer.state} placeholder="Greater Accra" />
+			<label for="customer-state">State</label>
+			<input id="customer-state" bind:value={customer.state} placeholder="Greater Accra" />
 		</div>
 	</div>
 
 	<div class="grid grid-cols-2 gap-4">
 		<div class="field">
-			<label>Country</label>
-			<input bind:value={customer.country} placeholder="GH" maxlength="2" />
+			<label for="customer-country">Country</label>
+			<input id="customer-country" bind:value={customer.country} placeholder="GH" maxlength="2" />
 		</div>
 		<div class="field">
-			<label>ZIP</label>
-			<input bind:value={customer.zip} placeholder="00233" />
+			<label for="customer-zip">ZIP</label>
+			<input id="customer-zip" bind:value={customer.zip} placeholder="00233" />
 		</div>
 	</div>
 </div>

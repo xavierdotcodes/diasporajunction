@@ -1,6 +1,9 @@
 <script>
-	export let activeUser;
-	export let onClose;
+	import { fileLogger } from '$lib/utils/logger';
+
+	fileLogger('src/lib/admin/UserModal.svelte');
+
+	let { activeUser, onClose } = $props();
 </script>
 
 <div class="user-modal p-4 bg-white shadow-lg rounded-lg w-80">
@@ -19,7 +22,7 @@
 		<p>Orders: {activeUser.orders.length}</p>
 	{/if}
 
-	<button class="mt-4 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600" on:click={onClose}>
+	<button class="mt-4 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600" onclick={onClose}>
 		Close
 	</button>
 </div>
