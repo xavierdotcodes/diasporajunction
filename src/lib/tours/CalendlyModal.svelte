@@ -1,9 +1,9 @@
-<script>
+	<script>
 	import { onMount } from 'svelte';
 	import { fade, scale } from 'svelte/transition';
-	import { fileLogger } from '$lib/utils/logger';
+	import { fileLogger, serializeError } from '$lib/utils/logger';
 
-	fileLogger('src/lib/tours/CalendlyModal.svelte');
+	const log = fileLogger('src/lib/tours/CalendlyModal.svelte');
 
 	/**
 	 * @typedef {Object} Props
@@ -19,11 +19,11 @@
 	let ready = $state(false);
 
 	async function waitForCalendly() {
-		console.log('[CalendlyModal] waitForCalendly...');
+		log.info({ phase: 'calendly_wait_started' });
 		return new Promise((resolve) => {
 			const check = () => {
 				if (window.Calendly) {
-					console.log('[CalendlyModal] ✅ Calendly global detected');
+					log.info({ phase: 'calendly_global_detected' });
 					resolve();
 				} else {
 					setTimeout(check, 100);
@@ -34,11 +34,11 @@
 	}
 
 	onMount(async () => {
-		console.log('[CalendlyModal] mounted');
+		log.info({ phase: 'calendly_modal_mount' });
 
 		// load Calendly script once
 		if (!window.Calendly) {
-			console.log('[CalendlyModal] loading Calendly script...');
+			log.info({ phase: 'calendly_script_loading' });
 			const script = document.createElement('script');
 			script.src = 'https://assets.calendly.com/assets/external/widget.js';
 			script.async = true;
@@ -47,37 +47,45 @@
 
 		await waitForCalendly();
 		ready = true;
+		log.info({ phase: 'calendly_ready' });
 
 		// auto-close when event booked
 		window.addEventListener('message', (e) => {
-			if (e?.data?.event === 'calendly.event_scheduled') closeModal();
+			if (e?.data?.event === 'calendly.event_scheduled') {
+				log.info({ phase: 'calendly_event_scheduled' });
+				closeModal();
+			}
 		});
 	});
 
 	function initCalendly() {
 		const container = document.getElementById('calendly-container');
 		if (!container) {
-			console.warn('[CalendlyModal] container not found');
+			log.warn({ phase: 'calendly_container_missing' });
 			return;
 		}
 
 		container.innerHTML = ''; // clear previous iframes
 
 		try {
-			console.log('[CalendlyModal] 🧩 Initializing Calendly widget...');
+			log.info({ phase: 'calendly_widget_initializing' });
 			window.Calendly.initInlineWidget({
 				url: calendlyUrl,
 				parentElement: container,
 				textColor: '#000000',
 				primaryColor: '#F2B705'
 			});
-			console.log('[CalendlyModal] ✅ Calendly widget initialized');
-		} catch (err) {
-			console.error('[CalendlyModal] ❌ Failed to initialize Calendly:', err);
+			log.info({ phase: 'calendly_widget_initialized' });
+		} catch (error) {
+			log.error({
+				phase: 'calendly_widget_initialization_failed',
+				error: serializeError(error)
+			});
 		}
 	}
 
 	function closeModal() {
+		log.info({ phase: 'calendly_modal_close_requested' });
 		if (onClose) onClose();
 	}
 

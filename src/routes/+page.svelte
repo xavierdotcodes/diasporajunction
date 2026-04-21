@@ -1,51 +1,189 @@
 <script>
-	import Hero from '$lib/ui/Hero.svelte';
-	import Logo from '$lib/ui/Logo.svelte';
-	import CTASection from '$lib/landing/CTASection.svelte';
-	import PillarCard from '$lib/ui/PillarCard.svelte';
-	import Title from '$lib/ui/Title.svelte';
+	import { onMount } from 'svelte';
+	import AccessCardGrid from '$lib/components/shared/AccessCardGrid.svelte';
+	import CTASection from '$lib/components/home/Cta.svelte';
+	import SectionHeader from '$lib/components/shared/SectionHeader.svelte';
+	import Hero from '$lib/components/shared/Hero.svelte';
+	import Logo from '$lib/components/shared/Logo.svelte';
+	import PillarCard from '$lib/components/home/Pillar.svelte';
 	import { fileLogger } from '$lib/utils/logger';
 
-	fileLogger('src/routes/+page.svelte');
+	fileLogger('home.page');
+
+	const ecosystemLayers = [
+		{
+			eyebrow: 'Clarity Before Commitment',
+			title: 'Start with the questions that matter most',
+			description:
+				'Read practical articles that help you slow down, compare your options, and understand the difference between a visit, a trial season, and a real move.',
+			surface: 'red'
+		},
+		{
+			eyebrow: 'Connection & Belonging',
+			title: 'Find your footing with more trust',
+			description:
+				'Some questions are easier to answer when you can feel the people, rhythm, and lived texture behind the move instead of relying on guesswork alone.',
+			surface: 'gold'
+		},
+		{
+			eyebrow: 'Life Beyond Arrival',
+			title: 'Think past the first landing',
+			description:
+				'If Ghana starts to feel like a serious next chapter, DiasporaJunxion helps you think more clearly about family life, belonging, work, and what it takes to build something steady.',
+			surface: 'green'
+		}
+	];
 
 	const pillars = [
 		{
 			title: 'Relocation',
 			description:
 				'We help diaspora travelers, returners, and families think more clearly about moving to Ghana with grounded context instead of guesswork.',
-			icon: '🏡',
+			icon: '01',
+			accent: 'gold',
+			imagePosition: '50% 56%',
+			contentOverlap: '7.25rem',
+			contentLift: '2.9rem',
 			image: '/images/landing/connection.webp'
 		},
 		{
 			title: 'Guidance',
 			description:
 				'From cost of living to family rhythms to the difference between visiting and living, we create practical guidance for real-life decisions.',
-			icon: '🧭',
+			icon: '02',
+			accent: 'green',
+			imagePosition: '52% 44%',
+			contentOverlap: '7.75rem',
+			contentLift: '1.6rem',
 			image: '/images/landing/innovation.webp'
 		},
 		{
 			title: 'Culture',
 			description:
 				'To know Ghana, you need more than logistics. You need rhythm, places, people, food, nightlife, and the living texture of the culture.',
-			icon: '🎶',
+			icon: '03',
+			accent: 'red',
+			imagePosition: '50% 42%',
+			contentOverlap: '6.85rem',
+			contentLift: '3.25rem',
 			image: '/images/landing/culture.webp'
 		},
 		{
 			title: 'Community',
 			description:
 				'DiasporaJunxion is about more than information. It is about belonging, trusted pathways, and feeling less alone in the move.',
-			icon: '🫱🏾‍🫲🏽',
+			icon: '04',
+			accent: 'green',
+			imagePosition: '46% 46%',
+			contentOverlap: '7.1rem',
+			contentLift: '2rem',
 			image: '/images/landing/collaboration.webp'
 		},
 		{
 			title: 'Opportunity',
 			description:
 				'Beyond relocation, we hold space for long-term participation through investment intrigue, local connection, and the bridge into African possibility.',
-			icon: '🌍',
+			icon: '05',
+			accent: 'gold',
+			imagePosition: '54% 48%',
+			contentOverlap: '7.9rem',
+			contentLift: '2.7rem',
 			image: '/images/landing/impact1.webp'
 		}
 	];
 
+	const approachSteps = [
+		{
+			step: '01',
+			title: 'Orient',
+			accent: 'red',
+			description:
+				'Start with reality. We help you understand the emotional, practical, and cultural terrain before momentum starts pretending to be clarity.'
+		},
+		{
+			step: '02',
+			title: 'Connect',
+			accent: 'gold',
+			description:
+				'Then come closer to the people, context, and social rhythm that make Ghana feel lived, not just imagined from afar.'
+		},
+		{
+			step: '03',
+			title: 'Build',
+			accent: 'green',
+			description:
+				'For those thinking longer term, we open the frame toward participation, contribution, and the kind of grounded next chapter that can actually hold.'
+		}
+	];
+
+	const platformOverviewCards = [
+		{
+			eyebrow: 'Best First Step',
+			title: 'Start Here',
+			description:
+				'Use this if you are still figuring out whether Ghana is a curiosity, a possible move, or something more serious.',
+			href: '/start-here',
+			cta: 'Start Here',
+			access: 'First read',
+			accent: 'red'
+		},
+		{
+			eyebrow: 'Free Guide',
+			title: 'Checklist',
+			description:
+				'Get the free Ghana reality guide if you want a calmer way to think through the move before emotions start running ahead of clarity.',
+			href: '/checklist',
+			cta: 'Get The Guide',
+			access: 'Free',
+			accent: 'gold'
+		},
+		{
+			eyebrow: 'Reality Check',
+			title: 'Visiting vs Living',
+			description:
+				'Start here if you need help separating the energy of a trip from the reality of building a life in Ghana.',
+			href: '/blog/visiting-vs-living-in-ghana',
+			cta: 'Read The Article',
+			access: 'Popular',
+			accent: 'green'
+		},
+		{
+			eyebrow: 'Practical Next Step',
+			title: 'Relocate',
+			description:
+				'Go here when Ghana is starting to feel real and you need more practical guidance around the move itself.',
+			href: '/relocate',
+			cta: 'Explore Relocate',
+			access: 'Free',
+			accent: 'dark',
+			locked: false
+		}
+	];
+
+	let activePillarIndex = $state(0);
+	let pillarsPaused = $state(false);
+	const activePillar = $derived(pillars[activePillarIndex]);
+
+	function goToPillar(index) {
+		activePillarIndex = (index + pillars.length) % pillars.length;
+	}
+
+	function nextPillar() {
+		goToPillar(activePillarIndex + 1);
+	}
+
+	function previousPillar() {
+		goToPillar(activePillarIndex - 1);
+	}
+
+	onMount(() => {
+		const interval = window.setInterval(() => {
+			if (pillarsPaused) return;
+			nextPillar();
+		}, 5200);
+
+		return () => window.clearInterval(interval);
+	});
 </script>
 
 <svelte:head>
@@ -55,201 +193,955 @@
 		content="DiasporaJunxion helps diaspora travelers, returners, and families move toward Ghana with more clarity, connection, and opportunity."
 	/>
 	<link
-		href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
-		rel="stylesheet"
+		rel="preload"
+		as="image"
+		href="/videos/covers/desktop_landing-hero-cover.jpg"
+		media="(min-width: 769px)"
 	/>
+	<link
+		rel="preload"
+		as="image"
+		href="/videos/covers/mobile_landing-hero-cover.jpg"
+		media="(max-width: 768px)"
+	/>
+	{#each pillars as pillar}
+		<link rel="preload" as="image" href={pillar.image} />
+	{/each}
 </svelte:head>
 
-<div class="landing font-sans bg-black text-white overflow-x-hidden">
-	<!-- HERO -->
+<div class="landing-page">
 	<Hero
-		subtitle="A bridge for diaspora relocation, belonging, and opportunity in Ghana"
-		description={`<span class="font-bold text-white">Ghana</span> is more than a destination — for many in the diaspora, it is a question, a pull, and a possible next chapter.<br/>
-			Some come searching for reconnection. Some come for family, peace, culture, or a better life rhythm.<br/>
-			Some come wondering whether they can truly build here.<br/><br/>
-			<span class="text-[#FFBC03] font-semibold">DiasporaJunxion</span> exists to help you move with more clarity —
-			to relocate, connect, and step into Ghana with grounded guidance instead of fantasy.`}
+		variant="brand"
+		subtitle="Grounded guidance for diaspora people thinking seriously about Ghana"
+		description={`If Ghana has been on your mind, DiasporaJunxion helps you get clearer about what comes next.<br /><br />
+		Start here if you are comparing a visit with a move, thinking about Ghana with children, or trying to understand whether life in Ghana could actually fit you.<br /><br />
+		<span class="brand-gold">Less hype. More context. Better next steps.</span>`}
 		desktopVideoSrc="/videos/desktop_landing-hero.mp4"
 		desktopPosterSrc="/videos/covers/desktop_landing-hero-cover.jpg"
 		mobileVideoSrc="/videos/mobile_landing-hero.mp4"
 		mobilePosterSrc="/videos/covers/mobile_landing-hero-cover.jpg"
 	>
 		{#snippet logo()}
-			<Logo src="/images/logos/diasporajunxion-icon.png" width="200" />
+			<Logo src="/images/logos/diasporajunxion-icon.png" width="160" alt="DiasporaJunxion emblem" />
 		{/snippet}
 
 		{#snippet title()}
-			<Title />
+			<h1>
+				<span class="hero-word hero-word-dark">Diaspora</span>
+				<span class="hero-word hero-word-gold">Junxion</span>
+			</h1>
 		{/snippet}
 
 		{#snippet cta()}
-			<a
-				href="/start-here"
-				class="inline-block bg-[#038C25] text-white px-8 py-4 rounded-full font-semibold hover:bg-[#026b1d] transition"
-			>
-				Start Here
-			</a>
+			<div class="hero-actions">
+				<a href="/start-here" class="hero-primary-link">Start Here</a>
+				<a href="/blog/visiting-vs-living-in-ghana" class="hero-secondary-link">Read Visiting vs Living</a>
+			</div>
 		{/snippet}
 	</Hero>
 
-	<!-- WHAT IS DIASPORAJUNXION -->
-	<section id="about" class="bg-white text-black py-20 px-6 md:px-16 text-center">
-		<h2 class="text-4xl md:text-5xl font-extrabold mb-6">
-			What Is <span class="text-[#D9042B]">DiasporaJunxion</span>?
-		</h2>
+	<main class="landing-story">
+		<section class="story-section section-dark section-quickstart">
+			<div class="section-shell">
+				<SectionHeader
+					eyebrow="Where To Begin"
+					title="Choose the next step that matches where you are."
+					description="You do not need to read everything. Start with the path that sounds most like your current question."
+					tone="dark"
+				/>
 
-		<p class="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed mb-10">
-			DiasporaJunxion is a relocation, connection, and opportunity hub for diaspora people exploring
-			life in Ghana. We help future movers, returners, and families think more clearly about what it
-			means to come, settle, belong, and build.
-		</p>
+				<div class="section-spacer"></div>
+				<AccessCardGrid items={platformOverviewCards} tone="dark" columns={4} />
+			</div>
+		</section>
 
-		<p class="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed mb-10">
-			Right now, we lead with grounded guidance around relocation, community, culture, and
-			opportunity. Over time, that bridge expands into a deeper ecosystem connecting diaspora
-			participation with African creativity, entrepreneurship, and long-term development.
-		</p>
+		<section id="about" class="story-section section-cream">
+			<div class="section-shell about-shell">
+				<div class="section-label section-label-dark">How DiasporaJunxion Helps</div>
 
-		<h3 class="text-2xl font-bold text-gray-900 mb-8 mt-16">
-			More Than a Move — The Ecosystem Around It
-		</h3>
+				<div class="about-grid">
+					<div class="about-lead">
+						<h2>A clearer way to explore life in Ghana before you make a bigger move.</h2>
+					</div>
 
-		<div class="grid gap-10 md:grid-cols-3 max-w-5xl mx-auto">
-			<div class="p-6 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition text-center">
-				<div class="text-4xl mb-4 flex justify-center">📘</div>
-				<h4 class="font-bold text-xl mb-2 text-[#038C25]">Relocation Guides</h4>
-				<p class="text-gray-700 leading-relaxed">
-					Practical content for diaspora people thinking about Ghana — from visiting vs living to
-					cost of living, family life, and how to move with more clarity.
+					<div class="about-copy">
+						<p>
+							Whether you are still exploring, planning a visit, or weighing a real relocation,
+							DiasporaJunxion helps you sort through the questions with more clarity and less noise.
+						</p>
+						<p>
+							The goal is simple: help you avoid fantasy, reduce expensive mistakes, and move
+							toward Ghana in a way that feels grounded, informed, and more human.
+						</p>
+					</div>
+				</div>
+
+				<div class="about-divider">
+					<p>What you usually need first</p>
+				</div>
+
+				<div class="ecosystem-grid">
+					{#each ecosystemLayers as layer}
+						<article class={`ecosystem-card ${layer.surface}`}>
+							<p class="ecosystem-eyebrow">{layer.eyebrow}</p>
+							<h3>{layer.title}</h3>
+							<p>{layer.description}</p>
+						</article>
+					{/each}
+				</div>
+			</div>
+		</section>
+
+		<section id="pillars" class="story-section section-dark">
+			<div class="section-shell pillars-shell">
+				<div class="pillars-header">
+					<div class="section-label">What We Focus On</div>
+					<h2>The things that usually matter most once Ghana starts to feel real.</h2>
+				</div>
+				<p class="pillars-intro">
+					People rarely need just one answer. They need better context, steadier support, and a
+					clearer way to move from curiosity into real-life decisions.
 				</p>
 			</div>
 
-			<div class="p-6 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition text-center">
-				<div class="text-4xl mb-4 flex justify-center">🤝</div>
-				<h4 class="font-bold text-xl mb-2 text-[#FFBC03]">Community & Connection</h4>
-				<p class="text-gray-700 leading-relaxed">
-					A softer landing into Ghana through belonging, trusted pathways, social rhythm, and
-					connection to the people and places that make life here real.
-				</p>
-			</div>
-
-			<div class="p-6 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition text-center">
-				<div class="text-4xl mb-4 flex justify-center">🌍</div>
-				<h4 class="font-bold text-xl mb-2 text-[#D9042B]">Opportunity & Long-Term Vision</h4>
-				<p class="text-gray-700 leading-relaxed">
-					For those thinking beyond the move, DiasporaJunxion also explores the bridge into
-					investment intrigue, local partnerships, and African entrepreneurship over time.
-				</p>
-			</div>
-		</div>
-
-		<p class="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed mt-16">
-			Together, these layers create a more grounded path into Ghana — one built on context,
-			connection, and the possibility of deeper participation.
-		</p>
-	</section>
-
-	<!-- PILLARS -->
-	<section id="pillars" class="py-20 bg-[#111] text-white text-center">
-		<h2 class="text-4xl md:text-5xl font-extrabold mb-12">
-			Our <span class="text-[#FFBC03]">Pillars</span>
-		</h2>
-
-		<div class="space-y-20 max-w-6xl mx-auto px-6 md:px-8 overflow-hidden">
-			{#each pillars as pillar, i}
-				<PillarCard {...pillar} reverse={i % 2 !== 0} />
-			{/each}
-		</div>
-	</section>
-
-	<!-- OUR APPROACH -->
-	<section id="approach" class="bg-white text-black py-20 px-6 md:px-16 text-center">
-		<h2 class="text-4xl md:text-5xl font-extrabold mb-10 text-[#D9042B]">Our Approach</h2>
-		<p class="text-lg text-gray-700 max-w-3xl mx-auto mb-12 leading-relaxed">
-			We help people move toward Ghana through a simple three-step path —
-			<span class="text-[#038C25] font-semibold">Orient</span>,
-			<span class="text-[#FFBC03] font-semibold">Connect</span>, and
-			<span class="text-[#D9042B] font-semibold">Build</span>.
-		</p>
-
-		<div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
 			<div
-				class="approach-card bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition text-center"
+				class="pillars-carousel"
+				data-no-reveal
+				role="region"
+				aria-label="Core pillars carousel"
+				onmouseenter={() => (pillarsPaused = true)}
+				onmouseleave={() => (pillarsPaused = false)}
+				onfocusin={() => (pillarsPaused = true)}
+				onfocusout={() => (pillarsPaused = false)}
 			>
-				<div class="text-4xl mb-4">🧭</div>
-				<h4 class="text-xl font-semibold text-[#038C25] mb-2">Orient</h4>
-				<p class="text-gray-700 text-sm leading-relaxed">
-					We help you understand the terrain — the emotional, practical, and cultural realities of
-					moving toward life in Ghana.
+				<div class="pillars-toolbar">
+					<div class="pillars-counter">
+						<span>{String(activePillarIndex + 1).padStart(2, '0')}</span>
+						<p>{activePillar.title}</p>
+					</div>
+
+					<div class="pillars-controls">
+						<button
+							type="button"
+							class="pillars-arrow"
+							aria-label="Previous pillar"
+							onclick={previousPillar}
+						>
+							<span aria-hidden="true">←</span>
+						</button>
+						<button
+							type="button"
+							class="pillars-arrow"
+							aria-label="Next pillar"
+							onclick={nextPillar}
+						>
+							<span aria-hidden="true">→</span>
+						</button>
+					</div>
+				</div>
+
+				<div class="pillars-stage" aria-live="polite">
+					{#key activePillarIndex}
+						<PillarCard {...activePillar} reverse={activePillarIndex % 2 !== 0} />
+					{/key}
+				</div>
+
+				<div class="pillars-nav" aria-label="Select a pillar">
+					{#each pillars as pillar, i}
+						<button
+							type="button"
+							class:active={i === activePillarIndex}
+							class="pillar-tab"
+							onclick={() => goToPillar(i)}
+							aria-pressed={i === activePillarIndex}
+						>
+							<span class="pillar-tab-icon">{pillar.icon}</span>
+							<span class="pillar-tab-copy">
+								<strong>{pillar.title}</strong>
+								<span>{pillar.description}</span>
+							</span>
+						</button>
+					{/each}
+				</div>
+			</div>
+		</section>
+
+		<section class="bridge-section" aria-label="Editorial transition">
+			<div class="bridge-shell">
+				<p class="bridge-kicker">The questions change as the move gets closer.</p>
+				<p class="bridge-copy">
+					Not just whether Ghana feels good, but whether your life, family, and plans can actually
+					hold here.
 				</p>
 			</div>
-			<div
-				class="approach-card bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition text-center"
-			>
-				<div class="text-4xl mb-4">🤝</div>
-				<h4 class="text-xl font-semibold text-[#FFBC03] mb-2">Connect</h4>
-				<p class="text-gray-700 text-sm leading-relaxed">
-					We create pathways into community, trusted context, and the social rhythm that helps the
-					move feel more human and less isolating.
-				</p>
+		</section>
+
+		<section id="approach" class="story-section section-cream section-approach">
+			<div class="section-shell">
+				<div class="approach-header">
+					<div class="section-label section-label-dark">How To Move Through It</div>
+					<h2>Orient. Connect. Build.</h2>
+					<p>
+						First get clear on what Ghana is really asking of you. Then come closer to the people,
+						rhythm, and practical realities. Then decide what kind of life you actually want to
+						build.
+					</p>
+				</div>
+
+				<ol class="approach-track" aria-label="DiasporaJunxion approach">
+					{#each approachSteps as item}
+						<li class={`approach-step ${item.accent}`}>
+							<div class="approach-step-head">
+								<span class="approach-step-number">{item.step}</span>
+								<h3>{item.title}</h3>
+							</div>
+							<p>{item.description}</p>
+						</li>
+					{/each}
+				</ol>
 			</div>
-			<div
-				class="approach-card bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition text-center"
-			>
-				<div class="text-4xl mb-4">🌍</div>
-				<h4 class="text-xl font-semibold text-[#D9042B] mb-2">Build</h4>
-				<p class="text-gray-700 text-sm leading-relaxed">
-					For those thinking long-term, we hold space for opportunity, participation, and the bridge
-					between diaspora presence and African possibility.
-				</p>
+		</section>
+
+		<section id="story" class="story-section section-green">
+			<div class="section-shell reason-shell">
+				<div class="section-label">Why This Exists</div>
+
+				<div class="reason-panel">
+					<div class="reason-lead">
+						<h2>Because the pull toward Ghana deserves more than guesswork.</h2>
+					</div>
+
+					<div class="reason-copy">
+						<p>
+							More people in the diaspora are thinking about Ghana not only as a place to visit,
+							but as a place to reconnect, relocate, raise children, work, or start over.
+						</p>
+						<p>
+							That can be hopeful, exciting, and deeply meaningful. It can also get confusing fast
+							when the only information available is hype, scattered opinions, or social media
+							fantasy.
+						</p>
+						<p>
+							DiasporaJunxion exists to give people a steadier way to think, read, and move so the
+							next step feels clearer and more trustworthy.
+						</p>
+					</div>
+				</div>
 			</div>
-		</div>
+		</section>
 
-		<p class="mt-12 text-gray-700 max-w-3xl mx-auto text-lg">
-			From first questions to deeper roots —
-			<span class="text-[#038C25] font-semibold">we help build the bridge</span>.
-		</p>
-	</section>
-
-	<!-- WHY WE EXIST -->
-	<section id="story" class="py-20 bg-white px-8 text-center">
-		<h3 class="text-3xl font-bold text-black mb-8">Why We Exist</h3>
-		<div class="max-w-3xl mx-auto text-gray-700 space-y-4 text-lg">
-			<p>
-				We built DiasporaJunxion because more people in the diaspora are feeling the pull toward
-				Ghana — not just as a place to visit, but as a place to reconnect, relocate, and possibly
-				build a different kind of life.
-			</p>
-			<p>
-				That pull is real. But inspiration without context can turn into confusion. We exist to help
-				people move with more clarity, connection, and trust — so Ghana can feel less like an
-				abstract dream and more like a lived, grounded possibility.
-			</p>
-			<p>
-				This is more than a relocation brand. It is a bridge between diaspora belonging and the
-				larger future of participation, culture, and African opportunity.
-			</p>
-		</div>
-	</section>
-
-	<!-- CTA -->
-	<CTASection />
+		<CTASection />
+	</main>
 </div>
 
 <style>
+	.landing-page {
+		background: #f8f2df;
+		color: #111111;
+		overflow-x: clip;
+	}
+
+	.landing-story {
+		position: relative;
+	}
+
+	.bridge-kicker {
+		margin: 0 0 0.65rem;
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.24em;
+		text-transform: uppercase;
+	}
+
+	.story-section {
+		position: relative;
+		padding: clamp(5rem, 8vw, 7.5rem) 1.5rem;
+	}
+
+	.section-spacer {
+		height: 2rem;
+	}
+
+	.section-shell {
+		width: min(100%, 78rem);
+		margin: 0 auto;
+	}
+
+	.section-label {
+		margin: 0 0 1.15rem;
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.28em;
+		text-transform: uppercase;
+		color: rgba(255, 255, 255, 0.86);
+	}
+
+	.section-label-dark {
+		color: rgba(17, 17, 17, 0.72);
+	}
+
+	.hero-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.85rem;
+	}
+
+	.hero-primary-link,
+	.hero-secondary-link {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 3.45rem;
+		padding: 0 1.55rem;
+		border-radius: 999px;
+		font-size: 0.97rem;
+		font-weight: 700;
+		text-decoration: none;
+		transition:
+			transform 180ms ease,
+			box-shadow 180ms ease,
+			background-color 180ms ease,
+			border-color 180ms ease;
+	}
+
+	.hero-primary-link {
+		background: linear-gradient(135deg, #038c25, #026b1d);
+		color: white;
+		box-shadow: 0 20px 40px rgba(3, 140, 37, 0.22);
+	}
+
+	.hero-primary-link:hover {
+		transform: translateY(-1px);
+	}
+
+	.hero-secondary-link {
+		background: rgba(17, 17, 17, 0.05);
+		border: 1px solid rgba(17, 17, 17, 0.14);
+		color: #111111;
+	}
+
+	.hero-secondary-link:hover {
+		background: rgba(17, 17, 17, 0.1);
+	}
+
+	.section-cream {
+		background:
+			radial-gradient(circle at top right, rgba(242, 183, 5, 0.22), transparent 28rem),
+			linear-gradient(180deg, #f8f2df 0%, #f4ead1 100%);
+	}
+
+	.about-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+		gap: clamp(2rem, 5vw, 5rem);
+		align-items: end;
+	}
+
+	.about-lead h2,
+	.pillars-header h2,
+	.approach-header h2,
+	.reason-lead h2 {
+		margin: 0;
+		font-family: var(--font-heading);
+		font-size: clamp(2.45rem, 5vw, 4.7rem);
+		line-height: 0.94;
+		letter-spacing: -0.05em;
+		text-wrap: balance;
+	}
+
+	.about-lead h2 {
+		color: #111111;
+	}
+
+	.about-copy {
+		display: grid;
+		gap: 1.2rem;
+		max-width: 37rem;
+	}
+
+	.about-copy p,
+	.pillars-intro,
+	.approach-header p,
+	.reason-copy p {
+		margin: 0;
+		font-size: clamp(1rem, 1.32vw, 1.18rem);
+		line-height: 1.78;
+	}
+
+	.about-copy p {
+		color: rgba(17, 17, 17, 0.78);
+	}
+
+	.about-divider {
+		margin: clamp(2rem, 5vw, 4rem) 0 1.65rem;
+		max-width: 22rem;
+		padding-top: 1.1rem;
+		border-top: 2px solid rgba(17, 17, 17, 0.16);
+	}
+
+	.about-divider p {
+		margin: 0;
+		font-size: 0.92rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: rgba(17, 17, 17, 0.62);
+	}
+
+	.ecosystem-grid {
+		display: grid;
+		grid-template-columns: repeat(12, minmax(0, 1fr));
+		gap: 1.25rem;
+		align-items: stretch;
+	}
+
+	.ecosystem-card {
+		position: relative;
+		min-height: 18rem;
+		padding: 1.75rem;
+		border-radius: 2rem;
+		box-shadow: 0 24px 50px rgba(0, 0, 0, 0.12);
+	}
+
+	.ecosystem-card:nth-child(1) {
+		grid-column: span 4;
+	}
+
+	.ecosystem-card:nth-child(2) {
+		grid-column: span 4;
+		transform: translateY(1.2rem);
+	}
+
+	.ecosystem-card:nth-child(3) {
+		grid-column: span 4;
+	}
+
+	.ecosystem-card.obsidian {
+		background:
+			radial-gradient(circle at top left, rgba(242, 183, 5, 0.18), transparent 55%),
+			linear-gradient(180deg, #111111 0%, #1a1a1a 100%);
+		color: white;
+	}
+
+	.ecosystem-card.red {
+		background:
+			radial-gradient(circle at top left, rgba(242, 183, 5, 0.18), transparent 55%),
+			linear-gradient(180deg, #d9042b 0%, #b10323 100%);
+		color: white;
+	}
+
+	.ecosystem-card.gold {
+		background:
+			radial-gradient(circle at top right, rgba(255, 255, 255, 0.24), transparent 52%),
+			linear-gradient(180deg, #f2b705 0%, #e4a900 100%);
+		color: #111111;
+	}
+
+	.ecosystem-card.green {
+		background:
+			radial-gradient(circle at top right, rgba(255, 255, 255, 0.2), transparent 56%),
+			linear-gradient(180deg, #038c25 0%, #026b1d 100%);
+		color: white;
+	}
+
+	.ecosystem-eyebrow {
+		margin: 0 0 0.95rem;
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.22em;
+		text-transform: uppercase;
+	}
+
+	.ecosystem-card.obsidian .ecosystem-eyebrow,
+	.ecosystem-card.red .ecosystem-eyebrow,
+	.ecosystem-card.green .ecosystem-eyebrow {
+		color: rgba(255, 255, 255, 0.68);
+	}
+
+	.ecosystem-card.gold .ecosystem-eyebrow {
+		color: rgba(17, 17, 17, 0.62);
+	}
+
+	.ecosystem-card h3 {
+		margin: 0 0 0.95rem;
+		font-size: clamp(1.55rem, 2vw, 2.2rem);
+		line-height: 1.03;
+		letter-spacing: -0.04em;
+		text-wrap: balance;
+	}
+
+	.ecosystem-card p:last-child {
+		margin: 0;
+		font-size: 1rem;
+		line-height: 1.7;
+		max-width: 30rem;
+	}
+
+	.ecosystem-card.obsidian p:last-child,
+	.ecosystem-card.red p:last-child,
+	.ecosystem-card.green p:last-child {
+		color: rgba(255, 255, 255, 0.84);
+	}
+
+	.ecosystem-card.gold p:last-child {
+		color: rgba(17, 17, 17, 0.78);
+	}
+
+	.section-dark {
+		background:
+			radial-gradient(circle at top left, rgba(242, 183, 5, 0.16), transparent 24rem),
+			radial-gradient(circle at bottom right, rgba(217, 4, 43, 0.14), transparent 26rem),
+			linear-gradient(180deg, #111111 0%, #050505 100%);
+		color: white;
+	}
+
+	.pillars-shell {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+		gap: clamp(1.75rem, 4vw, 4rem);
+		align-items: end;
+		margin-bottom: clamp(2.5rem, 4vw, 4rem);
+	}
+
+	.pillars-header h2 {
+		color: #fff8ef;
+	}
+
+	.pillars-intro {
+		max-width: 34rem;
+		color: rgba(255, 248, 239, 0.78);
+	}
+
+	.pillars-carousel {
+		display: grid;
+		gap: 1.35rem;
+		width: min(100%, 88rem);
+		margin: 0 auto;
+		padding: 0 1.5rem;
+	}
+
+	.pillars-toolbar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	.pillars-counter {
+		display: flex;
+		align-items: center;
+		gap: 0.85rem;
+	}
+
+	.pillars-counter span {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 3rem;
+		height: 3rem;
+		border-radius: 999px;
+		background: rgba(242, 183, 5, 0.12);
+		font-family: var(--font-mono);
+		font-size: 0.84rem;
+		font-weight: 700;
+		letter-spacing: 0.16em;
+		color: #f2b705;
+	}
+
+	.pillars-counter p {
+		margin: 0;
+		font-size: 1.02rem;
+		font-weight: 600;
+		letter-spacing: -0.01em;
+		color: rgba(255, 248, 239, 0.88);
+	}
+
+	.pillars-controls {
+		display: flex;
+		gap: 0.65rem;
+	}
+
+	.pillars-arrow {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 3rem;
+		height: 3rem;
+		border-radius: 999px;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		background: rgba(255, 255, 255, 0.04);
+		color: rgba(255, 248, 239, 0.9);
+		font-size: 1.15rem;
+		transition:
+			transform 180ms ease,
+			background-color 180ms ease,
+			border-color 180ms ease;
+	}
+
+	.pillars-arrow:hover {
+		transform: translateY(-1px);
+		background: rgba(255, 255, 255, 0.08);
+		border-color: rgba(255, 255, 255, 0.22);
+	}
+
+	.pillars-stage {
+		min-height: clamp(28rem, 50vw, 42rem);
+	}
+
+	.pillars-nav {
+		display: grid;
+		grid-template-columns: repeat(5, minmax(0, 1fr));
+		gap: 0.9rem;
+	}
+
+	.pillar-tab {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		gap: 0.8rem;
+		align-items: start;
+		padding: 1rem;
+		border-radius: 1.5rem;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		background: rgba(255, 255, 255, 0.04);
+		color: rgba(255, 248, 239, 0.72);
+		text-align: left;
+		transition:
+			transform 180ms ease,
+			border-color 180ms ease,
+			background-color 180ms ease,
+			color 180ms ease;
+	}
+
+	.pillar-tab:hover {
+		transform: translateY(-1px);
+		border-color: rgba(255, 255, 255, 0.16);
+		background: rgba(255, 255, 255, 0.06);
+	}
+
+	.pillar-tab.active {
+		border-color: rgba(242, 183, 5, 0.28);
+		background:
+			radial-gradient(circle at top left, rgba(242, 183, 5, 0.14), transparent 70%),
+			rgba(255, 255, 255, 0.08);
+		color: #fff8ef;
+		box-shadow: 0 16px 38px rgba(0, 0, 0, 0.16);
+	}
+
+	.pillar-tab-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 2.4rem;
+		height: 2.4rem;
+		border-radius: 999px;
+		background: rgba(255, 255, 255, 0.08);
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+	}
+
+	.pillar-tab-copy {
+		display: grid;
+		gap: 0.35rem;
+	}
+
+	.pillar-tab-copy strong {
+		font-size: 0.96rem;
+		font-weight: 700;
+		color: inherit;
+	}
+
+	.pillar-tab-copy span {
+		font-size: 0.84rem;
+		line-height: 1.5;
+		color: rgba(255, 248, 239, 0.62);
+	}
+
+	.bridge-section {
+		padding: 2.25rem 1.5rem;
+		background:
+			radial-gradient(circle at top left, rgba(242, 183, 5, 0.18), transparent 24rem),
+			linear-gradient(180deg, #111111 0%, #1c1c1c 100%);
+		color: white;
+	}
+
+	.bridge-shell {
+		display: grid;
+		grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+		gap: 1.5rem;
+		align-items: center;
+		width: min(100%, 78rem);
+		margin: 0 auto;
+	}
+
+	.bridge-kicker {
+		color: rgba(242, 183, 5, 0.9);
+	}
+
+	.bridge-copy {
+		margin: 0;
+		font-size: clamp(1.2rem, 2vw, 1.85rem);
+		font-weight: 600;
+		line-height: 1.35;
+		letter-spacing: -0.03em;
+		color: rgba(255, 248, 239, 0.9);
+		text-wrap: balance;
+	}
+
+	.approach-header {
+		max-width: 48rem;
+		margin-bottom: clamp(2.5rem, 5vw, 4rem);
+	}
+
+	.approach-header h2 {
+		color: #111111;
+	}
+
+	.approach-header p {
+		color: rgba(17, 17, 17, 0.78);
+	}
+
+	.section-approach {
+		background:
+			radial-gradient(circle at top right, rgba(217, 4, 43, 0.1), transparent 24rem),
+			radial-gradient(circle at bottom left, rgba(3, 140, 37, 0.08), transparent 28rem),
+			linear-gradient(180deg, #f8f2df 0%, #f4ead1 100%);
+	}
+
+	.approach-track {
+		list-style: none;
+		display: grid;
+		grid-template-columns: repeat(12, minmax(0, 1fr));
+		gap: 1.25rem;
+		padding: 0;
+		margin: 0;
+	}
+
+	.approach-step {
+		grid-column: span 4;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		min-height: 18rem;
+		padding: 1.7rem;
+		border-radius: 2rem;
+		box-shadow:
+			0 24px 50px rgba(17, 17, 17, 0.12),
+			inset 0 1px 0 rgba(255, 255, 255, 0.5);
+	}
+
+	.approach-step.red {
+		background:
+			radial-gradient(circle at top left, rgba(242, 183, 5, 0.12), transparent 54%),
+			linear-gradient(180deg, #d9042b 0%, #b10323 100%);
+		color: white;
+	}
+
+	.approach-step.gold {
+		background:
+			radial-gradient(circle at top right, rgba(255, 255, 255, 0.2), transparent 54%),
+			linear-gradient(180deg, #f2b705 0%, #dfa200 100%);
+		color: #111111;
+		box-shadow:
+			0 24px 50px rgba(187, 136, 0, 0.16),
+			inset 0 1px 0 rgba(255, 255, 255, 0.28);
+	}
+
+	.approach-step.green {
+		background:
+			radial-gradient(circle at top right, rgba(255, 255, 255, 0.16), transparent 54%),
+			linear-gradient(180deg, #038c25 0%, #026b1d 100%);
+		color: white;
+		box-shadow:
+			0 24px 50px rgba(2, 107, 29, 0.16),
+			inset 0 1px 0 rgba(255, 255, 255, 0.22);
+	}
+
+	.approach-step:nth-child(2) {
+		transform: translateY(2rem);
+	}
+
+	.approach-step:nth-child(3) {
+		transform: translateY(4rem);
+	}
+
+	.approach-step-head {
+		display: grid;
+		gap: 1rem;
+	}
+
+	.approach-step-number {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 3rem;
+		height: 3rem;
+		border-radius: 999px;
+		font-family: var(--font-mono);
+		font-size: 0.84rem;
+		font-weight: 700;
+		letter-spacing: 0.18em;
+	}
+
+	.approach-step.red .approach-step-number,
+	.approach-step.green .approach-step-number {
+		background: rgba(255, 255, 255, 0.14);
+		color: #fff8ef;
+	}
+
+	.approach-step.gold .approach-step-number {
+		background: rgba(17, 17, 17, 0.1);
+		color: #111111;
+	}
+
+	.approach-step h3 {
+		margin: 0;
+		font-size: clamp(1.55rem, 1.9vw, 2.15rem);
+		line-height: 1;
+		letter-spacing: -0.04em;
+	}
+
+	.approach-step.red h3,
+	.approach-step.green h3 {
+		color: white;
+	}
+
+	.approach-step.gold h3 {
+		color: #111111;
+	}
+
+	.approach-step p {
+		margin: 0;
+		font-size: 0.98rem;
+		line-height: 1.75;
+	}
+
+	.approach-step.red p,
+	.approach-step.green p {
+		color: rgba(255, 255, 255, 0.82);
+	}
+
+	.approach-step.gold p {
+		color: rgba(17, 17, 17, 0.78);
+	}
+
+	.section-green {
+		background:
+			radial-gradient(circle at top left, rgba(242, 183, 5, 0.22), transparent 24rem),
+			linear-gradient(180deg, #038c25 0%, #026b1d 100%);
+		color: #111111;
+	}
+
+	.reason-panel {
+		display: grid;
+		grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+		gap: clamp(1.75rem, 4vw, 4rem);
+		padding: clamp(2rem, 5vw, 3rem);
+		border-radius: 2.1rem;
+		background:
+			radial-gradient(circle at top right, rgba(242, 183, 5, 0.18), transparent 55%),
+			linear-gradient(180deg, #fff8ef 0%, #f6eddb 100%);
+		box-shadow: 0 30px 60px rgba(2, 107, 29, 0.22);
+	}
+
+	.reason-lead h2 {
+		color: #111111;
+	}
+
+	.reason-copy {
+		display: grid;
+		gap: 1.15rem;
+		max-width: 36rem;
+	}
+
+	.reason-copy p {
+		color: rgba(17, 17, 17, 0.82);
+	}
+
+	@media (max-width: 1024px) {
+		.about-grid,
+		.pillars-shell,
+		.reason-panel,
+		.bridge-shell {
+			grid-template-columns: 1fr;
+		}
+
+		.pillars-nav {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+
+		.ecosystem-card:nth-child(1),
+		.ecosystem-card:nth-child(2),
+		.ecosystem-card:nth-child(3) {
+			grid-column: span 12;
+			transform: none;
+		}
+
+		.approach-step {
+			grid-column: span 12;
+			min-height: auto;
+		}
+
+		.approach-step:nth-child(2),
+		.approach-step:nth-child(3) {
+			transform: none;
+		}
+	}
+
 	@media (max-width: 768px) {
-		h2 {
-			font-size: 1.8rem;
+		.story-section {
+			padding-inline: 1rem;
 		}
-	}
-	@media (orientation: landscape) and (max-width: 900px) {
-		.landing {
-			padding-bottom: 4rem;
+
+		.about-copy p,
+		.pillars-intro,
+		.approach-header p,
+		.reason-copy p,
+		.ecosystem-card p:last-child,
+		.approach-step p {
+			font-size: 0.98rem;
+			line-height: 1.72;
 		}
-	}
-	@media (min-width: 1024px) {
-		h2 {
-			font-size: 2.5rem;
+
+		.ecosystem-card,
+		.approach-step,
+		.reason-panel {
+			border-radius: 1.5rem;
+		}
+
+		.hero-actions {
+			width: 100%;
+			flex-direction: column;
+		}
+
+		.hero-primary-link,
+		.hero-secondary-link {
+			width: 100%;
+		}
+
+		.pillars-carousel {
+			padding-inline: 1rem;
+		}
+
+		.pillars-toolbar {
+			flex-direction: column;
+			align-items: stretch;
+		}
+
+		.pillars-counter {
+			justify-content: space-between;
+		}
+
+		.pillars-stage {
+			min-height: auto;
+		}
+
+		.pillars-nav {
+			grid-template-columns: 1fr;
 		}
 	}
 </style>

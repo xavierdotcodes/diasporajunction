@@ -6,7 +6,7 @@
 	import PaymentOption from './PaymentOption.svelte';
 	import { fileLogger } from '$lib/utils/logger';
 
-	fileLogger('src/lib/tours/BookingModal.svelte');
+	const log = fileLogger('src/lib/tours/BookingModal.svelte');
 
 	const dispatch = createEventDispatcher();
 
@@ -22,11 +22,22 @@
 		notes: ''
 	});
 
-	const next = () => (step = Math.min(step + 1, 3));
-	const back = () => (step = Math.max(step - 1, 1));
+	const next = () => {
+		log.info({ phase: 'booking_modal_next_clicked', currentStep: step });
+		step = Math.min(step + 1, 3);
+	};
+	const back = () => {
+		log.info({ phase: 'booking_modal_back_clicked', currentStep: step });
+		step = Math.max(step - 1, 1);
+	};
 
 	const submit = () => {
-		console.log('Reservation submitted:', formData);
+		log.info({
+			phase: 'booking_modal_submitted',
+			tourDate: formData.tourDate,
+			paymentOption: formData.paymentOption,
+			emailDomain: formData.email?.split('@')[1]
+		});
 		dispatch('close');
 	};
 

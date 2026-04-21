@@ -2,13 +2,13 @@
 	import { browser } from '$app/environment';
 	import { afterNavigate } from '$app/navigation';
 	import { page } from '$app/state';
-	import Navbar from '$lib/ui/Navbar.svelte';
+	import Navbar from '$lib/components/layout/Nav.svelte';
 	import {
 		initPostHog,
 		capturePageview,
 		identifyPostHogUser,
 		resetPostHogUser
-	} from '$lib/analytics/posthog';
+	} from '$lib/client/analytics';
 	import LeadCaptureModal from '$lib/components/lead/LeadCaptureModal.svelte';
 	import Footer from '$lib/layout/Footer.svelte';
 	import { persistLeadAttribution } from '$lib/lead/attribution';
@@ -19,7 +19,7 @@
 	import { onMount } from 'svelte';
 	/**
 	 * @typedef {Object} Props
-	 * @property {{ user?: { id: string, email?: string | null, name?: string | null, roles?: string[] } | null }} [data]
+	 * @property {{ user?: { id: string, email?: string | null, name?: string | null, subscribed?: boolean, roles?: string[] } | null }} [data]
 	 * @property {import('svelte').Snippet} [children]
 	 */
 

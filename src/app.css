@@ -8,6 +8,7 @@
 @import "@fontsource-variable/geist-mono";
 @import "@fontsource-variable/dm-sans";
 
+@plugin "@tailwindcss/typography";
 @custom-variant dark (&:is(.dark *));
 
 @source '../node_modules/flowbite-svelte/dist';

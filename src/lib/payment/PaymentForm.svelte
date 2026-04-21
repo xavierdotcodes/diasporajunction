@@ -1,9 +1,9 @@
-<script>
+	<script>
 	import { onMount } from 'svelte';
 	import { fileLogger } from '$lib/utils/logger';
 
-	fileLogger('src/lib/payment/PaymentForm.svelte');
-	import { getStripe } from '$lib/client/stripe.js'; // your existing module
+	const log = fileLogger('src/lib/payment/PaymentForm.svelte');
+	import { getStripe } from '$lib/payment/client.js';
 
 	let { clientSecret, cardElement = $bindable() } = $props();
 
@@ -12,10 +12,11 @@
 	let card;
 
 	onMount(async () => {
+		log.info({ phase: 'payment_form_mount' });
 		stripe = await getStripe();
 
 		if (!stripe) {
-			console.error('Stripe failed to initialize.');
+			log.error({ phase: 'payment_form_stripe_missing' });
 			return;
 		}
 
@@ -26,6 +27,7 @@
 
 		// Bind card to parent
 		cardElement = card;
+		log.info({ phase: 'payment_form_card_ready' });
 	});
 </script>
 

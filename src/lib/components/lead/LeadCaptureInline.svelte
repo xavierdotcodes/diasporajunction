@@ -2,7 +2,8 @@
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { captureAnalyticsEvent } from '$lib/analytics/posthog';
+	import { captureAnalyticsEvent } from '$lib/client/analytics';
+	import { captureLead } from '$lib/client/leads.js';
 	import { getStoredLeadAttribution, markLeadCaptured, persistLeadAttribution } from '$lib/lead/attribution';
 	import { DEFAULT_LEAD_MAGNET_NAME } from '$lib/lead/constants';
 	import { fileLogger } from '$lib/utils/logger';
@@ -44,30 +45,18 @@
 		const attribution = getStoredLeadAttribution();
 
 		try {
-			const response = await fetch('/api/leads', {
-				method: 'POST',
-				headers: {
-					'content-type': 'application/json'
-				},
-				body: JSON.stringify({
-					email,
-					firstName,
-					source,
-					leadMagnet,
-					entryPage: effectiveEntryPage,
-					referrer: attribution.referrer || document.referrer || null,
-					utmSource: attribution.utmSource || null,
-					utmMedium: attribution.utmMedium || null,
-					utmCampaign: attribution.utmCampaign || null,
-					utmContent: attribution.utmContent || null
-				})
+			const result = await captureLead({
+				email,
+				firstName,
+				source,
+				leadMagnet,
+				entryPage: effectiveEntryPage,
+				referrer: attribution.referrer || document.referrer || null,
+				utmSource: attribution.utmSource || null,
+				utmMedium: attribution.utmMedium || null,
+				utmCampaign: attribution.utmCampaign || null,
+				utmContent: attribution.utmContent || null
 			});
-
-			const result = await response.json();
-
-			if (!response.ok) {
-				throw new Error(result.error || 'We could not save your email right now.');
-			}
 
 			success = true;
 			markLeadCaptured();

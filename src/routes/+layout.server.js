@@ -1,19 +1,34 @@
-import { fileLogger } from '$lib/utils/logger';
-
-fileLogger('src/routes/+layout.server.js');
+import { requestLogger } from '$lib/utils/logger';
 
 /** @type {import('./$types').LayoutServerLoad} */
-export function load({ locals }) {
+export function load(event) {
+	const { locals } = event;
+	const log = requestLogger('root.layout.server', event);
+
+	log.info({
+		op: 'load',
+		phase: 'start',
+		authenticated: Boolean(locals.user)
+	});
+
 	const user = locals.user
 		? {
 				id: locals.user.id,
 				email: locals.user.email ?? null,
 				name: locals.user.name ?? null,
+				subscribed: Boolean(locals.user.subscribed),
 				roles: Array.isArray(locals.user.roles)
 					? locals.user.roles.map((role) => role.role ?? role)
 					: []
 			}
 		: null;
+
+	log.info({
+		op: 'load',
+		phase: 'success',
+		authenticated: Boolean(user),
+		roleCount: user?.roles?.length ?? 0
+	});
 
 	return { user };
 }

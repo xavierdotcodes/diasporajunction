@@ -1,6 +1,6 @@
 <script>
 	import { Button } from '$lib/components/ui/button/index.js';
-	import { captureAnalyticsEvent } from '$lib/analytics/posthog';
+	import { captureAnalyticsEvent } from '$lib/client/analytics';
 
 	let {
 		title = 'Want the full relocation guide?',

@@ -1,6 +1,10 @@
 <script>
+	import SubscribeModal from '$lib/components/lead/Subscribe.svelte';
 	import { fileLogger } from '$lib/utils/logger';
 
-	fileLogger('src/lib/layout/SubscribeModal.svelte');
+	fileLogger('layout.subscribe.component');
+
+	let props = $props();
 </script>
 
+<SubscribeModal {...props} />

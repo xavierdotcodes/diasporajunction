@@ -51,6 +51,16 @@
 					{r.role}
 				</span>
 			{/each}
+			{#if user.communityAccessStatus}
+				<span
+					class="px-2 py-0.5 rounded-full text-xs font-medium
+					{user.communityAccessStatus === 'ACTIVE' ? 'bg-green-100 text-green-800' : ''}
+					{user.communityAccessStatus === 'REQUESTED' ? 'bg-yellow-100 text-yellow-800' : ''}
+					{user.communityAccessStatus === 'REVOKED' ? 'bg-gray-200 text-gray-800' : ''}"
+				>
+					Community {user.communityAccessStatus}
+				</span>
+			{/if}
 		</div>
 	</div>
 

@@ -2,7 +2,7 @@
 	import { afterNavigate } from '$app/navigation';
 	import { page } from '$app/state';
 	import { onMount } from 'svelte';
-	import { captureAnalyticsEvent } from '$lib/analytics/posthog';
+	import { captureAnalyticsEvent } from '$lib/client/analytics';
 	import LeadCaptureInline from '$lib/components/lead/LeadCaptureInline.svelte';
 	import {
 		dismissLeadModal,

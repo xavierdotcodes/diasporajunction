@@ -43,11 +43,35 @@ export async function load({ locals }) {
         orderBy: { createdAt: 'desc' }
     });
 
+    const emails = users
+        .map((user) => user.email?.trim().toLowerCase())
+        .filter(Boolean);
+
+    const grants = emails.length
+        ? await prisma.communityAccessGrant.findMany({
+            where: {
+                email: {
+                    in: emails
+                }
+            }
+        })
+        : [];
+
+    const grantsByEmail = new Map(grants.map((grant) => [grant.email, grant]));
+    const usersWithAccess = users.map((user) => {
+        const grant = user.email ? grantsByEmail.get(user.email.trim().toLowerCase()) : null;
+        return {
+            ...user,
+            communityAccessStatus: grant?.status ?? null,
+            communityAccessGrantedAt: grant?.grantedAt ?? null
+        };
+    });
+
     return {
         tours,
         orders,
         registrations,
         bookings,
-        users
+        users: usersWithAccess
     };
 }

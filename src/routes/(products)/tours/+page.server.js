@@ -1,29 +1,39 @@
 // src/routes/reservations/+page.server.js
 import prisma from '$lib/server/prisma';
 import { json } from '@sveltejs/kit';
-import { fileLogger } from '$lib/utils/logger';
+import { fileLogger, serializeError } from '$lib/utils/logger';
 
-fileLogger('src/routes/(products)/tours/+page.server.js');
+const log = fileLogger('src/routes/(products)/tours/+page.server.js');
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ locals }) {
-    try {
-        // Optionally: check if user is logged in
-        // if (!locals.user) throw redirect(302, '/login');
+	log.info({
+		phase: 'tours_page_load_started',
+		userId: locals.user?.id
+	});
 
-        const tours = await prisma.tour.findMany({
-            orderBy: { startDate: 'asc' },
-            select: {
-                id: true,
-                startDate: true,
-                endDate: true,
-                price: true
-            }
-        });
+	try {
+		const tours = await prisma.tour.findMany({
+			orderBy: { startDate: 'asc' },
+			select: {
+				id: true,
+				startDate: true,
+				endDate: true,
+				price: true
+			}
+		});
 
-        return { tours };
-    } catch (err) {
-        console.error('Error loading tours:', err);
-        return { tours: [] };
-    }
+		log.info({
+			phase: 'tours_page_load_completed',
+			tourCount: tours.length
+		});
+
+		return { tours };
+	} catch (error) {
+		log.error({
+			phase: 'tours_page_load_failed',
+			error: serializeError(error)
+		});
+		return { tours: [] };
+	}
 }

@@ -1,17 +1,17 @@
-<script>
+	<script>
 	import { createEventDispatcher } from 'svelte';
 	import { fileLogger } from '$lib/utils/logger';
 
-	fileLogger('src/lib/tours/CTA.svelte');
+	const log = fileLogger('src/lib/tours/CTA.svelte');
 	const dispatch = createEventDispatcher();
 
 	function handleDiscoveryCall() {
-		console.log('[CTA] Discovery Call button clicked — dispatching openDiscoveryCall');
+		log.info({ phase: 'cta_discovery_call_clicked' });
 		dispatch('openDiscoveryCall');
 	}
 
 	function handleReservation() {
-		console.log('[CTA] Reserve Spot button clicked — dispatching openReservationModal');
+		log.info({ phase: 'cta_reservation_clicked' });
 		dispatch('openReservationModal');
 	}
 </script>

@@ -4,8 +4,6 @@ import { fileLogger } from '$lib/utils/logger';
 
 fileLogger('src/lib/server/email/lead-sequence.js');
 
-export const LEAD_SEQUENCE_JOB_NAME = 'lead-nurture-email';
-
 export const LEAD_NURTURE_SEQUENCE = [
 	{ key: 'welcome_delivery', delayMs: 0 },
 	{ key: 'visiting_vs_living', delayMs: 2 * 24 * 60 * 60 * 1000 },

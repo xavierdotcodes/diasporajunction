@@ -1,13 +1,15 @@
 import { PrismaClient } from '@prisma/client';
 import Stripe from 'stripe';
-import { fileLogger } from '../src/lib/utils/logger.js';
+import { fileLogger, serializeError } from '../src/lib/utils/logger.js';
 
-fileLogger('worker/index.js');
+const log = fileLogger('worker/index.js');
 
 const prisma = new PrismaClient();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 async function run() {
+	log.info({ phase: 'worker_run_started' });
+
 	const upcoming = await prisma.installment.findMany({
 		where: {
 			dueDate: { lte: new Date() },
@@ -15,13 +17,28 @@ async function run() {
 		}
 	});
 
+	log.info({
+		phase: 'worker_installments_loaded',
+		count: upcoming.length
+	});
+
 	for (const installment of upcoming) {
-		console.log(`Charging installment for booking ${installment.bookingId}`);
+		log.info({
+			phase: 'worker_installment_charging',
+			bookingId: installment.bookingId,
+			installmentId: installment.id
+		});
 		// charge logic here
 	}
 }
 
 run().then(() => {
-	console.log('Worker complete');
+	log.info({ phase: 'worker_run_completed' });
 	process.exit(0);
+}).catch((error) => {
+	log.error({
+		phase: 'worker_run_failed',
+		error: serializeError(error)
+	});
+	process.exit(1);
 });

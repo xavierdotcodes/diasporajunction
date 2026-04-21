@@ -1,8 +1,8 @@
-<script>
+	<script>
 	import gsap from 'gsap';
 	import { fileLogger } from '$lib/utils/logger';
 
-	fileLogger('src/lib/ndgo/EnrollmentModal.svelte');
+	const log = fileLogger('src/lib/ndgo/EnrollmentModal.svelte');
 
 	let { showModal = false, onClose = () => {} } = $props();
 
@@ -29,10 +29,16 @@
 
 	const submitForm = () => {
 		if (!formData.agree) {
+			log.warn({ phase: 'ndgo_enrollment_submit_blocked', reason: 'agreement_missing' });
 			alert('You must agree to the terms before submitting.');
 			return;
 		}
-		console.log('Form Submitted:', formData);
+		log.info({
+			phase: 'ndgo_enrollment_submitted',
+			emailDomain: formData.email?.split('@')[1],
+			program: formData.program,
+			level: formData.level
+		});
 		alert('Registration submitted successfully!');
 		onClose();
 	};

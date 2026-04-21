@@ -1,47 +1,98 @@
-// src/routes/admin/subscribers/toggle/+server.js
 import { json } from '@sveltejs/kit';
 import prisma from '$lib/server/prisma';
-import { fileLogger } from '$lib/utils/logger';
-
-fileLogger('src/routes/api/subscribe/+server.js');
+import { captureLeadSignup } from '$lib/server/leads';
+import { DEFAULT_LEAD_MAGNET_NAME } from '$lib/lead/constants';
+import { requestLogger, serializeError } from '$lib/utils/logger';
 
 /**
- * POST /admin/subscribers/toggle
- * Body: { email: string, name?: string }
- * If user exists, sets subscribed = true
- * If user does not exist, creates them with subscribed = true
+ * Public newsletter opt-in.
+ * Keeps the legacy `user.subscribed` flag in sync, but now also
+ * feeds the lead capture + nurture sequence used by the marketing funnel.
  */
 export async function POST({ request }) {
-    try {
-        const { email, name } = await request.json();
+	const log = requestLogger('src/routes/api/subscribe/+server.js', {
+		request,
+		locals: {}
+	});
 
-        if (!email) {
-            return json({ error: 'Email is required' }, { status: 400 });
-        }
+	try {
+		const { email, name, source, leadMagnet, entryPage, referrer, utmSource, utmMedium, utmCampaign, utmContent } =
+			await request.json();
+		const normalizedEmail = email?.trim().toLowerCase();
 
-        // Try to find existing user
-        let user = await prisma.user.findUnique({ where: { email } });
+		log.info({
+			phase: 'subscribe_request_received',
+			emailDomain: normalizedEmail?.split('@')[1],
+			source: source || 'newsletter_modal'
+		});
 
-        if (user) {
-            // Already exists — update subscribed
-            user = await prisma.user.update({
-                where: { email },
-                data: { subscribed: true }
-            });
-        } else {
-            // Create new user
-            user = await prisma.user.create({
-                data: {
-                    email,
-                    name: name || null,
-                    subscribed: true
-                }
-            });
-        }
+		if (!normalizedEmail) {
+			log.warn({
+				phase: 'subscribe_request_invalid',
+				reason: 'missing_email'
+			});
+			return json({ error: 'Email is required' }, { status: 400 });
+		}
 
-        return json({ success: true, user });
-    } catch (err) {
-        console.error('Failed to subscribe user:', err);
-        return json({ error: 'Failed to subscribe user' }, { status: 500 });
-    }
+		const leadResult = await captureLeadSignup({
+			email: normalizedEmail,
+			firstName: name || null,
+			source: source || 'newsletter_modal',
+			leadMagnet: leadMagnet || DEFAULT_LEAD_MAGNET_NAME,
+			entryPage: entryPage || null,
+			referrer: referrer || null,
+			utmSource: utmSource || null,
+			utmMedium: utmMedium || null,
+			utmCampaign: utmCampaign || null,
+			utmContent: utmContent || null
+		});
+
+		if (!leadResult.ok) {
+			log.warn({
+				phase: 'subscribe_request_rejected',
+				error: leadResult.error,
+				status: leadResult.status
+			});
+			return json({ error: leadResult.error }, { status: leadResult.status || 400 });
+		}
+
+		let user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+		const existed = Boolean(user);
+
+		if (user) {
+			user = await prisma.user.update({
+				where: { email: normalizedEmail },
+				data: { subscribed: true }
+			});
+		} else {
+			user = await prisma.user.create({
+				data: {
+					email: normalizedEmail,
+					name: name || null,
+					subscribed: true
+				}
+			});
+		}
+
+		log.info({
+			phase: 'subscribe_request_completed',
+			userId: user.id,
+			leadId: leadResult.lead.id,
+			existed,
+			leadCreated: leadResult.created
+		});
+
+		return json({
+			success: true,
+			user,
+			leadId: leadResult.lead.id,
+			created: leadResult.created
+		});
+	} catch (error) {
+		log.error({
+			phase: 'subscribe_request_failed',
+			error: serializeError(error)
+		});
+		return json({ error: 'Failed to subscribe user' }, { status: 500 });
+	}
 }

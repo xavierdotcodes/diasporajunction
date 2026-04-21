@@ -1,5 +1,5 @@
 import prisma from '$lib/server/prisma';
-import { enqueueLeadNurtureSequence } from '$lib/server/queues/email.queue';
+import { inngest } from '$lib/server/inngest';
 import { fileLogger, scopedLogger } from '$lib/utils/logger';
 
 fileLogger('src/lib/server/leads.js');
@@ -127,18 +127,24 @@ export async function captureLeadSignup(input) {
 		}
 	});
 
-	await enqueueLeadNurtureSequence({
-		leadId: lead.id,
-		email: lead.email,
-		firstName: lead.firstName,
-		leadMagnet: lead.leadMagnet
+	const leadCapturedAt = lead.subscribedAt || lead.createdAt || new Date();
+	const { ids: eventIds } = await inngest.send({
+		id: `app-lead-captured:${lead.id}:${leadCapturedAt.toISOString()}`,
+		name: 'app/lead.captured',
+		data: {
+			leadId: lead.id,
+			email: lead.email,
+			firstName: lead.firstName,
+			leadMagnet: lead.leadMagnet
+		}
 	});
 
 	log.info({
 		phase: 'lead_captured',
 		leadId: lead.id,
 		email: lead.email,
-		eventType
+		eventType,
+		eventIds
 	});
 
 	return {

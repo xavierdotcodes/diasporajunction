@@ -73,10 +73,10 @@
 			</a>
 
 			<a
-				href="/guides"
+				href="/blog"
 				class="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
 			>
-				Guides
+				Blog
 			</a>
 
 			<a
@@ -111,7 +111,7 @@
 					<ul class="space-y-2 text-sm text-white/75">
 						<li><a href="/start-here" class="transition hover:text-white">/start-here</a></li>
 						<li><a href="/relocate" class="transition hover:text-white">/relocate</a></li>
-						<li><a href="/guides" class="transition hover:text-white">/guides</a></li>
+						<li><a href="/blog" class="transition hover:text-white">/blog</a></li>
 						<li><a href="/about" class="transition hover:text-white">/about</a></li>
 					</ul>
 				</div>

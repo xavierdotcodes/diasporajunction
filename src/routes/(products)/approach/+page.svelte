@@ -1,8 +1,8 @@
 <script>
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';
-	import Hero from '$lib/ui/Hero.svelte';
-	import Title from '$lib/ui/Title.svelte';
+	import Hero from '$lib/components/shared/Hero.svelte';
+	import Title from '$lib/components/shared/Title.svelte';
 	import { fileLogger } from '$lib/utils/logger';
 
 	fileLogger('src/routes/(products)/approach/+page.svelte');

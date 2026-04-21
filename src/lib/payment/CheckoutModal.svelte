@@ -2,16 +2,16 @@
 	import { createBubbler, stopPropagation } from 'svelte/legacy';
 
 	const bubble = createBubbler();
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount } from 'svelte';
 	import gsap from 'gsap';
 	import CustomerInfoForm from './CustomerInfoForm.svelte';
 	import PaymentForm from './PaymentForm.svelte';
-	import { startPayment, completePayment, cancelPaymentIntent } from '$lib/client/stripe.js';
+	import { startPayment, completePayment, cancelPaymentIntent } from '$lib/payment/client.js';
 	import { createEventDispatcher } from 'svelte';
-	import { getStripe } from '$lib/client/stripe';
-	import { fileLogger } from '$lib/utils/logger';
+	import { getStripe } from '$lib/payment/client.js';
+	import { fileLogger, serializeError } from '$lib/utils/logger';
 
-	fileLogger('src/lib/payment/CheckoutModal.svelte');
+	const log = fileLogger('src/lib/payment/CheckoutModal.svelte');
 
 	const dispatch = createEventDispatcher();
 
@@ -37,6 +37,7 @@
 
 	// --- GSAP open animation
 	onMount(() => {
+		log.info({ phase: 'checkout_modal_mount' });
 		if (overlayEl && modalEl) {
 			gsap.set(modalEl, { scale: 0.9, y: 20, opacity: 0 });
 			gsap.set(overlayEl, { opacity: 0 });
@@ -53,6 +54,12 @@
 	});
 
 	async function close() {
+		log.info({
+			phase: 'checkout_modal_close_requested',
+			step,
+			hasClientSecret: Boolean(clientSecret)
+		});
+
 		if (clientSecret && step !== 3) await cancelPaymentIntent(clientSecret);
 
 		// animate out
@@ -69,6 +76,7 @@
 		clientSecret = null;
 		orderid = null;
 		step = null;
+		log.info({ phase: 'checkout_modal_closed' });
 		dispatch('close');
 	}
 
@@ -86,11 +94,24 @@
 	async function nextStep() {
 		if (step === 1) {
 			try {
+				log.info({
+					phase: 'checkout_step_transition_started',
+					fromStep: step,
+					toStep: 2
+				});
 				continueLoading = true;
 				clientSecret = await startPayment();
 				step = 2;
-			} catch (err) {
-				console.error('Error starting payment:', err);
+				log.info({
+					phase: 'checkout_step_transition_completed',
+					step
+				});
+			} catch (error) {
+				log.error({
+					phase: 'checkout_step_transition_failed',
+					fromStep: 1,
+					error: serializeError(error)
+				});
 				alert('Failed to start payment. Please try again.');
 			} finally {
 				continueLoading = false;
@@ -104,6 +125,10 @@
 		if (!clientSecret || !cardElement) return;
 
 		try {
+			log.info({
+				phase: 'checkout_payment_submit_started',
+				emailDomain: customer?.email?.split('@')[1]
+			});
 			loading = true;
 			const res = await completePayment(clientSecret, cardElement, customer);
 
@@ -112,27 +137,48 @@
 					orderid = res.id;
 					step = 3;
 					clientSecret = null;
+					log.info({
+						phase: 'checkout_payment_submit_completed',
+						orderId: orderid
+					});
 					break;
 				case 'requires_payment_method':
+					log.warn({ phase: 'checkout_payment_requires_payment_method' });
 					alert('Payment declined, please try another card.');
 					break;
 				case 'requires_action':
-					const stripe = getStripe();
+					log.info({ phase: 'checkout_payment_requires_action' });
+					const stripe = await getStripe();
 					const result = await stripe.confirmCardPayment(res.client_secret);
 					if (result.error) {
+						log.error({
+							phase: 'checkout_payment_authentication_failed',
+							error: serializeError(result.error)
+						});
 						alert('Payment authentication failed: ' + result.error.message);
 					} else if (result.paymentIntent.status === 'succeeded') {
 						orderid = result.paymentIntent.id;
 						step = 3;
 						clientSecret = null;
+						log.info({
+							phase: 'checkout_payment_authentication_completed',
+							orderId: orderid
+						});
 					}
 					break;
 				default:
+					log.warn({
+						phase: 'checkout_payment_unexpected_status',
+						status: res.status
+					});
 					alert('Unexpected payment status.');
 			}
-		} catch (err) {
-			console.error('❌ Payment error:', err);
-			alert('Payment failed: ' + err.message);
+		} catch (error) {
+			log.error({
+				phase: 'checkout_payment_submit_failed',
+				error: serializeError(error)
+			});
+			alert('Payment failed: ' + error.message);
 		} finally {
 			loading = false;
 		}
@@ -140,6 +186,11 @@
 
 	function backStep() {
 		if (step === 2) {
+			log.info({
+				phase: 'checkout_step_back_requested',
+				fromStep: step,
+				toStep: 1
+			});
 			if (clientSecret) {
 				cancelPaymentIntent(clientSecret);
 				clientSecret = null;

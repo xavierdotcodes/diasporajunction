@@ -1,0 +1,37 @@
+import { fileLogger, serializeError } from '$lib/utils/logger';
+
+const log = fileLogger('src/lib/client/ebook.js');
+
+export async function startEbookCheckout(payload) {
+	try {
+		log.info({
+			op: 'startEbookCheckout',
+			phase: 'start',
+			emailDomain: payload?.email?.split('@')[1]
+		});
+
+		const res = await fetch('/api/ebook/checkout-session', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(payload)
+		});
+
+		const data = await res.json();
+		if (!res.ok) throw new Error(data.error || 'Failed to start ebook checkout');
+
+		log.info({
+			op: 'startEbookCheckout',
+			phase: 'success',
+			sessionId: data?.sessionId
+		});
+
+		return data;
+	} catch (error) {
+		log.error({
+			op: 'startEbookCheckout',
+			phase: 'error',
+			error: serializeError(error)
+		});
+		throw error;
+	}
+}

@@ -2,7 +2,7 @@
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import { captureAnalyticsEvent } from '$lib/analytics/posthog';
+	import { captureAnalyticsEvent } from '$lib/client/analytics';
 
 	let {
 		eyebrow = 'Featured Resource',

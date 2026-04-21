@@ -1,12 +1,11 @@
 // src/lib/server/redis.js
 import Redis from 'ioredis';
 import { env } from '$env/dynamic/private';
-import { fileLogger } from '$lib/utils/logger';
+import { fileLogger, serializeError } from '$lib/utils/logger';
 
-fileLogger('src/lib/server/redis.js');
+const log = fileLogger('src/lib/server/redis.js');
 
 let client;
-let bullmqClient;
 
 function assertRedisUrl() {
 	if (!env.REDIS_URL) {
@@ -17,18 +16,26 @@ function assertRedisUrl() {
 export function getRedis() {
 	if (!client) {
 		assertRedisUrl();
-		client = new Redis(env.REDIS_URL);
+		log.info({ phase: 'redis_client_initializing' });
+
+		try {
+			client = new Redis(env.REDIS_URL);
+			client.on('connect', () => {
+				log.info({ phase: 'redis_connected' });
+			});
+			client.on('error', (error) => {
+				log.error({
+					phase: 'redis_error',
+					error: serializeError(error)
+				});
+			});
+		} catch (error) {
+			log.error({
+				phase: 'redis_client_initialization_failed',
+				error: serializeError(error)
+			});
+			throw error;
+		}
 	}
 	return client;
-}
-
-export function getBullRedis() {
-	if (!bullmqClient) {
-		assertRedisUrl();
-		bullmqClient = new Redis(env.REDIS_URL, {
-			maxRetriesPerRequest: null
-		});
-	}
-
-	return bullmqClient;
 }

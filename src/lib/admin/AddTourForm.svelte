@@ -1,9 +1,9 @@
-<script>
+	<script>
 	import { createEventDispatcher } from 'svelte';
-	import { addTour } from '$lib/client/helpers.js';
-	import { fileLogger } from '$lib/utils/logger';
+	import { addTour } from '$lib/client/admin.js';
+	import { fileLogger, serializeError } from '$lib/utils/logger';
 
-	fileLogger('src/lib/admin/AddTourForm.svelte');
+	const log = fileLogger('src/lib/admin/AddTourForm.svelte');
 
 	const dispatch = createEventDispatcher();
 
@@ -20,6 +20,11 @@
 		e.preventDefault();
 		error = '';
 		loading = true;
+		log.info({
+			phase: 'add_tour_form_submit_started',
+			startDate: tour.startDate,
+			endDate: tour.endDate
+		});
 
 		// Validation
 		if (!tour.price || isNaN(Number(tour.price))) {
@@ -41,12 +46,19 @@
 		try {
 			const response = await addTour(tour);
 			dispatch('tourAdded', response.tour);
+			log.info({
+				phase: 'add_tour_form_submit_completed',
+				tourId: response?.tour?.id
+			});
 
 			// Reset form
 			tour = { price: '', startDate: '', endDate: '' };
-		} catch (err) {
-			console.error('Add tour failed:', err);
-			error = err.message || 'Failed to add tour';
+		} catch (submitError) {
+			log.error({
+				phase: 'add_tour_form_submit_failed',
+				error: serializeError(submitError)
+			});
+			error = submitError.message || 'Failed to add tour';
 		} finally {
 			loading = false;
 		}

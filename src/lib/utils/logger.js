@@ -82,3 +82,34 @@ export function fileLogger(file, bindings = {}) {
 	log.debug({ phase: 'module_loaded', ...bindings });
 	return log;
 }
+
+export function serializeError(error) {
+	if (error instanceof Error) {
+		return {
+			name: error.name,
+			message: error.message,
+			stack: error.stack,
+			cause: error.cause
+		};
+	}
+
+	if (error && typeof error === 'object') {
+		return error;
+	}
+
+	return {
+		message: String(error)
+	};
+}
+
+export function requestLogger(scope, event, bindings = {}) {
+	const url = new URL(event.request.url);
+
+	return scopedLogger(scope).child({
+		method: event.request.method,
+		path: url.pathname,
+		search: url.search || undefined,
+		requestId: event.locals?.requestId,
+		...bindings
+	});
+}

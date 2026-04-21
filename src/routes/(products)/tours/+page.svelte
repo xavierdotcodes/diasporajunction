@@ -2,8 +2,8 @@
 	import Itinerary from '$lib/tours/Itinerary.svelte';
 	import Cta from '$lib/tours/CTA.svelte';
 	import CalendlyModal from '$lib/tours/CalendlyModal.svelte';
-	import Hero from '$lib/ui/Hero.svelte';
-	import Title from '$lib/ui/Title.svelte';
+	import Hero from '$lib/components/shared/Hero.svelte';
+	import Title from '$lib/components/shared/Title.svelte';
 	import { fileLogger } from '$lib/utils/logger';
 
 	fileLogger('src/routes/(products)/tours/+page.svelte');

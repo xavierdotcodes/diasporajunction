@@ -1,8 +1,13 @@
 // scripts/seed-admin.js
 import bcrypt from 'bcrypt';
 import { prisma } from '../src/lib/server/prisma.js';
+import { fileLogger, serializeError } from '../src/lib/utils/logger.js';
+
+const log = fileLogger('scripts/seed-admin.js');
 
 const run = async () => {
+	log.info({ phase: 'seed_admin_started' });
+
 	// hash the password
 	const hashedPassword = await bcrypt.hash('D!@sp0r@junx!0n', 10);
 
@@ -24,9 +29,16 @@ const run = async () => {
 		include: { roles: true }
 	});
 
-	console.log('✅ Admin created:', adminUser.email, '/ D!@sp0r@junx!0n');
+	log.info({
+		phase: 'seed_admin_completed',
+		email: adminUser.email,
+		roleCount: adminUser.roles?.length ?? 0
+	});
 };
 
-run().catch((err) => {
-	console.error('❌ Failed to create admin:', err);
+run().catch((error) => {
+	log.error({
+		phase: 'seed_admin_failed',
+		error: serializeError(error)
+	});
 });

@@ -2,25 +2,25 @@ export const relocateQuickLinks = [
     {
         title: 'Start Here',
         description: 'Begin with the big picture before you commit money, energy, or emotion.',
-        href: '/guides/start-here',
+        href: '/blog/start-here',
         tag: 'Orientation'
     },
     {
         title: 'Cost of Living',
         description: 'Get a grounded feel for rent, transport, food, schools, and daily life.',
-        href: '/guides/cost-of-living-in-ghana',
+        href: '/blog/cost-of-living-in-ghana',
         tag: 'Money'
     },
     {
         title: 'Visiting vs Living',
         description: 'Tourist energy is not the same as resident energy. Learn the difference.',
-        href: '/guides/visiting-vs-living-in-ghana',
+        href: '/blog/visiting-vs-living-in-ghana',
         tag: 'Reality Check'
     },
     {
         title: 'Moving With Children',
         description: 'For families thinking about schooling, routines, safety, and support systems.',
-        href: '/guides/moving-to-ghana-with-kids',
+        href: '/blog/moving-to-ghana-with-kids',
         tag: 'Family'
     }
 ];
@@ -48,7 +48,7 @@ export const relocateSteps = [
         step: '04',
         title: 'Move with support',
         description:
-            'DiasporaJunxion exists to reduce confusion and increase trust, context, and connection as you make your move.'
+            'Use DiasporaJunxion to keep learning, ask better questions, and move with more trust, context, and support.'
     }
 ];
 
@@ -69,7 +69,7 @@ export const relocateFaq = [
         value: 'item-3',
         question: 'What does DiasporaJunxion help with?',
         answer:
-            'We help you orient, learn, connect, and move with better context. That can include guides, practical content, introductions, and relocation support pathways over time.'
+            'We help you get clearer about the move through practical articles, relocation guidance, trusted next steps, and a deeper Community layer when you need more than public content.'
     },
     {
         value: 'item-4',

@@ -11,10 +11,10 @@
 	import AddTourModal from '$lib/admin/AddTourModal.svelte';
 	import AnimatedPanel from '$lib/admin/AnimatedPanel.svelte';
 	import UserModal from '$lib/admin/UserModal.svelte';
-	import { addTour } from '$lib/client/helpers.js';
+	import { addTour } from '$lib/client/admin.js';
 	import { fileLogger } from '$lib/utils/logger';
 
-	fileLogger('src/routes/(ops)/admin/+page.svelte');
+	const log = fileLogger('src/routes/(ops)/admin/+page.svelte');
 
 	let { data } = $props();
 	let tours = $state([]);
@@ -54,6 +54,10 @@
 	}
 
 	async function handleOpenUserModal(user) {
+		log.info({
+			phase: 'admin_user_modal_open_requested',
+			userId: user?.id
+		});
 		activeUser = user;
 		await tick();
 		gsap.fromTo(
@@ -65,6 +69,7 @@
 
 	function handleCloseUserModal() {
 		if (!modalWrapper) return;
+		log.info({ phase: 'admin_user_modal_close_requested', userId: activeUser?.id });
 		gsap.to(modalWrapper, {
 			duration: 0.2,
 			autoAlpha: 0,
@@ -74,7 +79,33 @@
 		});
 	}
 
-	onMount(() => console.log('Admin dashboard mounted'));
+	function handleCommunityAccessChanged({ detail }) {
+		users = users.map((user) =>
+			user.id === detail.userId
+				? {
+						...user,
+						communityAccessStatus: detail.status,
+						communityAccessGrantedAt: detail.grantedAt
+					}
+				: user
+		);
+
+		if (activeUser?.id === detail.userId) {
+			activeUser = {
+				...activeUser,
+				communityAccessStatus: detail.status,
+				communityAccessGrantedAt: detail.grantedAt
+			};
+		}
+	}
+
+	onMount(() => {
+		log.info({
+			phase: 'admin_dashboard_mounted',
+			tourCount: tours.length,
+			userCount: users.length
+		});
+	});
 </script>
 
 <main class="min-h-screen bg-gray-50 flex flex-col gap-6 p-4 md:p-6 items-center relative w-full">
@@ -133,7 +164,11 @@
 
 	{#if activeUser}
 		<div bind:this={modalWrapper} class="absolute z-50 top-20 left-1/2 transform -translate-x-1/2">
-			<UserModal {activeUser} onClose={handleCloseUserModal} />
+			<UserModal
+				{activeUser}
+				onClose={handleCloseUserModal}
+				on:communityAccessChanged={handleCommunityAccessChanged}
+			/>
 		</div>
 	{/if}
 </main>
