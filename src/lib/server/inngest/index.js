@@ -9,9 +9,15 @@ export { inngest };
 
 export const functions = [leadNurtureSequence];
 
+function getFunctionId(fn) {
+	if (typeof fn?.id === 'function') return fn.id();
+	if (typeof fn?.name === 'function') return fn.name();
+	return fn?.opts?.id ?? fn?.id ?? fn?.name ?? null;
+}
+
 log.info({
 	op: 'register_functions',
 	phase: 'success',
-	functionIds: functions.map((fn) => fn.id ?? fn.name).filter(Boolean),
+	functionIds: functions.map(getFunctionId).filter(Boolean),
 	count: functions.length
 });
