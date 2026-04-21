@@ -14,5 +14,5 @@ log.info({
 	op: 'init_client',
 	phase: 'success',
 	clientId: 'diasporajunxion',
-	isDev
+	isDev: dev
 });
