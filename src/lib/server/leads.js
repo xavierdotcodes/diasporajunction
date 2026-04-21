@@ -1,6 +1,6 @@
 import prisma from '$lib/server/prisma';
 import { inngest } from '$lib/server/inngest';
-import { fileLogger, scopedLogger } from '$lib/utils/logger';
+import { fileLogger, scopedLogger, serializeError } from '$lib/utils/logger';
 
 fileLogger('src/lib/server/leads.js');
 
@@ -80,12 +80,33 @@ function buildLeadUpdateData(existingLead, payload) {
 }
 
 export async function captureLeadSignup(input) {
+	log.info({
+		op: 'capture_lead_signup',
+		phase: 'start',
+		email: input?.email ? normalizeEmail(input.email) : undefined,
+		source: input?.source,
+		entryPage: input?.entryPage
+	});
+
 	const validationError = validateLeadInput(input);
 	if (validationError) {
+		log.warn({
+			op: 'capture_lead_signup',
+			phase: 'guard',
+			reason: 'validation_failed',
+			email: input?.email ? normalizeEmail(input.email) : undefined,
+			error: validationError
+		});
 		return { ok: false, error: validationError, status: 400 };
 	}
 
 	const payload = buildLeadPayload(input);
+	log.debug({
+		op: 'capture_lead_signup',
+		phase: 'query',
+		query: 'lead.findUnique',
+		email: payload.email
+	});
 	const existingLead = await prisma.lead.findUnique({
 		where: { email: payload.email }
 	});
@@ -95,12 +116,25 @@ export async function captureLeadSignup(input) {
 
 	if (existingLead) {
 		const updateData = buildLeadUpdateData(existingLead, payload);
+		log.debug({
+			op: 'capture_lead_signup',
+			phase: 'mutation',
+			mutation: 'lead.update',
+			leadId: existingLead.id,
+			fields: Object.keys(updateData)
+		});
 
 		lead = await prisma.lead.update({
 			where: { id: existingLead.id },
 			data: updateData
 		});
 	} else {
+		log.debug({
+			op: 'capture_lead_signup',
+			phase: 'mutation',
+			mutation: 'lead.create',
+			email: payload.email
+		});
 		lead = await prisma.lead.create({
 			data: {
 				...payload,
@@ -110,6 +144,13 @@ export async function captureLeadSignup(input) {
 		});
 	}
 
+	log.debug({
+		op: 'capture_lead_signup',
+		phase: 'mutation',
+		mutation: 'leadEvent.create',
+		leadId: lead.id,
+		eventType
+	});
 	await prisma.leadEvent.create({
 		data: {
 			leadId: lead.id,
@@ -128,22 +169,50 @@ export async function captureLeadSignup(input) {
 	});
 
 	const leadCapturedAt = lead.subscribedAt || lead.createdAt || new Date();
-	const { ids: eventIds } = await inngest.send({
-		id: `app-lead-captured:${lead.id}:${leadCapturedAt.toISOString()}`,
-		name: 'app/lead.captured',
-		data: {
-			leadId: lead.id,
-			email: lead.email,
-			firstName: lead.firstName,
-			leadMagnet: lead.leadMagnet
-		}
+	const eventName = 'app/lead.captured';
+	const eventId = `app-lead-captured:${lead.id}:${leadCapturedAt.toISOString()}`;
+	log.info({
+		op: 'capture_lead_signup',
+		phase: 'event_send',
+		eventName,
+		eventId,
+		leadId: lead.id,
+		email: lead.email
 	});
 
+	let eventIds;
+
+	try {
+		({ ids: eventIds } = await inngest.send({
+			id: eventId,
+			name: eventName,
+			data: {
+				leadId: lead.id,
+				email: lead.email,
+				firstName: lead.firstName,
+				leadMagnet: lead.leadMagnet
+			}
+		}));
+	} catch (error) {
+		log.error({
+			op: 'capture_lead_signup',
+			phase: 'event_send_error',
+			eventName,
+			eventId,
+			leadId: lead.id,
+			error: serializeError(error)
+		});
+		throw error;
+	}
+
 	log.info({
-		phase: 'lead_captured',
+		op: 'capture_lead_signup',
+		phase: 'success',
 		leadId: lead.id,
 		email: lead.email,
 		eventType,
+		eventName,
+		eventId,
 		eventIds
 	});
 
