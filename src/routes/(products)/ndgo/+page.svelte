@@ -42,14 +42,6 @@
 	});
 </script>
 
-<svelte:head>
-	<title>N.D.G.O. Program | DiasporaJunxion</title>
-	<meta
-		name="description"
-		content="N.D.G.O. teaches art through computers and computers through art — empowering Ghanaian students with creativity, expression, and technical skills."
-	/>
-</svelte:head>
-
 <div class="ndgo-page font-sans bg-white text-black">
 	<!-- HERO -->
 	<Hero

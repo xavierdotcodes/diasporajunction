@@ -14,6 +14,7 @@
 	import { persistLeadAttribution } from '$lib/lead/attribution';
 	import { autoReveal } from '$lib/motion/reveal';
 	import { pageFade } from '$lib/motion/transitions';
+	import { resolvePageSeo, serializeJsonLd } from '$lib/seo';
 	import '../app.css';
 	import { fileLogger } from '$lib/utils/logger';
 	import { onMount } from 'svelte';
@@ -26,6 +27,13 @@
 	/** @type {Props} */
 	let { children, data } = $props();
 	let skipInitialAfterNavigate = true;
+	const seo = $derived(
+		resolvePageSeo({
+			pathname: page.url.pathname,
+			data: page.data ?? {},
+			status: page.status ?? 200
+		})
+	);
 
 	fileLogger('src/routes/+layout.svelte');
 
@@ -61,30 +69,28 @@
 </script>
 
 <svelte:head>
-	<title>DiasporaJunxion – Connecting the Diaspora</title>
+	<title>{seo.title}</title>
+	<meta name="description" content={seo.description} />
+	<meta name="robots" content={seo.robots} />
+	<link rel="canonical" href={seo.canonical} />
 
-	<!-- Open Graph / WhatsApp / Facebook -->
-	<meta property="og:title" content="DiasporaJunxion – Connecting the Diaspora" />
-	<meta
-		property="og:description"
-		content="Discover opportunities, events, and networks tailored for the African diaspora. Build connections, grow, and thrive globally."
-	/>
-	<meta property="og:image" content="https://diasporajunxion.com/logo2.png" />
-	<meta property="og:url" content="https://diasporajunxion.com" />
-	<meta property="og:type" content="website" />
+	<meta property="og:title" content={seo.title} />
+	<meta property="og:description" content={seo.description} />
+	<meta property="og:image" content={seo.image} />
+	<meta property="og:url" content={seo.canonical} />
+	<meta property="og:type" content={seo.type} />
 	<meta property="og:locale" content="en_US" />
+	<meta property="og:site_name" content={seo.siteName} />
 
-	<!-- Optional: Facebook App ID -->
-	<meta property="fb:app_id" content="YOUR_FB_APP_ID" />
-
-	<!-- Twitter fallback -->
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content="DiasporaJunxion – Connecting the Diaspora" />
-	<meta
-		name="twitter:description"
-		content="Discover opportunities, events, and networks tailored for the African diaspora. Build connections, grow, and thrive globally."
-	/>
-	<meta name="twitter:image" content="https://diasporajunxion.com/logo2.png" />
+	<meta name="twitter:title" content={seo.title} />
+	<meta name="twitter:description" content={seo.description} />
+	<meta name="twitter:image" content={seo.image} />
+	{#each seo.structuredData as schema}
+		<script type="application/ld+json">
+			{@html serializeJsonLd(schema)}
+		</script>
+	{/each}
 
 	<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
 	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -92,7 +98,6 @@
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 	<meta name="apple-mobile-web-app-title" content="DiasporaJunxion" />
 	<link rel="manifest" href="/site.webmanifest" />
-	<link rel="preload" as="video" href="/videos/tours-hero.mp4" type="video/mp4" />
 	<script
 		defer
 		src="https://cloud.umami.is/script.js"

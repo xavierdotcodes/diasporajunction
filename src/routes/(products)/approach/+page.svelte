@@ -63,14 +63,6 @@
 	}) } = $props();
 </script>
 
-<svelte:head>
-	<title>Our Approach | DiasporaJunxion</title>
-	<meta
-		name="description"
-		content="Learn how DiasporaJunxion empowers Ghanaian artists, makers, and entrepreneurs to reach global markets through mentorship, structure, and exposure."
-	/>
-</svelte:head>
-
 <div class="approach-page font-sans bg-white text-black">
 	<Hero
 		subtitle="How we turn Ghanaian creativity into globally viable ventures — through mentorship, structure, and exposure."

@@ -10,14 +10,6 @@
 	});
 </script>
 
-<svelte:head>
-	<title>Check Your Email | DiasporaJunxion</title>
-	<meta
-		name="description"
-		content="Thanks for signing up. Check your email for the free DiasporaJunxion Ghana reality guide."
-	/>
-</svelte:head>
-
 <section class="bg-[#fff8e1] px-6 py-24 text-black">
 	<div class="mx-auto max-w-4xl rounded-[2rem] border border-black/10 bg-white p-8 shadow-sm md:p-12">
 		<p class="text-xs font-semibold uppercase tracking-[0.24em] text-[#D9042B]">DiasporaJunxion</p>

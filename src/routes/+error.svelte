@@ -8,14 +8,6 @@
 	);
 </script>
 
-<svelte:head>
-	<title>{status} | DiasporaJunxion</title>
-	<meta
-		name="description"
-		content="A branded error page for DiasporaJunxion that helps visitors find their way back."
-	/>
-</svelte:head>
-
 <section
 	class="relative isolate flex min-h-[100dvh] items-center justify-center overflow-hidden bg-black px-6 py-20 text-white"
 >

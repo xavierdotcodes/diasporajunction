@@ -20,14 +20,6 @@ I care about building things that reduce confusion, create orientation, and help
 	};
 </script>
 
-<svelte:head>
-	<title>Founder | DiasporaJunxion</title>
-	<meta
-		name="description"
-		content="Meet Xavi, founder of DiasporaJunxion — a platform helping diaspora people move toward Ghana with more clarity, connection, and context."
-	/>
-</svelte:head>
-
 <!-- Hero Section -->
 <section class="relative flex items-center justify-center bg-black py-32 text-white sm:py-40">
 	<img

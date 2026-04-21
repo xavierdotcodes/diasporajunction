@@ -8,14 +8,6 @@
 	fileLogger('free.checklist.page');
 </script>
 
-<svelte:head>
-	<title>Free Ghana Checklist | DiasporaJunxion</title>
-	<meta
-		name="description"
-		content="Get the free Ghana reality guide and use it as your first practical checklist for thinking through a visit, relocation, or deeper move."
-	/>
-</svelte:head>
-
 <div class="checklist-page">
 	<section class="checklist-hero">
 		<div class="page-shell hero-grid">

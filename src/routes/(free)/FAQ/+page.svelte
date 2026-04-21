@@ -87,7 +87,28 @@
 	function toggle(faq) {
 		openIndex = openIndex === faq ? null : faq;
 	}
+
+	const faqJsonLd = JSON.stringify({
+		'@context': 'https://schema.org',
+		'@type': 'FAQPage',
+		mainEntity: faqCategories.flatMap((category) =>
+			category.items.map((faq) => ({
+				'@type': 'Question',
+				name: faq.question,
+				acceptedAnswer: {
+					'@type': 'Answer',
+					text: faq.answer
+				}
+			}))
+		)
+	}).replace(/</g, '\\u003c');
 </script>
+
+<svelte:head>
+	<script type="application/ld+json">
+		{@html faqJsonLd}
+	</script>
+</svelte:head>
 
 <div class="hero">
 	<h1>Frequently Asked Questions</h1>

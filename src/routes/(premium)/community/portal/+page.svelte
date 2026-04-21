@@ -41,14 +41,6 @@
 	];
 </script>
 
-<svelte:head>
-	<title>Community Portal | DiasporaJunxion</title>
-	<meta
-		name="description"
-		content="The member-only DiasporaJunxion workspace for premium content, tools, resources, and deeper support."
-	/>
-</svelte:head>
-
 <div class="community-page member-mode">
 	<section class="community-hero hero-dark">
 		<div class="community-shell hero-grid">

@@ -26,14 +26,6 @@
 	}));
 </script>
 
-<svelte:head>
-	<title>Invest in Ghana | DiasporaJunxion</title>
-	<meta
-		name="description"
-		content="Explore diaspora investment context, opportunity, and grounded guidance around Ghana through DiasporaJunxion."
-	/>
-</svelte:head>
-
 <div class="invest-page">
 	<Hero
 		variant="page"

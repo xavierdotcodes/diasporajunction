@@ -37,14 +37,6 @@
 	);
 </script>
 
-<svelte:head>
-	<title>Blog | DiasporaJunxion</title>
-	<meta
-		name="description"
-		content="Read grounded articles for diaspora people thinking about visiting, relocating, belonging, and building a life in Ghana with more clarity."
-	/>
-</svelte:head>
-
 <div class="blog-page">
 	<Hero
 		variant="page"

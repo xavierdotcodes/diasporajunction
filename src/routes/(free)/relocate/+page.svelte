@@ -46,14 +46,6 @@
 	];
 </script>
 
-<svelte:head>
-	<title>Relocate to Ghana | DiasporaJunxion</title>
-	<meta
-		name="description"
-		content="DiasporaJunxion helps diaspora travelers and returners relocate to Ghana with more clarity, context, and connection."
-	/>
-</svelte:head>
-
 <div class="relocate-page">
 	<Hero
 		variant="page"

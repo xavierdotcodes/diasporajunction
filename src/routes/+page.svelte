@@ -207,11 +207,6 @@
 </script>
 
 <svelte:head>
-	<title>DiasporaJunxion | Relocate, Connect, and Build in Ghana</title>
-	<meta
-		name="description"
-		content="DiasporaJunxion helps diaspora travelers, returners, and families move toward Ghana with more clarity, connection, and opportunity."
-	/>
 	<link
 		rel="preload"
 		as="image"

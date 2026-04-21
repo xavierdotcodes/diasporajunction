@@ -54,14 +54,6 @@
 	];
 </script>
 
-<svelte:head>
-	<title>Guides | DiasporaJunxion</title>
-	<meta
-		name="description"
-		content="Explore practical guides for visiting, relocating, investing, and building a real life in Ghana through DiasporaJunxion."
-	/>
-</svelte:head>
-
 <div class="guides-page">
 	<section class="guides-hero">
 		<div class="page-shell hero-grid">

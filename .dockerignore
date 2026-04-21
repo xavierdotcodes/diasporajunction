@@ -1,0 +1,16 @@
+.git
+.github
+.DS_Store
+.env
+.env.*
+.svelte-kit
+build
+node_modules
+worker/node_modules
+coverage
+test-results
+docs
+e2e
+cert
+supabase/.branches
+supabase/.temp

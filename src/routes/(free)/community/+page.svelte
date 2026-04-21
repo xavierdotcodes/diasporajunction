@@ -59,14 +59,6 @@
 	];
 </script>
 
-<svelte:head>
-	<title>Community | DiasporaJunxion</title>
-	<meta
-		name="description"
-		content="Book a 45-minute DiasporaJunxion consult for grounded guidance on Ghana, relocation, family transition, belonging, and your clearest next step."
-	/>
-</svelte:head>
-
 <div class="community-page">
 	<Hero
 		variant="page"

@@ -34,14 +34,6 @@
 	}));
 </script>
 
-<svelte:head>
-	<title>About | DiasporaJunxion</title>
-	<meta
-		name="description"
-		content="Learn what DiasporaJunxion is building at the intersection of diaspora relocation, belonging, and African opportunity."
-	/>
-</svelte:head>
-
 <div class="about-page">
 	<Hero
 		variant="page"

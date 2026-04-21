@@ -2,10 +2,6 @@
 	let { data } = $props();
 </script>
 
-<svelte:head>
-	<title>Unsubscribe | DiasporaJunxion</title>
-</svelte:head>
-
 <section class="bg-[#fff8e1] px-6 py-24 text-black">
 	<div class="mx-auto max-w-3xl rounded-[2rem] border border-black/10 bg-white p-8 shadow-sm md:p-12">
 		<p class="text-xs font-semibold uppercase tracking-[0.24em] text-[#D9042B]">DiasporaJunxion</p>

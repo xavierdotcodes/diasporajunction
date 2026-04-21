@@ -9,11 +9,6 @@
 	let { data } = $props();
 </script>
 
-<svelte:head>
-	<title>{data.guide.title} | DiasporaJunxion Guides</title>
-	<meta name="description" content={data.guide.description} />
-</svelte:head>
-
 <article class="guide-page">
 	<section class="guide-hero">
 		<div class="guide-shell hero-grid">

@@ -34,14 +34,6 @@
 	}));
 </script>
 
-<svelte:head>
-	<title>Start Here | DiasporaJunxion</title>
-	<meta
-		name="description"
-		content="Use Start Here to figure out whether you are exploring, planning a move, thinking about Ghana with children, or trying to find the clearest next step."
-	/>
-</svelte:head>
-
 <div class="start-page">
 	<Hero
 		variant="page"

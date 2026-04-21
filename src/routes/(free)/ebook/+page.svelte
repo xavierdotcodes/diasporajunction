@@ -61,14 +61,6 @@
 	];
 </script>
 
-<svelte:head>
-	<title>Thriving in Ghana (With Children) | DiasporaJunxion</title>
-	<meta
-		name="description"
-		content="A paid digital guide for diaspora families and long-term thinkers who want a more grounded path into life in Ghana."
-	/>
-</svelte:head>
-
 <article class="ebook-page">
 	<section class="ebook-hero">
 		<div class="ebook-shell hero-grid">

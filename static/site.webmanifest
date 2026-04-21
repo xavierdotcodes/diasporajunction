@@ -1,6 +1,10 @@
 {
   "name": "DiasporaJunxion",
   "short_name": "Diasp",
+  "description": "DiasporaJunxion connects the African diaspora with practical guides, programs, and community for building life in Ghana.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
@@ -15,7 +19,7 @@
       "purpose": "maskable"
     }
   ],
-  "theme_color": "ffcc00",
+  "theme_color": "#ffcc00",
   "background_color": "#ffcc00",
   "display": "standalone"
 }
