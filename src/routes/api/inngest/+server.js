@@ -1,13 +1,25 @@
-import { serve } from 'inngest/sveltekit';
-import { functions, inngest } from '$lib/server/inngest';
 import { fileLogger, requestLogger, serializeError } from '$lib/utils/logger';
 
 fileLogger('src/routes/api/inngest/+server.js');
 
-const handler = serve({
-	client: inngest,
-	functions
-});
+let handlerPromise;
+
+async function getHandler() {
+	if (!handlerPromise) {
+		handlerPromise = Promise.all([import('inngest/sveltekit'), import('$lib/server/inngest')]).then(
+			([{ serve }, { getInngestRegistration }]) => {
+				const { functions, inngest } = getInngestRegistration();
+
+				return serve({
+					client: inngest,
+					functions
+				});
+			}
+		);
+	}
+
+	return handlerPromise;
+}
 
 function wrapHandler(method, delegate) {
 	return async (event) => {
@@ -20,7 +32,8 @@ function wrapHandler(method, delegate) {
 		}, 'Handling Inngest endpoint request');
 
 		try {
-			const response = await delegate(event);
+			const handler = await getHandler();
+			const response = await delegate(handler, event);
 			log.info({
 				phase: 'success',
 				status: response.status
@@ -36,6 +49,6 @@ function wrapHandler(method, delegate) {
 	};
 }
 
-export const GET = wrapHandler('GET', handler.GET);
-export const POST = wrapHandler('POST', handler.POST);
-export const PUT = wrapHandler('PUT', handler.PUT);
+export const GET = wrapHandler('GET', (handler, event) => handler.GET(event));
+export const POST = wrapHandler('POST', (handler, event) => handler.POST(event));
+export const PUT = wrapHandler('PUT', (handler, event) => handler.PUT(event));

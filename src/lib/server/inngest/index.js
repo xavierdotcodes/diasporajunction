@@ -1,13 +1,9 @@
-import { inngest } from './client.js';
-import { leadNurtureSequence } from './functions/lead-nurture.js';
+import { getInngestClient } from './client.js';
+import { createLeadNurtureSequence } from './functions/lead-nurture.js';
 import { fileLogger, scopedLogger } from '$lib/utils/logger';
 
 fileLogger('src/lib/server/inngest/index.js');
 const log = scopedLogger('inngest.registry');
-
-export { inngest };
-
-export const functions = [leadNurtureSequence];
 
 function getFunctionId(fn) {
 	if (typeof fn?.id === 'function') return fn.id();
@@ -15,9 +11,34 @@ function getFunctionId(fn) {
 	return fn?.opts?.id ?? fn?.id ?? fn?.name ?? null;
 }
 
-log.info({
-	op: 'register_functions',
-	phase: 'success',
-	functionIds: functions.map(getFunctionId).filter(Boolean),
-	count: functions.length
-});
+let registration;
+
+export const inngest = new Proxy(
+	{},
+	{
+		get(_target, prop) {
+			const client = getInngestClient();
+			const value = client[prop];
+
+			return typeof value === 'function' ? value.bind(client) : value;
+		}
+	}
+);
+
+export function getInngestRegistration() {
+	if (!registration) {
+		const inngest = getInngestClient();
+		const functions = [createLeadNurtureSequence(inngest)];
+
+		log.info({
+			op: 'register_functions',
+			phase: 'success',
+			functionIds: functions.map(getFunctionId).filter(Boolean),
+			count: functions.length
+		});
+
+		registration = { inngest, functions };
+	}
+
+	return registration;
+}

@@ -1,7 +1,6 @@
 import prisma from '$lib/server/prisma';
 import { LEAD_NURTURE_SEQUENCE, renderLeadSequenceEmail } from '$lib/server/email/lead-sequence';
 import { sendResendEmail } from '$lib/server/email/resend';
-import { inngest } from '../client.js';
 import { fileLogger, scopedLogger, serializeError } from '$lib/utils/logger';
 
 fileLogger('src/lib/server/inngest/functions/lead-nurture.js');
@@ -120,100 +119,102 @@ async function deliverLeadNurtureStep({ leadId, stepKey }) {
 	return { sent: true };
 }
 
-export const leadNurtureSequence = inngest.createFunction(
-	{
-		id: 'lead-nurture-sequence',
-		// Mirrors the old BullMQ worker: 3 total attempts and up to 2 active steps at once.
-		retries: 2,
-		concurrency: {
-			limit: 2
-		}
-	},
-	{ event: LEAD_CAPTURED_EVENT },
-	async ({ event, step }) => {
-		const { leadId } = event.data;
-		const eventId = event.id;
-		const eventName = event.name;
+export function createLeadNurtureSequence(inngest) {
+	return inngest.createFunction(
+		{
+			id: 'lead-nurture-sequence',
+			// Mirrors the old BullMQ worker: 3 total attempts and up to 2 active steps at once.
+			retries: 2,
+			concurrency: {
+				limit: 2
+			}
+		},
+		{ event: LEAD_CAPTURED_EVENT },
+		async ({ event, step }) => {
+			const { leadId } = event.data;
+			const eventId = event.id;
+			const eventName = event.name;
 
-		log.info({
-			op: 'lead_nurture_sequence',
-			phase: 'start',
-			eventId,
-			eventName,
-			leadId,
-			email: event.data?.email
-		});
-
-		for (let index = 0; index < LEAD_NURTURE_SEQUENCE.length; index += 1) {
-			const sequenceStep = LEAD_NURTURE_SEQUENCE[index];
-			const previousDelayMs = index === 0 ? 0 : LEAD_NURTURE_SEQUENCE[index - 1].delayMs;
-			const waitMs = sequenceStep.delayMs - previousDelayMs;
-
-			log.debug({
+			log.info({
 				op: 'lead_nurture_sequence',
-				phase: 'step_prepare',
+				phase: 'start',
 				eventId,
+				eventName,
 				leadId,
-				stepKey: sequenceStep.key,
-				index,
-				waitMs
+				email: event.data?.email
 			});
 
-			if (waitMs > 0) {
-				log.info({
-					op: 'lead_nurture_sequence',
-					phase: 'sleep_start',
-					eventId,
-					leadId,
-					stepKey: sequenceStep.key,
-					waitMs
-				});
-				await step.sleep(`wait-for-${sequenceStep.key}`, waitMs);
-				log.info({
-					op: 'lead_nurture_sequence',
-					phase: 'sleep_complete',
-					eventId,
-					leadId,
-					stepKey: sequenceStep.key,
-					waitMs
-				});
-			}
+			for (let index = 0; index < LEAD_NURTURE_SEQUENCE.length; index += 1) {
+				const sequenceStep = LEAD_NURTURE_SEQUENCE[index];
+				const previousDelayMs = index === 0 ? 0 : LEAD_NURTURE_SEQUENCE[index - 1].delayMs;
+				const waitMs = sequenceStep.delayMs - previousDelayMs;
 
-			try {
-				const stepResult = await step.run(`deliver-${sequenceStep.key}`, async () =>
-					deliverLeadNurtureStep({
+				log.debug({
+					op: 'lead_nurture_sequence',
+					phase: 'step_prepare',
+					eventId,
+					leadId,
+					stepKey: sequenceStep.key,
+					index,
+					waitMs
+				});
+
+				if (waitMs > 0) {
+					log.info({
+						op: 'lead_nurture_sequence',
+						phase: 'sleep_start',
+						eventId,
 						leadId,
-						stepKey: sequenceStep.key
-					})
-				);
+						stepKey: sequenceStep.key,
+						waitMs
+					});
+					await step.sleep(`wait-for-${sequenceStep.key}`, waitMs);
+					log.info({
+						op: 'lead_nurture_sequence',
+						phase: 'sleep_complete',
+						eventId,
+						leadId,
+						stepKey: sequenceStep.key,
+						waitMs
+					});
+				}
 
-				log.info({
-					op: 'lead_nurture_sequence',
-					phase: 'step_complete',
-					eventId,
-					leadId,
-					stepKey: sequenceStep.key,
-					result: stepResult
-				});
-			} catch (error) {
-				log.error({
-					op: 'lead_nurture_sequence',
-					phase: 'step_error',
-					eventId,
-					leadId,
-					stepKey: sequenceStep.key,
-					error: serializeError(error)
-				});
-				throw error;
+				try {
+					const stepResult = await step.run(`deliver-${sequenceStep.key}`, async () =>
+						deliverLeadNurtureStep({
+							leadId,
+							stepKey: sequenceStep.key
+						})
+					);
+
+					log.info({
+						op: 'lead_nurture_sequence',
+						phase: 'step_complete',
+						eventId,
+						leadId,
+						stepKey: sequenceStep.key,
+						result: stepResult
+					});
+				} catch (error) {
+					log.error({
+						op: 'lead_nurture_sequence',
+						phase: 'step_error',
+						eventId,
+						leadId,
+						stepKey: sequenceStep.key,
+						error: serializeError(error)
+					});
+					throw error;
+				}
 			}
-		}
 
-		log.info({
-			op: 'lead_nurture_sequence',
-			phase: 'success',
-			eventId,
-			eventName,
-			leadId
-		});
-	}
-);
+			log.info({
+				op: 'lead_nurture_sequence',
+				phase: 'success',
+				eventId,
+				eventName,
+				leadId
+			});
+		}
+	);
+}
