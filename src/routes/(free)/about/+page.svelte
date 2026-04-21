@@ -1,7 +1,9 @@
 <script>
 	import AboutFounder from '$lib/components/about/AboutFounder.svelte';
+	import Hero from '$lib/components/shared/Hero.svelte';
 	import AccessCardGrid from '$lib/components/shared/AccessCardGrid.svelte';
 	import LockedPreview from '$lib/components/shared/LockedPreview.svelte';
+	import { DIASPORAU_MEDIA } from '$lib/components/shared/media.js';
 	import SectionHeader from '$lib/components/shared/SectionHeader.svelte';
 	import StrategicCta from '$lib/components/shared/StrategicCta.svelte';
 	import { fileLogger } from '$lib/utils/logger';
@@ -41,28 +43,27 @@
 </svelte:head>
 
 <div class="about-page">
-	<section class="about-hero">
-		<div class="page-shell hero-grid">
-			<div class="hero-copy">
-				<p class="eyebrow">About</p>
-				<h1>DiasporaJunxion is building a bridge, not just publishing content.</h1>
-				<p>
-					The work begins with relocation guidance and public orientation. But the deeper vision is
-					larger: belonging, connection, participation, and a platform that helps diaspora people
-					move toward Ghana with more trust and less confusion.
-				</p>
-			</div>
+	<Hero
+		variant="page"
+		subtitle="About"
+		description="DiasporaJunxion exists to help diaspora people think more clearly about Ghana before a visit, a move, or a bigger life decision starts running ahead of reality."
+		{...DIASPORAU_MEDIA}
+	>
+		{#snippet title()}
+			<h1>Why DiasporaJunxion exists, and how that helps you move with more trust.</h1>
+		{/snippet}
 
+		{#snippet aside()}
 			<div class="hero-panel">
-				<p class="panel-kicker">What This Page Should Do</p>
+				<p class="panel-kicker">What You Should Leave With</p>
 				<ul>
-					<li>Explain the mission clearly</li>
-					<li>Build trust in the lens behind the platform</li>
-					<li>Show that the brand is structured for more than a guide archive</li>
+					<li>A clearer feel for the mission behind the site</li>
+					<li>More trust in the lens shaping the guidance</li>
+					<li>A better sense of how to use DiasporaJunxion well</li>
 				</ul>
 			</div>
-		</div>
-	</section>
+		{/snippet}
+	</Hero>
 
 	<section class="page-section section-cream">
 		<div class="page-shell">
@@ -193,8 +194,7 @@
 			linear-gradient(180deg, #f8f2df 0%, #f4ead1 100%);
 	}
 
-	.section-dark,
-	.about-hero {
+	.section-dark {
 		background:
 			radial-gradient(circle at top left, rgba(242, 183, 5, 0.12), transparent 24rem),
 			radial-gradient(circle at bottom right, rgba(217, 4, 43, 0.12), transparent 26rem),
@@ -202,59 +202,23 @@
 		color: white;
 	}
 
-	.about-hero {
-		padding: clamp(5rem, 8vw, 7rem) 0 4rem;
+	.hero-panel {
+		padding: 1.45rem;
+		border-radius: 1.8rem;
+		background:
+			linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.08)),
+			linear-gradient(135deg, rgba(242, 183, 5, 0.08), transparent 48%);
+		box-shadow: 0 24px 56px rgba(66, 66, 66, 0.12);
 	}
 
-	.hero-grid {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.72fr);
-		gap: clamp(1.5rem, 4vw, 4rem);
-		align-items: end;
-	}
-
-	.eyebrow,
 	.panel-kicker {
-		margin: 0;
+		margin: 0 0 0.85rem;
 		font-family: var(--font-mono);
 		font-size: 0.72rem;
 		font-weight: 700;
 		letter-spacing: 0.24em;
 		text-transform: uppercase;
-	}
-
-	.eyebrow {
-		color: rgba(242, 183, 5, 0.88);
-	}
-
-	.hero-copy h1 {
-		margin: 0;
-		font-family: var(--font-heading);
-		font-size: clamp(2.45rem, 5vw, 4.9rem);
-		line-height: 0.94;
-		letter-spacing: -0.05em;
-		text-wrap: balance;
-	}
-
-	.hero-copy p:not(.eyebrow) {
-		margin: 1.15rem 0 0;
-		font-size: clamp(1rem, 1.3vw, 1.14rem);
-		line-height: 1.8;
-		color: rgba(255, 248, 239, 0.8);
-	}
-
-	.hero-panel {
-		padding: 1.45rem;
-		border-radius: 1.8rem;
-		background:
-			radial-gradient(circle at top left, rgba(242, 183, 5, 0.16), transparent 58%),
-			linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
-		box-shadow: 0 24px 56px rgba(0, 0, 0, 0.16);
-	}
-
-	.panel-kicker {
-		margin-bottom: 0.85rem;
-		color: rgba(242, 183, 5, 0.88);
+		color: rgba(17, 17, 17, 0.62);
 	}
 
 	.hero-panel ul {
@@ -267,7 +231,7 @@
 	.hero-panel li {
 		font-size: 0.96rem;
 		line-height: 1.65;
-		color: rgba(255, 248, 239, 0.82);
+		color: rgba(17, 17, 17, 0.78);
 	}
 
 	.spacer-lg {

@@ -7,7 +7,7 @@
 	import Button from '$lib/components/ui/Button.svelte';
 	import { panelSlide, veilFade } from '$lib/motion/transitions';
 	import { fileLogger } from '$lib/utils/logger';
-	import { siteNavLinks, siteNavCta } from '$lib/components/layout/nav';
+	import { siteNavLinks, siteNavCta, siteNavConsult } from '$lib/components/layout/nav';
 
 	fileLogger('src/lib/components/layout/Nav.svelte');
 
@@ -91,23 +91,29 @@
 
 		<nav class="hidden items-center gap-2 lg:flex">
 			{#each siteNavLinks as link}
-				<Button
+				<a
 					href={link.href}
-					variant="ghost"
-					size="sm"
-					className={`${
+					class={`inline-flex h-9 items-center justify-center rounded-full px-4 text-[0.78rem] font-semibold uppercase tracking-[0.14em] transition-[transform,background-color,border-color,color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
 						isActiveLink(link.href)
-							? 'bg-[#D9042B] text-white shadow-[0_12px_24px_rgba(95,0,18,0.18)] hover:bg-[#B10323] hover:text-white focus-visible:ring-[#D9042B]'
-							: 'text-[#111111] hover:bg-white/55'
+							? 'bg-[#D9042B] text-white shadow-[0_18px_40px_rgba(95,0,18,0.18)] hover:bg-[#B10323] focus-visible:ring-[#D9042B]'
+							: 'text-[#111111] hover:bg-white/55 focus-visible:ring-[#C98E00]'
 					}`}
 				>
 					<span>{link.label}</span>
-				</Button>
+				</a>
 			{/each}
 		</nav>
 
-		<div class="hidden lg:block">
+		<div class="hidden items-center gap-2 lg:flex">
 			<Button href={siteNavCta.href} variant="brand" size="sm">{siteNavCta.label}</Button>
+			<a
+				href={siteNavConsult.href}
+				target="_blank"
+				rel="noreferrer"
+				class="inline-flex h-9 items-center justify-center rounded-full bg-[#0B0B0B] px-4 text-[0.78rem] font-semibold uppercase tracking-[0.14em] text-white transition-[transform,background-color,color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[1px] hover:bg-[#171717] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B0B0B] focus-visible:ring-offset-2"
+			>
+				{siteNavConsult.label}
+			</a>
 		</div>
 
 		<button
@@ -217,13 +223,24 @@
 				</nav>
 
 				<div class="mt-8 border-t border-black/10 pt-6">
-					<a
-						href={siteNavCta.href}
-						class="inline-flex w-full items-center justify-center rounded-full bg-[#038C25] px-4 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-white transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[1px] hover:bg-[#026B1D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#038C25] focus-visible:ring-offset-2"
-						onclick={closeMenu}
-					>
-						{siteNavCta.label}
-					</a>
+					<div class="flex flex-col gap-3">
+						<a
+							href={siteNavCta.href}
+							class="inline-flex w-full items-center justify-center rounded-full bg-[#038C25] px-4 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-white transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[1px] hover:bg-[#026B1D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#038C25] focus-visible:ring-offset-2"
+							onclick={closeMenu}
+						>
+							{siteNavCta.label}
+						</a>
+						<a
+							href={siteNavConsult.href}
+							target="_blank"
+							rel="noreferrer"
+							class="inline-flex w-full items-center justify-center rounded-full bg-[#0B0B0B] px-4 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-white transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[1px] hover:bg-[#171717] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B0B0B] focus-visible:ring-offset-2"
+							onclick={closeMenu}
+						>
+							{siteNavConsult.label}
+						</a>
+					</div>
 					<p class="mt-6 text-xs uppercase tracking-[0.25em] text-black/60">
 						© {new Date().getFullYear()} DiasporaJunxion
 					</p>

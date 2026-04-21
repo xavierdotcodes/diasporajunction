@@ -1,6 +1,8 @@
 <script>
 	import AccessCardGrid from '$lib/components/shared/AccessCardGrid.svelte';
+	import Hero from '$lib/components/shared/Hero.svelte';
 	import LockedPreview from '$lib/components/shared/LockedPreview.svelte';
+	import { TOURS_MEDIA } from '$lib/components/shared/media.js';
 	import SectionHeader from '$lib/components/shared/SectionHeader.svelte';
 	import StrategicCta from '$lib/components/shared/StrategicCta.svelte';
 	import { fileLogger } from '$lib/utils/logger';
@@ -66,22 +68,24 @@
 </svelte:head>
 
 <div class="community-page">
-	<section class="community-hero hero-public">
-		<div class="community-shell hero-grid">
-			<div class="hero-copy">
-				<p class="eyebrow">Community</p>
-				<h1>Book a 45-minute consult to talk through your Ghana questions with more clarity.</h1>
-				<p>
-					If you are thinking seriously about Ghana and want more than articles, this is a focused
-					space to talk through the real decision. Use it to sort through uncertainty, pressure-test
-					your assumptions, and get clearer on what your next step should be.
-				</p>
-				<div class="hero-actions">
-					<a href={calendlyHref} class="hero-primary" target="_blank" rel="noreferrer">Book A 45-Minute Consult</a>
-					<a href="/start-here" class="hero-secondary">Start Here First</a>
-				</div>
-			</div>
+	<Hero
+		variant="page"
+		subtitle="Community"
+		description="If you want more than articles, book a focused 45-minute consult to talk through the real decision with more clarity, better questions, and less guesswork."
+		{...TOURS_MEDIA}
+	>
+		{#snippet title()}
+			<h1>Book a 45-minute consult to talk through your Ghana questions with more clarity.</h1>
+		{/snippet}
 
+		{#snippet cta()}
+			<div class="hero-actions">
+				<a href={calendlyHref} class="hero-primary" target="_blank" rel="noreferrer">Book A 45-Minute Consult</a>
+				<a href="/start-here" class="hero-secondary">Start Here First</a>
+			</div>
+		{/snippet}
+
+		{#snippet aside()}
 			<div class="hero-panel hero-panel-light">
 				<p class="panel-kicker">Use The Consult To</p>
 				<ul>
@@ -90,8 +94,8 @@
 					<li>Leave with a more practical next move</li>
 				</ul>
 			</div>
-		</div>
-	</section>
+		{/snippet}
+	</Hero>
 
 	<section class="community-section section-cream">
 		<div class="community-shell">
@@ -229,14 +233,6 @@
 		color: #111111;
 	}
 
-	.hero-public {
-		padding: clamp(5rem, 8vw, 7rem) 0 4.25rem;
-		background:
-			radial-gradient(circle at top left, rgba(242, 183, 5, 0.26), transparent 30rem),
-			linear-gradient(180deg, #fff8ef 0%, #f5ead3 100%);
-	}
-
-	.hero-grid,
 	.reason-grid,
 	.join-grid {
 		display: grid;
@@ -245,7 +241,6 @@
 		align-items: end;
 	}
 
-	.hero-copy h1,
 	.reason-grid h2,
 	.join-copy h2 {
 		margin: 0;
@@ -256,7 +251,6 @@
 		text-wrap: balance;
 	}
 
-	.hero-copy p:not(.eyebrow),
 	.reason-copy p,
 	.join-copy p:not(.eyebrow) {
 		margin: 1.15rem 0 0;
@@ -315,15 +309,26 @@
 		color: white;
 	}
 
-	.hero-panel,
+	.hero-panel-light,
 	.pricing-panel {
 		padding: 1.45rem;
 		border-radius: 1.8rem;
+		box-shadow: 0 24px 56px rgba(0, 0, 0, 0.16);
+	}
+
+	.hero-panel-light {
+		background:
+			linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.08)),
+			linear-gradient(135deg, rgba(242, 183, 5, 0.08), transparent 48%);
+		color: #111111;
+		box-shadow: 0 24px 56px rgba(66, 66, 66, 0.12);
+	}
+
+	.pricing-panel {
 		background:
 			radial-gradient(circle at top left, rgba(242, 183, 5, 0.18), transparent 58%),
 			linear-gradient(180deg, #111111 0%, #1a1a1a 100%);
 		color: white;
-		box-shadow: 0 24px 56px rgba(0, 0, 0, 0.16);
 	}
 
 	.panel-kicker,
@@ -337,16 +342,21 @@
 		color: rgba(242, 183, 5, 0.9);
 	}
 
-	.hero-panel ul {
+	.hero-panel-light .panel-kicker {
+		color: rgba(17, 17, 17, 0.62);
+	}
+
+	.hero-panel-light ul {
 		display: grid;
 		gap: 0.8rem;
 		margin: 0;
 		padding-left: 1rem;
 	}
 
-	.hero-panel li {
+	.hero-panel-light li {
 		font-size: 0.96rem;
 		line-height: 1.65;
+		color: rgba(17, 17, 17, 0.78);
 	}
 
 	.spacer-lg {
@@ -410,7 +420,6 @@
 			padding-inline: 1rem;
 		}
 
-		.hero-grid,
 		.reason-grid,
 		.join-grid {
 			grid-template-columns: 1fr;

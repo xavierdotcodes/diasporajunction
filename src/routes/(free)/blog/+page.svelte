@@ -1,6 +1,8 @@
 <script>
 	import LeadCaptureInline from '$lib/components/lead/LeadCaptureInline.svelte';
 	import AccessCardGrid from '$lib/components/shared/AccessCardGrid.svelte';
+	import Hero from '$lib/components/shared/Hero.svelte';
+	import { DIASPORAU_MEDIA } from '$lib/components/shared/media.js';
 	import SectionHeader from '$lib/components/shared/SectionHeader.svelte';
 	import StrategicCta from '$lib/components/shared/StrategicCta.svelte';
 	import { DEFAULT_LEAD_MAGNET_NAME } from '$lib/lead/constants';
@@ -44,28 +46,27 @@
 </svelte:head>
 
 <div class="blog-page">
-	<section class="blog-hero">
-		<div class="page-shell hero-grid">
-			<div class="hero-copy">
-				<p class="eyebrow">Blog</p>
-				<h1>Articles for people trying to get clearer about Ghana.</h1>
-				<p>
-					Read grounded pieces on visiting, relocating, family life, belonging, and making smarter
-					decisions about Ghana. Start with the article that matches the question you are holding
-					right now.
-				</p>
-			</div>
+	<Hero
+		variant="page"
+		subtitle="Blog"
+		description="Read grounded pieces on visiting, relocating, family life, belonging, and making smarter decisions about Ghana. Start with the article that matches the question you are holding right now."
+		{...DIASPORAU_MEDIA}
+	>
+		{#snippet title()}
+			<h1>Articles for people trying to get clearer about Ghana.</h1>
+		{/snippet}
 
+		{#snippet aside()}
 			<div class="hero-panel">
-				<p class="panel-kicker">Best first reads</p>
+				<p class="panel-kicker">Best First Reads</p>
 				<ul>
 					<li>Start with visiting vs living if you need a reality check</li>
 					<li>Read the family pieces if children are part of the decision</li>
 					<li>Use the free guide when you want a calmer starting point</li>
 				</ul>
 			</div>
-		</div>
-	</section>
+		{/snippet}
+	</Hero>
 
 	<section class="page-section section-cream">
 		<div class="page-shell">
@@ -189,8 +190,7 @@
 			linear-gradient(180deg, #f8f2df 0%, #f4ead1 100%);
 	}
 
-	.section-dark,
-	.blog-hero {
+	.section-dark {
 		background:
 			radial-gradient(circle at top left, rgba(242, 183, 5, 0.12), transparent 24rem),
 			radial-gradient(circle at bottom right, rgba(217, 4, 43, 0.12), transparent 26rem),
@@ -198,18 +198,6 @@
 		color: white;
 	}
 
-	.blog-hero {
-		padding: clamp(5rem, 8vw, 7rem) 0 4rem;
-	}
-
-	.hero-grid {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.72fr);
-		gap: clamp(1.5rem, 4vw, 4rem);
-		align-items: end;
-	}
-
-	.eyebrow,
 	.panel-kicker,
 	.featured-label {
 		margin: 0;
@@ -220,38 +208,18 @@
 		text-transform: uppercase;
 	}
 
-	.eyebrow {
-		color: rgba(242, 183, 5, 0.88);
-	}
-
-	.hero-copy h1 {
-		margin: 0;
-		font-family: var(--font-heading);
-		font-size: clamp(2.45rem, 5vw, 4.9rem);
-		line-height: 0.94;
-		letter-spacing: -0.05em;
-		text-wrap: balance;
-	}
-
-	.hero-copy p:not(.eyebrow) {
-		margin: 1.15rem 0 0;
-		font-size: clamp(1rem, 1.3vw, 1.14rem);
-		line-height: 1.8;
-		color: rgba(255, 248, 239, 0.8);
-	}
-
 	.hero-panel {
 		padding: 1.45rem;
 		border-radius: 1.8rem;
 		background:
-			radial-gradient(circle at top left, rgba(242, 183, 5, 0.16), transparent 58%),
-			linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
-		box-shadow: 0 24px 56px rgba(0, 0, 0, 0.16);
+			linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.08)),
+			linear-gradient(135deg, rgba(242, 183, 5, 0.08), transparent 48%);
+		box-shadow: 0 24px 56px rgba(66, 66, 66, 0.12);
 	}
 
 	.panel-kicker {
 		margin-bottom: 0.85rem;
-		color: rgba(242, 183, 5, 0.88);
+		color: rgba(17, 17, 17, 0.62);
 	}
 
 	.hero-panel ul {
@@ -264,7 +232,7 @@
 	.hero-panel li {
 		font-size: 0.96rem;
 		line-height: 1.65;
-		color: rgba(255, 248, 239, 0.82);
+		color: rgba(17, 17, 17, 0.78);
 	}
 
 	.featured-article {
@@ -347,7 +315,6 @@
 	}
 
 	@media (max-width: 960px) {
-		.hero-grid,
 		.category-grid {
 			grid-template-columns: 1fr;
 		}

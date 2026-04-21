@@ -1,7 +1,9 @@
 <script>
 	import LeadCaptureInline from '$lib/components/lead/LeadCaptureInline.svelte';
 	import AccessCardGrid from '$lib/components/shared/AccessCardGrid.svelte';
+	import Hero from '$lib/components/shared/Hero.svelte';
 	import LockedPreview from '$lib/components/shared/LockedPreview.svelte';
+	import { APPROACH_MEDIA } from '$lib/components/shared/media.js';
 	import SectionHeader from '$lib/components/shared/SectionHeader.svelte';
 	import StrategicCta from '$lib/components/shared/StrategicCta.svelte';
 	import { DEFAULT_LEAD_MAGNET_NAME } from '$lib/lead/constants';
@@ -41,17 +43,17 @@
 </svelte:head>
 
 <div class="start-page">
-	<section class="start-hero">
-		<div class="page-shell hero-grid">
-			<div class="hero-copy">
-				<p class="eyebrow">Start Here</p>
-				<h1>Not sure where to begin? Start here.</h1>
-				<p>
-					If Ghana has been on your mind but you are not sure what to read, what to do, or how
-					serious this really is yet, this page will help you choose the right next step.
-				</p>
-			</div>
+	<Hero
+		variant="page"
+		subtitle="Start Here"
+		description="If Ghana has been on your mind but you are not sure what to read, what to do, or how serious this really is yet, this page will help you choose the right next step."
+		{...APPROACH_MEDIA}
+	>
+		{#snippet title()}
+			<h1>Not sure where to begin? Start here.</h1>
+		{/snippet}
 
+		{#snippet aside()}
 			<div class="hero-panel">
 				<p class="panel-kicker">Use This Page If</p>
 				<ul>
@@ -60,8 +62,8 @@
 					<li>You want clarity without pressure or hype</li>
 				</ul>
 			</div>
-		</div>
-	</section>
+		{/snippet}
+	</Hero>
 
 	<section class="page-section section-cream">
 		<div class="page-shell">
@@ -208,8 +210,7 @@
 			linear-gradient(180deg, #f8f2df 0%, #f4ead1 100%);
 	}
 
-	.section-dark,
-	.start-hero {
+	.section-dark {
 		background:
 			radial-gradient(circle at top left, rgba(242, 183, 5, 0.12), transparent 24rem),
 			radial-gradient(circle at bottom right, rgba(217, 4, 43, 0.12), transparent 26rem),
@@ -217,11 +218,6 @@
 		color: white;
 	}
 
-	.start-hero {
-		padding: clamp(5rem, 8vw, 7rem) 0 4rem;
-	}
-
-	.hero-grid,
 	.split-grid {
 		display: grid;
 		grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.72fr);
@@ -229,48 +225,23 @@
 		align-items: end;
 	}
 
-	.eyebrow,
+	.hero-panel {
+		padding: 1.45rem;
+		border-radius: 1.8rem;
+		background:
+			linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.08)),
+			linear-gradient(135deg, rgba(242, 183, 5, 0.08), transparent 48%);
+		box-shadow: 0 24px 56px rgba(66, 66, 66, 0.12);
+	}
+
 	.panel-kicker {
-		margin: 0;
+		margin: 0 0 0.85rem;
 		font-family: var(--font-mono);
 		font-size: 0.72rem;
 		font-weight: 700;
 		letter-spacing: 0.24em;
 		text-transform: uppercase;
-	}
-
-	.eyebrow {
-		color: rgba(242, 183, 5, 0.88);
-	}
-
-	.hero-copy h1 {
-		margin: 0;
-		font-family: var(--font-heading);
-		font-size: clamp(2.45rem, 5vw, 4.9rem);
-		line-height: 0.94;
-		letter-spacing: -0.05em;
-		text-wrap: balance;
-	}
-
-	.hero-copy p:not(.eyebrow) {
-		margin: 1.15rem 0 0;
-		font-size: clamp(1rem, 1.3vw, 1.14rem);
-		line-height: 1.8;
-		color: rgba(255, 248, 239, 0.8);
-	}
-
-	.hero-panel {
-		padding: 1.45rem;
-		border-radius: 1.8rem;
-		background:
-			radial-gradient(circle at top left, rgba(242, 183, 5, 0.16), transparent 58%),
-			linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
-		box-shadow: 0 24px 56px rgba(0, 0, 0, 0.16);
-	}
-
-	.panel-kicker {
-		margin-bottom: 0.85rem;
-		color: rgba(242, 183, 5, 0.88);
+		color: rgba(17, 17, 17, 0.62);
 	}
 
 	.hero-panel ul {
@@ -283,7 +254,7 @@
 	.hero-panel li {
 		font-size: 0.96rem;
 		line-height: 1.65;
-		color: rgba(255, 248, 239, 0.82);
+		color: rgba(17, 17, 17, 0.78);
 	}
 
 	.spacer-lg {
@@ -343,7 +314,6 @@
 			padding-inline: 1rem;
 		}
 
-		.hero-grid,
 		.split-grid,
 		.question-grid {
 			grid-template-columns: 1fr;

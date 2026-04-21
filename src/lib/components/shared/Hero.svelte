@@ -14,10 +14,11 @@
 	 * @property {string} desktopPosterSrc
 	 * @property {string} mobileVideoSrc
 	 * @property {string} mobilePosterSrc
-	 * @property {'cinematic' | 'brand'} [variant]
+	 * @property {'cinematic' | 'brand' | 'page'} [variant]
 	 * @property {import('svelte').Snippet} [logo]
 	 * @property {import('svelte').Snippet} [title]
 	 * @property {import('svelte').Snippet} [cta]
+	 * @property {import('svelte').Snippet} [aside]
 	 */
 
 	/** @type {Props} */
@@ -31,7 +32,8 @@
 		variant = 'cinematic',
 		logo,
 		title,
-		cta
+		cta,
+		aside
 	} = $props();
 
 	let videoSrc = $state('');
@@ -60,6 +62,7 @@
 <section
 	data-no-reveal
 	class:brand-variant={variant === 'brand'}
+	class:page-variant={variant === 'page'}
 	class="hero-shell"
 	aria-label="DiasporaJunxion introduction"
 >
@@ -117,16 +120,20 @@
 				{/if}
 			</div>
 
-			{#if variant === 'brand'}
+			{#if variant === 'brand' || aside}
 				<aside class="hero-side-panel" aria-hidden="true">
 					<div class="hero-side-surface">
-						<p class="hero-side-kicker">Grounded Entry</p>
-						<p class="hero-side-title">Clarity before relocation. Belonging before performance.</p>
-						<ul class="hero-side-list">
-							<li>Relocation reality</li>
-							<li>Local connection</li>
-							<li>Long-view participation</li>
-						</ul>
+						{#if aside}
+							{@render aside?.()}
+						{:else}
+							<p class="hero-side-kicker">Grounded Entry</p>
+							<p class="hero-side-title">Clarity before relocation. Belonging before performance.</p>
+							<ul class="hero-side-list">
+								<li>Relocation reality</li>
+								<li>Local connection</li>
+								<li>Long-view participation</li>
+							</ul>
+						{/if}
 					</div>
 				</aside>
 			{/if}
@@ -365,6 +372,117 @@
 		justify-content: flex-start;
 	}
 
+	.page-variant {
+		min-height: clamp(32rem, 74vh, 44rem);
+		background: linear-gradient(180deg, #f1f1f1 0%, #e9e9e9 100%);
+		color: #111111;
+	}
+
+	.page-variant .hero-overlay-base {
+		background:
+			linear-gradient(
+				90deg,
+				rgba(237, 237, 237, 0.9) 0%,
+				rgba(237, 237, 237, 0.74) 38%,
+				rgba(237, 237, 237, 0.42) 66%,
+				rgba(237, 237, 237, 0.22) 100%
+			);
+	}
+
+	.page-variant .hero-overlay-depth {
+		background:
+			radial-gradient(circle at top left, rgba(255, 255, 255, 0.28), transparent 24rem),
+			radial-gradient(circle at bottom right, rgba(17, 17, 17, 0.08), transparent 26rem);
+	}
+
+	.page-variant .hero-overlay-brand {
+		display: block;
+		background:
+			linear-gradient(180deg, rgba(237, 237, 237, 0.08), rgba(237, 237, 237, 0.18)),
+			linear-gradient(135deg, rgba(242, 183, 5, 0.08), transparent 38%);
+	}
+
+	.page-variant .hero-frame {
+		align-items: center;
+		padding-block: clamp(4.75rem, 7vw, 6rem);
+	}
+
+	.page-variant .hero-grid {
+		grid-template-columns: minmax(0, 1.02fr) minmax(18rem, 0.62fr);
+		align-items: end;
+		gap: clamp(1.5rem, 4vw, 4rem);
+	}
+
+	.page-variant .hero-copy {
+		max-width: 45rem;
+		padding: clamp(1.35rem, 2.8vw, 1.9rem);
+		border-radius: 2rem;
+		background:
+			linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.22)),
+			linear-gradient(135deg, rgba(242, 183, 5, 0.06), transparent 48%);
+		backdrop-filter: blur(10px);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.34),
+			0 28px 58px rgba(66, 66, 66, 0.12);
+		text-align: left;
+	}
+
+	.page-variant .hero-logo {
+		justify-content: flex-start;
+	}
+
+	.page-variant .hero-subtitle,
+	.page-variant .hero-title-slot,
+	.page-variant .hero-description {
+		margin-inline: 0;
+		max-width: 39rem;
+	}
+
+	.page-variant .hero-subtitle {
+		color: rgba(17, 17, 17, 0.64);
+	}
+
+	.page-variant .hero-title-slot :global(h1) {
+		color: #111111;
+		font-size: clamp(2.45rem, 5vw, 4.85rem);
+	}
+
+	.page-variant .hero-description {
+		color: rgba(17, 17, 17, 0.8);
+	}
+
+	.page-variant .hero-description :global(strong),
+	.page-variant .hero-description :global(.brand-strong) {
+		color: #111111;
+	}
+
+	.page-variant .hero-actions {
+		justify-content: flex-start;
+	}
+
+	.page-variant .hero-side-surface {
+		background:
+			linear-gradient(180deg, rgba(245, 245, 245, 0.76), rgba(231, 231, 231, 0.58)),
+			linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent 46%);
+		backdrop-filter: blur(14px);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.3),
+			0 24px 56px rgba(66, 66, 66, 0.12);
+		color: #111111;
+	}
+
+	.page-variant .hero-side-kicker {
+		color: rgba(17, 17, 17, 0.62);
+	}
+
+	.page-variant .hero-side-title {
+		color: #111111;
+	}
+
+	.page-variant .hero-side-list li {
+		color: rgba(17, 17, 17, 0.78);
+	}
+
 	.hero-side-panel {
 		display: flex;
 		justify-content: flex-end;
@@ -429,6 +547,7 @@
 
 	@media (max-width: 960px) {
 		.brand-variant .hero-grid,
+		.page-variant .hero-grid,
 		.hero-grid {
 			grid-template-columns: 1fr;
 		}
@@ -472,7 +591,16 @@
 			padding: 1.25rem;
 		}
 
+		.page-variant .hero-copy {
+			text-align: center;
+			padding: 1.2rem;
+		}
+
 		.brand-variant .hero-logo {
+			justify-content: center;
+		}
+
+		.page-variant .hero-logo {
 			justify-content: center;
 		}
 
@@ -482,7 +610,17 @@
 			margin-inline: auto;
 		}
 
+		.page-variant .hero-subtitle,
+		.page-variant .hero-title-slot,
+		.page-variant .hero-description {
+			margin-inline: auto;
+		}
+
 		.brand-variant .hero-actions {
+			justify-content: center;
+		}
+
+		.page-variant .hero-actions {
 			justify-content: center;
 		}
 	}

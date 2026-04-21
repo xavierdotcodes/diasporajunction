@@ -338,6 +338,7 @@
 	@media (max-width: 960px) {
 		.pillar-card {
 			min-height: auto;
+			padding: 0;
 		}
 
 		.pillar-media,
@@ -354,7 +355,7 @@
 			right: auto;
 			bottom: auto;
 			width: auto;
-			margin-top: -3rem;
+			margin-top: -4.2rem;
 			max-width: none;
 			transform: none;
 		}
@@ -370,31 +371,43 @@
 
 	@media (max-width: 768px) {
 		.pillar-media {
-			border-radius: 1.5rem;
+			border-radius: 1.35rem;
 		}
 
 		.pillar-content {
-			padding: 1.45rem 1.2rem 1.6rem;
-			border-radius: 1.45rem;
+			margin-top: -4.75rem;
+			padding: 1.3rem 1.05rem 1.45rem;
+			border-radius: 1.3rem;
 		}
 
 		.pillar-content h3 {
-			font-size: clamp(1.8rem, 8vw, 2.5rem);
+			font-size: clamp(1.65rem, 7.5vw, 2.3rem);
 		}
 
 		.pillar-description {
-			font-size: 0.98rem;
-			line-height: 1.72;
+			font-size: 0.95rem;
+			line-height: 1.68;
 		}
 
 		.pillar-media-plaque {
-			top: 0.9rem;
-			left: 0.9rem;
+			top: 0.8rem;
+			left: 0.8rem;
+			padding: 0.55rem 0.7rem;
 		}
 
 		.pillar-media-caption {
-			right: 0.9rem;
-			bottom: 0.9rem;
+			right: 0.8rem;
+			bottom: 0.8rem;
+			padding: 0.35rem 0.55rem;
+			font-size: 0.62rem;
+			letter-spacing: 0.16em;
+		}
+
+		.pillar-media-edge {
+			left: 0.8rem;
+			bottom: 0.8rem;
+			width: 4.75rem;
+			height: 0.55rem;
 		}
 	}
 </style>

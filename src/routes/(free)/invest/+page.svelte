@@ -1,6 +1,8 @@
 <script>
 	import AccessCardGrid from '$lib/components/shared/AccessCardGrid.svelte';
+	import Hero from '$lib/components/shared/Hero.svelte';
 	import LockedPreview from '$lib/components/shared/LockedPreview.svelte';
+	import { DIASPORAU_MEDIA } from '$lib/components/shared/media.js';
 	import SectionHeader from '$lib/components/shared/SectionHeader.svelte';
 	import StrategicCta from '$lib/components/shared/StrategicCta.svelte';
 	import { fileLogger } from '$lib/utils/logger';
@@ -33,18 +35,17 @@
 </svelte:head>
 
 <div class="invest-page">
-	<section class="invest-hero">
-		<div class="page-shell hero-grid">
-			<div class="hero-copy">
-				<p class="eyebrow">Invest</p>
-				<h1>Explore opportunity in Ghana without losing your judgment.</h1>
-				<p>
-					If you are thinking about Ghana through the lens of business, investment, or long-term
-					participation, start here for grounded context. The goal is to help you ask better
-					questions, move more carefully, and avoid treating excitement like due diligence.
-				</p>
-			</div>
+	<Hero
+		variant="page"
+		subtitle="Invest"
+		description="If you are exploring Ghana through business, investment, or long-term participation, start here for context that helps you ask better questions before money starts moving."
+		{...DIASPORAU_MEDIA}
+	>
+		{#snippet title()}
+			<h1>Explore opportunity in Ghana without losing your judgment.</h1>
+		{/snippet}
 
+		{#snippet aside()}
 			<div class="hero-panel">
 				<p class="panel-kicker">Use This Page To</p>
 				<ul>
@@ -53,8 +54,8 @@
 					<li>Learn the posture that usually leads to better decisions</li>
 				</ul>
 			</div>
-		</div>
-	</section>
+		{/snippet}
+	</Hero>
 
 	<section class="page-section section-cream">
 		<div class="page-shell">
@@ -172,8 +173,7 @@
 			linear-gradient(180deg, #f8f2df 0%, #f4ead1 100%);
 	}
 
-	.section-dark,
-	.invest-hero {
+	.section-dark {
 		background:
 			radial-gradient(circle at top left, rgba(242, 183, 5, 0.12), transparent 24rem),
 			radial-gradient(circle at bottom right, rgba(3, 140, 37, 0.12), transparent 26rem),
@@ -181,59 +181,23 @@
 		color: white;
 	}
 
-	.invest-hero {
-		padding: clamp(5rem, 8vw, 7rem) 0 4rem;
+	.hero-panel {
+		padding: 1.45rem;
+		border-radius: 1.8rem;
+		background:
+			linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.08)),
+			linear-gradient(135deg, rgba(242, 183, 5, 0.08), transparent 48%);
+		box-shadow: 0 24px 56px rgba(66, 66, 66, 0.12);
 	}
 
-	.hero-grid {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.72fr);
-		gap: clamp(1.5rem, 4vw, 4rem);
-		align-items: end;
-	}
-
-	.eyebrow,
 	.panel-kicker {
-		margin: 0;
+		margin: 0 0 0.85rem;
 		font-family: var(--font-mono);
 		font-size: 0.72rem;
 		font-weight: 700;
 		letter-spacing: 0.24em;
 		text-transform: uppercase;
-	}
-
-	.eyebrow {
-		color: rgba(242, 183, 5, 0.88);
-	}
-
-	.hero-copy h1 {
-		margin: 0;
-		font-family: var(--font-heading);
-		font-size: clamp(2.45rem, 5vw, 4.9rem);
-		line-height: 0.94;
-		letter-spacing: -0.05em;
-		text-wrap: balance;
-	}
-
-	.hero-copy p:not(.eyebrow) {
-		margin: 1.15rem 0 0;
-		font-size: clamp(1rem, 1.3vw, 1.14rem);
-		line-height: 1.8;
-		color: rgba(255, 248, 239, 0.8);
-	}
-
-	.hero-panel {
-		padding: 1.45rem;
-		border-radius: 1.8rem;
-		background:
-			radial-gradient(circle at top left, rgba(242, 183, 5, 0.16), transparent 58%),
-			linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
-		box-shadow: 0 24px 56px rgba(0, 0, 0, 0.16);
-	}
-
-	.panel-kicker {
-		margin-bottom: 0.85rem;
-		color: rgba(242, 183, 5, 0.88);
+		color: rgba(17, 17, 17, 0.62);
 	}
 
 	.hero-panel ul {
@@ -246,7 +210,7 @@
 	.hero-panel li {
 		font-size: 0.96rem;
 		line-height: 1.65;
-		color: rgba(255, 248, 239, 0.82);
+		color: rgba(17, 17, 17, 0.78);
 	}
 
 	.spacer-lg {

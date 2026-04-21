@@ -11,3 +11,8 @@ export const siteNavCta = {
 	href: '/start-here',
 	label: 'Start Here'
 };
+
+export const siteNavConsult = {
+	href: 'https://calendly.com/diaspora-junxion/consult',
+	label: 'Book a Consult'
+};

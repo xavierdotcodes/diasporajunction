@@ -162,27 +162,47 @@
 
 	let activePillarIndex = $state(0);
 	let pillarsPaused = $state(false);
+	let pillarDirection = $state(1);
+	const pillarRotationMs = 5200;
+	let outgoingPillarIndex = $state(null);
+	let outgoingPillarPhase = $state('idle');
+	let pillarPhase = $state('active');
+	let pillarTransitionTimer;
 	const activePillar = $derived(pillars[activePillarIndex]);
 
-	function goToPillar(index) {
-		activePillarIndex = (index + pillars.length) % pillars.length;
-	}
+	function advancePillar(step = 1) {
+		if (pillars.length < 2) return;
 
-	function nextPillar() {
-		goToPillar(activePillarIndex + 1);
-	}
+		pillarDirection = step >= 0 ? 1 : -1;
+		outgoingPillarIndex = activePillarIndex;
+		outgoingPillarPhase = 'enter';
+		activePillarIndex = (activePillarIndex + step + pillars.length) % pillars.length;
+		pillarPhase = 'enter-pre';
 
-	function previousPillar() {
-		goToPillar(activePillarIndex - 1);
+		requestAnimationFrame(() => {
+			requestAnimationFrame(() => {
+				outgoingPillarPhase = 'exit';
+				pillarPhase = 'active';
+			});
+		});
+
+		clearTimeout(pillarTransitionTimer);
+		pillarTransitionTimer = window.setTimeout(() => {
+			outgoingPillarIndex = null;
+			outgoingPillarPhase = 'idle';
+		}, 860);
 	}
 
 	onMount(() => {
 		const interval = window.setInterval(() => {
 			if (pillarsPaused) return;
-			nextPillar();
-		}, 5200);
+			advancePillar(1);
+		}, pillarRotationMs);
 
-		return () => window.clearInterval(interval);
+		return () => {
+			window.clearInterval(interval);
+			clearTimeout(pillarTransitionTimer);
+		};
 	});
 </script>
 
@@ -317,51 +337,37 @@
 				<div class="pillars-toolbar">
 					<div class="pillars-counter">
 						<span>{String(activePillarIndex + 1).padStart(2, '0')}</span>
-						<p>{activePillar.title}</p>
-					</div>
-
-					<div class="pillars-controls">
-						<button
-							type="button"
-							class="pillars-arrow"
-							aria-label="Previous pillar"
-							onclick={previousPillar}
-						>
-							<span aria-hidden="true">←</span>
-						</button>
-						<button
-							type="button"
-							class="pillars-arrow"
-							aria-label="Next pillar"
-							onclick={nextPillar}
-						>
-							<span aria-hidden="true">→</span>
-						</button>
+						<div class="pillars-counter-copy">
+							<p>{activePillar.title}</p>
+							<small>Auto-rotating through the core pillars</small>
+						</div>
 					</div>
 				</div>
 
-				<div class="pillars-stage" aria-live="polite">
-					{#key activePillarIndex}
-						<PillarCard {...activePillar} reverse={activePillarIndex % 2 !== 0} />
+				<div class="pillars-progress" aria-hidden="true">
+					{#key `${activePillarIndex}-${pillarsPaused}`}
+						<span
+							class:paused={pillarsPaused}
+							style={`animation-duration: ${pillarRotationMs}ms;`}
+						></span>
 					{/key}
 				</div>
 
-				<div class="pillars-nav" aria-label="Select a pillar">
-					{#each pillars as pillar, i}
-						<button
-							type="button"
-							class:active={i === activePillarIndex}
-							class="pillar-tab"
-							onclick={() => goToPillar(i)}
-							aria-pressed={i === activePillarIndex}
+				<div class="pillars-stage" aria-live="polite">
+					{#if outgoingPillarIndex !== null}
+						<div
+							class={`pillars-slide pillars-slide-outgoing ${outgoingPillarPhase} ${pillarDirection > 0 ? 'forward' : 'backward'}`}
+							aria-hidden="true"
 						>
-							<span class="pillar-tab-icon">{pillar.icon}</span>
-							<span class="pillar-tab-copy">
-								<strong>{pillar.title}</strong>
-								<span>{pillar.description}</span>
-							</span>
-						</button>
-					{/each}
+							<PillarCard {...pillars[outgoingPillarIndex]} reverse={outgoingPillarIndex % 2 !== 0} />
+						</div>
+					{/if}
+
+					<div
+						class={`pillars-slide pillars-slide-current ${pillarPhase} ${pillarDirection > 0 ? 'forward' : 'backward'}`}
+					>
+						<PillarCard {...activePillar} reverse={activePillarIndex % 2 !== 0} />
+					</div>
 				</div>
 			</div>
 		</section>
@@ -717,7 +723,7 @@
 
 	.pillars-carousel {
 		display: grid;
-		gap: 1.35rem;
+		gap: 1rem;
 		width: min(100%, 88rem);
 		margin: 0 auto;
 		padding: 0 1.5rem;
@@ -726,7 +732,6 @@
 	.pillars-toolbar {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
 		gap: 1rem;
 	}
 
@@ -734,6 +739,11 @@
 		display: flex;
 		align-items: center;
 		gap: 0.85rem;
+	}
+
+	.pillars-counter-copy {
+		display: grid;
+		gap: 0.2rem;
 	}
 
 	.pillars-counter span {
@@ -759,106 +769,95 @@
 		color: rgba(255, 248, 239, 0.88);
 	}
 
-	.pillars-controls {
-		display: flex;
-		gap: 0.65rem;
+	.pillars-counter small {
+		font-size: 0.78rem;
+		line-height: 1.4;
+		letter-spacing: 0.01em;
+		color: rgba(255, 248, 239, 0.54);
 	}
 
-	.pillars-arrow {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		width: 3rem;
-		height: 3rem;
+	.pillars-progress {
+		position: relative;
+		height: 0.4rem;
 		border-radius: 999px;
-		border: 1px solid rgba(255, 255, 255, 0.12);
-		background: rgba(255, 255, 255, 0.04);
-		color: rgba(255, 248, 239, 0.9);
-		font-size: 1.15rem;
-		transition:
-			transform 180ms ease,
-			background-color 180ms ease,
-			border-color 180ms ease;
+		overflow: hidden;
+		background: rgba(255, 255, 255, 0.08);
 	}
 
-	.pillars-arrow:hover {
-		transform: translateY(-1px);
-		background: rgba(255, 255, 255, 0.08);
-		border-color: rgba(255, 255, 255, 0.22);
+	.pillars-progress span {
+		display: block;
+		height: 100%;
+		width: 100%;
+		transform-origin: left center;
+		background: linear-gradient(90deg, #f2b705 0%, #fff3c1 45%, #d9042b 100%);
+		animation: pillarProgress linear forwards;
+	}
+
+	.pillars-progress span.paused {
+		animation-play-state: paused;
 	}
 
 	.pillars-stage {
-		min-height: clamp(28rem, 50vw, 42rem);
+		position: relative;
+		min-height: clamp(26rem, 46vw, 40rem);
+		isolation: isolate;
 	}
 
-	.pillars-nav {
-		display: grid;
-		grid-template-columns: repeat(5, minmax(0, 1fr));
-		gap: 0.9rem;
-	}
-
-	.pillar-tab {
-		display: grid;
-		grid-template-columns: auto 1fr;
-		gap: 0.8rem;
-		align-items: start;
-		padding: 1rem;
-		border-radius: 1.5rem;
-		border: 1px solid rgba(255, 255, 255, 0.08);
-		background: rgba(255, 255, 255, 0.04);
-		color: rgba(255, 248, 239, 0.72);
-		text-align: left;
+	.pillars-slide {
+		will-change: transform, opacity, filter;
 		transition:
-			transform 180ms ease,
-			border-color 180ms ease,
-			background-color 180ms ease,
-			color 180ms ease;
+			transform 820ms cubic-bezier(0.22, 1, 0.36, 1),
+			opacity 820ms cubic-bezier(0.22, 1, 0.36, 1),
+			filter 820ms cubic-bezier(0.22, 1, 0.36, 1);
 	}
 
-	.pillar-tab:hover {
-		transform: translateY(-1px);
-		border-color: rgba(255, 255, 255, 0.16);
-		background: rgba(255, 255, 255, 0.06);
+	.pillars-slide-current {
+		position: relative;
+		will-change: transform, opacity;
 	}
 
-	.pillar-tab.active {
-		border-color: rgba(242, 183, 5, 0.28);
-		background:
-			radial-gradient(circle at top left, rgba(242, 183, 5, 0.14), transparent 70%),
-			rgba(255, 255, 255, 0.08);
-		color: #fff8ef;
-		box-shadow: 0 16px 38px rgba(0, 0, 0, 0.16);
+	.pillars-slide-current.enter-pre.forward {
+		transform: translate3d(6.5%, 1.1rem, 0) scale(0.985);
+		opacity: 0;
+		filter: blur(14px);
 	}
 
-	.pillar-tab-icon {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		width: 2.4rem;
-		height: 2.4rem;
-		border-radius: 999px;
-		background: rgba(255, 255, 255, 0.08);
-		font-family: var(--font-mono);
-		font-size: 0.72rem;
-		font-weight: 700;
-		letter-spacing: 0.08em;
+	.pillars-slide-current.enter-pre.backward {
+		transform: translate3d(-6.5%, 1.1rem, 0) scale(0.985);
+		opacity: 0;
+		filter: blur(14px);
 	}
 
-	.pillar-tab-copy {
-		display: grid;
-		gap: 0.35rem;
+	.pillars-slide-current.active {
+		transform: translate3d(0, 0, 0) scale(1);
+		opacity: 1;
+		filter: blur(0);
 	}
 
-	.pillar-tab-copy strong {
-		font-size: 0.96rem;
-		font-weight: 700;
-		color: inherit;
+	.pillars-slide-outgoing {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		z-index: 0;
 	}
 
-	.pillar-tab-copy span {
-		font-size: 0.84rem;
-		line-height: 1.5;
-		color: rgba(255, 248, 239, 0.62);
+	.pillars-slide-outgoing.enter {
+		transform: translate3d(0, 0, 0) scale(1);
+		opacity: 1;
+		filter: blur(0);
+	}
+
+	.pillars-slide-outgoing.exit {
+		opacity: 0;
+		filter: blur(10px);
+	}
+
+	.pillars-slide-outgoing.exit.forward {
+		transform: translate3d(-4.5%, 0.4rem, 0) scale(0.992);
+	}
+
+	.pillars-slide-outgoing.exit.backward {
+		transform: translate3d(4.5%, 0.4rem, 0) scale(0.992);
 	}
 
 	.bridge-section {
@@ -1062,16 +1061,22 @@
 		color: rgba(17, 17, 17, 0.82);
 	}
 
+	@keyframes pillarProgress {
+		from {
+			transform: scaleX(0);
+		}
+
+		to {
+			transform: scaleX(1);
+		}
+	}
+
 	@media (max-width: 1024px) {
 		.about-grid,
 		.pillars-shell,
 		.reason-panel,
 		.bridge-shell {
 			grid-template-columns: 1fr;
-		}
-
-		.pillars-nav {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 
 		.ecosystem-card:nth-child(1),
@@ -1128,20 +1133,28 @@
 		}
 
 		.pillars-toolbar {
-			flex-direction: column;
-			align-items: stretch;
+			align-items: flex-start;
 		}
 
 		.pillars-counter {
-			justify-content: space-between;
+			align-items: flex-start;
+		}
+
+		.pillars-counter span {
+			width: 2.65rem;
+			height: 2.65rem;
+		}
+
+		.pillars-counter p {
+			font-size: 0.96rem;
+		}
+
+		.pillars-counter small {
+			font-size: 0.72rem;
 		}
 
 		.pillars-stage {
 			min-height: auto;
-		}
-
-		.pillars-nav {
-			grid-template-columns: 1fr;
 		}
 	}
 </style>

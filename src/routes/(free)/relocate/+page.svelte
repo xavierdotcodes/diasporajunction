@@ -1,7 +1,9 @@
 <script>
 	import LeadCaptureInline from '$lib/components/lead/LeadCaptureInline.svelte';
 	import AccessCardGrid from '$lib/components/shared/AccessCardGrid.svelte';
+	import Hero from '$lib/components/shared/Hero.svelte';
 	import LockedPreview from '$lib/components/shared/LockedPreview.svelte';
+	import { APPROACH_MEDIA } from '$lib/components/shared/media.js';
 	import SectionHeader from '$lib/components/shared/SectionHeader.svelte';
 	import StrategicCta from '$lib/components/shared/StrategicCta.svelte';
 	import { DEFAULT_LEAD_MAGNET_NAME } from '$lib/lead/constants';
@@ -53,28 +55,27 @@
 </svelte:head>
 
 <div class="relocate-page">
-	<section class="relocate-hero">
-		<div class="page-shell hero-grid">
-			<div class="hero-copy">
-				<p class="eyebrow">Relocate</p>
-				<h1>Public orientation for the move. Deeper support when the move gets real.</h1>
-				<p>
-					Relocate stays public because people need a trustworthy place to begin. But it should not
-					try to carry the entire premium layer. Start here for grounded context, then move into
-					Community when you need current intelligence, trusted resources, and deeper support.
-				</p>
-			</div>
+	<Hero
+		variant="page"
+		subtitle="Relocate"
+		description="Use this page to get clearer on what moving to Ghana may actually ask of your life, and to slow the decision down before excitement or urgency takes over."
+		{...APPROACH_MEDIA}
+	>
+		{#snippet title()}
+			<h1>Relocation guidance for people trying to move with more clarity and fewer mistakes.</h1>
+		{/snippet}
 
+		{#snippet aside()}
 			<div class="hero-panel">
-				<p class="panel-kicker">What This Page Does</p>
+				<p class="panel-kicker">Use This Page To</p>
 				<ul>
-					<li>Clarifies visiting versus living</li>
-					<li>Offers selected public relocation guidance</li>
-					<li>Points to the deeper member layer when you need more</li>
+					<li>Clarify the difference between visiting and living</li>
+					<li>Work through the early relocation questions more carefully</li>
+					<li>See where deeper support may help once the move gets real</li>
 				</ul>
 			</div>
-		</div>
-	</section>
+		{/snippet}
+	</Hero>
 
 	<section class="page-section section-cream">
 		<div class="page-shell">
@@ -195,8 +196,7 @@
 			linear-gradient(180deg, #f8f2df 0%, #f4ead1 100%);
 	}
 
-	.section-dark,
-	.relocate-hero {
+	.section-dark {
 		background:
 			radial-gradient(circle at top left, rgba(242, 183, 5, 0.12), transparent 24rem),
 			radial-gradient(circle at bottom right, rgba(217, 4, 43, 0.12), transparent 26rem),
@@ -204,59 +204,23 @@
 		color: white;
 	}
 
-	.relocate-hero {
-		padding: clamp(5rem, 8vw, 7rem) 0 4rem;
+	.hero-panel {
+		padding: 1.45rem;
+		border-radius: 1.8rem;
+		background:
+			linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.08)),
+			linear-gradient(135deg, rgba(242, 183, 5, 0.08), transparent 48%);
+		box-shadow: 0 24px 56px rgba(66, 66, 66, 0.12);
 	}
 
-	.hero-grid {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.72fr);
-		gap: clamp(1.5rem, 4vw, 4rem);
-		align-items: end;
-	}
-
-	.eyebrow,
 	.panel-kicker {
-		margin: 0;
+		margin: 0 0 0.85rem;
 		font-family: var(--font-mono);
 		font-size: 0.72rem;
 		font-weight: 700;
 		letter-spacing: 0.24em;
 		text-transform: uppercase;
-	}
-
-	.eyebrow {
-		color: rgba(242, 183, 5, 0.88);
-	}
-
-	.hero-copy h1 {
-		margin: 0;
-		font-family: var(--font-heading);
-		font-size: clamp(2.45rem, 5vw, 4.9rem);
-		line-height: 0.94;
-		letter-spacing: -0.05em;
-		text-wrap: balance;
-	}
-
-	.hero-copy p:not(.eyebrow) {
-		margin: 1.15rem 0 0;
-		font-size: clamp(1rem, 1.3vw, 1.14rem);
-		line-height: 1.8;
-		color: rgba(255, 248, 239, 0.8);
-	}
-
-	.hero-panel {
-		padding: 1.45rem;
-		border-radius: 1.8rem;
-		background:
-			radial-gradient(circle at top left, rgba(242, 183, 5, 0.16), transparent 58%),
-			linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
-		box-shadow: 0 24px 56px rgba(0, 0, 0, 0.16);
-	}
-
-	.panel-kicker {
-		margin-bottom: 0.85rem;
-		color: rgba(242, 183, 5, 0.88);
+		color: rgba(17, 17, 17, 0.62);
 	}
 
 	.hero-panel ul {
@@ -269,7 +233,7 @@
 	.hero-panel li {
 		font-size: 0.96rem;
 		line-height: 1.65;
-		color: rgba(255, 248, 239, 0.82);
+		color: rgba(17, 17, 17, 0.78);
 	}
 
 	.spacer-lg {
