@@ -72,6 +72,7 @@ export async function load({ locals }) {
         orders,
         registrations,
         bookings,
-        users: usersWithAccess
+        users: usersWithAccess,
+        adminEmail: locals.user?.email ?? ''
     };
 }

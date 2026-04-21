@@ -16,11 +16,11 @@ function getBaseUrl() {
 }
 
 function getGuideUrl() {
-	return env.LEAD_MAGNET_URL || `${getBaseUrl()}/guides`;
+	return env.LEAD_MAGNET_URL || `${getBaseUrl()}/checklist`;
 }
 
 function getEbookUrl() {
-	return env.EBOOK_URL || `${getBaseUrl()}/guides`;
+	return env.EBOOK_URL || `${getBaseUrl()}/ebook`;
 }
 
 function getUnsubscribeUrl(leadId) {
@@ -73,7 +73,6 @@ export function renderLeadSequenceEmail({ lead, stepKey }) {
 	const guideUrl = getGuideUrl();
 	const relocateUrl = `${getBaseUrl()}/relocate`;
 	const startHereUrl = `${getBaseUrl()}/start-here`;
-	const guidesUrl = `${getBaseUrl()}/guides`;
 	const ebookUrl = getEbookUrl();
 
 	switch (stepKey) {
