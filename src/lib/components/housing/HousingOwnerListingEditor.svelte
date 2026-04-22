@@ -25,8 +25,6 @@
 	let furnished = $state(false);
 	let familyFriendly = $state(false);
 	let availabilityText = $state('');
-	let contactMethod = $state('DiasporaJunxion inquiry form');
-	let inquiryDestination = $state('DiasporaJunxion manual follow-up');
 	let providerName = $state('');
 	let diasporaFriendlyNotes = $state('');
 	let ownerName = $state('');
@@ -54,8 +52,6 @@
 		furnished = Boolean(listing.furnished);
 		familyFriendly = Boolean(listing.familyFriendly);
 		availabilityText = listing.availabilityText || '';
-		contactMethod = listing.contactMethod || 'DiasporaJunxion inquiry form';
-		inquiryDestination = listing.inquiryDestination || 'DiasporaJunxion manual follow-up';
 		providerName = listing.providerName || '';
 		diasporaFriendlyNotes = listing.diasporaFriendlyNotes || '';
 		ownerName = listing.ownerName || viewer.firstName || '';
@@ -110,8 +106,8 @@
 		furnished,
 		familyFriendly,
 		availabilityText,
-		contactMethod,
-		inquiryDestination,
+		contactMethod: 'DiasporaJunxion inquiry form',
+		inquiryDestination: 'DiasporaJunxion internal follow-up',
 		providerName,
 		diasporaFriendlyNotes,
 		images
@@ -273,8 +269,13 @@
 				<label><span>Owner / agent name</span><input name="ownerName" bind:value={ownerName} /></label>
 				<label><span>Phone / WhatsApp</span><input name="ownerPhone" bind:value={ownerPhone} /></label>
 				<label><span>Provider name</span><input name="providerName" bind:value={providerName} placeholder="Property name, owner, or agency" /></label>
-				<label><span>Contact method</span><input name="contactMethod" bind:value={contactMethod} /></label>
-				<label><span>Inquiry destination</span><input name="inquiryDestination" bind:value={inquiryDestination} /></label>
+				<div class="full note-panel">
+					<p class="note-title">Inquiry handling</p>
+					<p>
+						DiasporaJunxion receives renter inquiries first and acts as the intermediary. Owner
+						contact details stay on file internally and are not exposed as direct public inquiry routing.
+					</p>
+				</div>
 				<label class="full"><span>Diaspora notes</span><textarea name="diasporaFriendlyNotes" bind:value={diasporaFriendlyNotes} rows="4" placeholder="What a diaspora renter or returning family should understand early"></textarea></label>
 			</div>
 		</section>

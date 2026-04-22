@@ -58,7 +58,7 @@ export async function handle({ event, resolve }) {
 
 		const sessionId = event.cookies.get('session');
 
-		if (sessionId && typeof prisma.user?.findUnique === 'function') {
+		if (sessionId) {
 			log.debug({
 				phase: 'session_lookup_started',
 				requestId: event.locals.requestId

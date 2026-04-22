@@ -8,22 +8,9 @@
 
 	let { data } = $props();
 
-	const nextStepCards = $derived([
-		{
-			title: data.housingViewer.signedIn ? 'Go to your owner portal' : 'Create your owner account',
-			copy: data.housingViewer.signedIn
-				? 'You already have access. Open the owner portal to start a draft or manage listings you already submitted.'
-				: 'Start with a simple owner account so your drafts, uploads, and payment status are tied to you.',
-			href: data.housingViewer.signedIn ? '/housing/owners' : '/signup?next=/housing/owners',
-			cta: data.housingViewer.signedIn ? 'Open Owner Portal' : 'Create Owner Account'
-		},
-		{
-			title: 'Already have an account?',
-			copy: 'Sign in and continue from your owner dashboard. That is where your drafts, uploads, and submission status live.',
-			href: '/login?next=/housing/owners',
-			cta: 'Sign In'
-		}
-	]);
+	const ownerPortalHref = '/housing/owners';
+	const ownerSignupHref = `/signup?next=${encodeURIComponent(ownerPortalHref)}`;
+	const ownerLoginHref = `/login?next=${encodeURIComponent(ownerPortalHref)}`;
 </script>
 
 <div class="owner-page">
@@ -41,7 +28,7 @@
 		{#snippet cta()}
 			<div class="hero-actions">
 				<Button
-					href={data.housingViewer.signedIn ? '/housing/owners' : '/signup?next=/housing/owners'}
+					href={data.housingViewer.signedIn ? ownerPortalHref : ownerSignupHref}
 					variant="brand"
 					size="lg"
 				>
@@ -86,13 +73,43 @@
 			/>
 
 			<div class="next-grid">
-				{#each nextStepCards as card}
+				{#if data.housingViewer.signedIn}
 					<article class="next-card">
-						<h3>{card.title}</h3>
-						<p>{card.copy}</p>
-						<Button href={card.href} variant="brand" size="lg">{card.cta}</Button>
+						<h3>Go to your owner portal</h3>
+						<p>
+							You already have access. Open the owner portal to start a draft, upload photos,
+							and manage listings you already submitted.
+						</p>
+						<Button href={ownerPortalHref} variant="brand" size="lg">Open Owner Portal</Button>
 					</article>
-				{/each}
+
+					<article class="next-card">
+						<h3>See how listings appear publicly</h3>
+						<p>
+							Review the public housing browse experience so you can see the tone and presentation
+							your listing is moving toward.
+						</p>
+						<Button href="/housing/listings" variant="outline" size="lg">Browse Current Listings</Button>
+					</article>
+				{:else}
+					<article class="next-card">
+						<h3>Create your owner account</h3>
+						<p>
+							Start with a simple owner account so your drafts, uploads, payment status, and
+							submission history are tied to you.
+						</p>
+						<Button href={ownerSignupHref} variant="brand" size="lg">Create Owner Account</Button>
+					</article>
+
+					<article class="next-card">
+						<h3>Already have an account?</h3>
+						<p>
+							Sign in and continue from your owner dashboard. That is where your drafts, uploads,
+							and submission status live.
+						</p>
+						<Button href={ownerLoginHref} variant="outline" size="lg">Sign In</Button>
+					</article>
+				{/if}
 			</div>
 
 			<div class="admin-note">

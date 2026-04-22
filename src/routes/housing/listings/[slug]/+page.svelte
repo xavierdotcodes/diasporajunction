@@ -32,8 +32,8 @@
 	]);
 	const inquirySteps = [
 		'Ask only what matters for your move, budget, or family setup.',
-		'DiasporaJunxion receives the inquiry tied to this exact listing.',
-		'You can use the message box to ask about fit, timing, or neighborhood context.'
+		'DiasporaJunxion receives the inquiry first and acts as the intermediary.',
+		'We review interest on our side before any owner-side follow-up happens.'
 	];
 	const requesterName = $derived(form?.values?.requesterName ?? data.housingViewer.firstName ?? '');
 	const requesterEmail = $derived(form?.values?.requesterEmail ?? data.housingViewer.email ?? '');
@@ -126,17 +126,13 @@
 						</div>
 					{/if}
 
-					{#if data.listing.inquiryDestination || data.listing.contactMethod}
-						<div class="info-block">
-							<h3>Inquiry route</h3>
-							<p>
-								{data.listing.contactMethod || 'Direct inquiry'}
-								{#if data.listing.inquiryDestination}
-									: {data.listing.inquiryDestination}
-								{/if}
-							</p>
-						</div>
-					{/if}
+					<div class="info-block">
+						<h3>Inquiry route</h3>
+						<p>
+							DiasporaJunxion handles first contact for this listing. We receive the inquiry, review
+							it internally, and act as the intermediary before any owner-side follow-up.
+						</p>
+					</div>
 
 					{#if data.listing.providerName}
 						<div class="info-block">
@@ -152,7 +148,8 @@
 					<p class="section-kicker">Inquiry</p>
 					<h2>Ask about fit before you commit time.</h2>
 					<p class="sidebar-copy">
-						Use this form when the listing actually fits your move, family situation, budget, or timeline.
+						Use this form when the listing actually fits your move, family situation, budget, or
+						timeline. Your message goes to DiasporaJunxion first, not directly to the owner.
 					</p>
 
 					<div class="inquiry-steps">
@@ -204,7 +201,7 @@
 
 						{#if form?.success}
 							<p class="status success">
-								Inquiry sent. DiasporaJunxion now has it tied to this listing.
+								Inquiry sent. DiasporaJunxion received it and will review it as the intermediary for this listing.
 							</p>
 						{/if}
 

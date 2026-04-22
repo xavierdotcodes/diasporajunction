@@ -21,13 +21,12 @@ export async function load(event) {
 export const actions = {
 	login: async (event) => {
 		const log = requestLogger('admin.login', event);
+		const formData = await event.request.formData();
+		const email = getValue(formData, 'email').toLowerCase();
+		const password = String(formData.get('password') || '');
+		const next = resolveAdminNext(getValue(formData, 'next'));
 
 		try {
-			const formData = await event.request.formData();
-			const email = getValue(formData, 'email').toLowerCase();
-			const password = String(formData.get('password') || '');
-			const next = resolveAdminNext(getValue(formData, 'next'));
-
 			const result = await authenticateAdminAccount({ email, password });
 
 			if (!result.ok || !result.adminAccount) {
@@ -54,13 +53,7 @@ export const actions = {
 				secure: process.env.NODE_ENV === 'production',
 				maxAge: 60 * 60
 			});
-
-			throw redirect(303, next);
 		} catch (error) {
-			if (error?.status && error?.location) {
-				throw error;
-			}
-
 			log.error({
 				op: 'login',
 				phase: 'error',
@@ -69,5 +62,7 @@ export const actions = {
 
 			return fail(500, { error: 'Could not sign you in.' });
 		}
+
+		throw redirect(303, next);
 	}
 };

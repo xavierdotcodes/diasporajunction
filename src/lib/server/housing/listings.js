@@ -4,6 +4,8 @@ import { normalizeEmail } from '$lib/server/housing/access';
 import { scopedLogger } from '$lib/utils/logger';
 
 const log = scopedLogger('housing.listings');
+export const DEFAULT_HOUSING_CONTACT_METHOD = 'DiasporaJunxion inquiry form';
+export const DEFAULT_HOUSING_INQUIRY_DESTINATION = 'DiasporaJunxion internal follow-up';
 
 function normalizeOptionalString(value) {
 	if (typeof value !== 'string') return null;
@@ -197,8 +199,6 @@ export function getOwnerListingInput(formData, viewer) {
 		furnished: formData.get('furnished') === 'on',
 		familyFriendly: formData.get('familyFriendly') === 'on',
 		availabilityText: String(formData.get('availabilityText') || '').trim(),
-		contactMethod: String(formData.get('contactMethod') || '').trim(),
-		inquiryDestination: String(formData.get('inquiryDestination') || '').trim(),
 		providerName: String(formData.get('providerName') || '').trim(),
 		diasporaFriendlyNotes: String(formData.get('diasporaFriendlyNotes') || '').trim(),
 		ownerName:
@@ -229,8 +229,8 @@ function toListingMutationData(input, viewer, { status = 'DRAFT', preserveChecko
 		furnished: maybeBoolean(input.furnished),
 		familyFriendly: maybeBoolean(input.familyFriendly),
 		availabilityText: normalizeOptionalString(input.availabilityText),
-		contactMethod: normalizeOptionalString(input.contactMethod),
-		inquiryDestination: normalizeOptionalString(input.inquiryDestination),
+		contactMethod: DEFAULT_HOUSING_CONTACT_METHOD,
+		inquiryDestination: DEFAULT_HOUSING_INQUIRY_DESTINATION,
 		providerName: normalizeOptionalString(input.providerName),
 		diasporaFriendlyNotes: normalizeOptionalString(input.diasporaFriendlyNotes),
 		status,
