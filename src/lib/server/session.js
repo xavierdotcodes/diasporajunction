@@ -6,11 +6,15 @@ fileLogger('src/lib/server/session.js');
 const log = scopedLogger('session');
 
 export async function createSession(user) {
+	const roles = Array.isArray(user?.roles)
+		? user.roles.map((role) => role?.role ?? role).filter(Boolean)
+		: [];
+
 	log.info({
 		op: 'create_session',
 		phase: 'start',
 		userId: user?.id,
-		roleCount: user?.roles?.length ?? 0
+		roleCount: roles.length
 	});
 
 	const sessionId = crypto.randomBytes(32).toString('hex');
@@ -19,7 +23,14 @@ export async function createSession(user) {
 	try {
 		await redis.set(
 			`session:${sessionId}`,
-			JSON.stringify({ userId: user.id, roles: user.roles.map((r) => r.role) }),
+			JSON.stringify({
+				userId: user.id,
+				adminAccountId: user.adminAccountId ?? null,
+				accountType: user.accountType ?? 'user',
+				email: user.email ?? null,
+				name: user.name ?? null,
+				roles
+			}),
 			'EX',
 			60 * 60 // 1 hour
 		);

@@ -1,7 +1,8 @@
+import { getHousingViewer } from '$lib/server/housing/access';
 import { requestLogger } from '$lib/utils/logger';
 
 /** @type {import('./$types').LayoutServerLoad} */
-export function load(event) {
+export async function load(event) {
 	const { locals } = event;
 	const log = requestLogger('root.layout.server', event);
 
@@ -30,5 +31,7 @@ export function load(event) {
 		roleCount: user?.roles?.length ?? 0
 	});
 
-	return { user };
+	const housingViewer = await getHousingViewer(locals, { op: 'root_layout' });
+
+	return { user, housingViewer };
 }

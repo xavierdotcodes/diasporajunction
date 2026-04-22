@@ -3,13 +3,21 @@ import { json } from '@sveltejs/kit';
 import { getStripe } from '$lib/server/stripe';
 import { syncCommunityAccessFromCheckoutSession } from '$lib/server/community/access';
 import { syncEbookPurchaseFromCheckoutSession } from '$lib/server/ebook/purchase';
+import { syncHousingListingSubmissionFromCheckoutSession } from '$lib/server/housing/payments';
 import { scopedLogger, serializeError } from '$lib/utils/logger';
 
 const log = scopedLogger('api.stripe.webhook');
 
+function normalizeSecret(value) {
+	if (typeof value !== 'string') return value;
+	return value.trim().replace(/^['"]|['"]$/g, '');
+}
+
 function getWebhookSecret() {
 	const isDev = process.env.NODE_ENV !== 'production';
-	return isDev ? env.STRIPE_TEST_WEBHOOK_SECRET || env.STRIPE_WEBHOOK_SECRET : env.STRIPE_WEBHOOK_SECRET;
+	return normalizeSecret(
+		isDev ? env.STRIPE_TEST_WEBHOOK_SECRET || env.STRIPE_WEBHOOK_SECRET : env.STRIPE_WEBHOOK_SECRET
+	);
 }
 
 export async function POST({ request }) {
@@ -41,10 +49,15 @@ export async function POST({ request }) {
 		if (event.type === 'checkout.session.completed') {
 			const session = event.data.object;
 			const kind = session.metadata?.kind ?? 'unknown';
-			const syncResult =
-				kind === 'community_access'
-					? await syncCommunityAccessFromCheckoutSession(session, 'community_checkout_webhook')
-					: kind === 'ebook_purchase'
+				const syncResult =
+					kind === 'community_access'
+						? await syncCommunityAccessFromCheckoutSession(session, 'community_checkout_webhook')
+						: kind === 'housing_listing_submission'
+							? await syncHousingListingSubmissionFromCheckoutSession(
+									session,
+									'housing_listing_checkout_webhook'
+								)
+						: kind === 'ebook_purchase'
 						? await syncEbookPurchaseFromCheckoutSession(session, 'ebook_checkout_webhook')
 						: { ok: false, reason: 'unsupported_kind' };
 

@@ -21,6 +21,53 @@ enum CommunityAccessStatus {
   REVOKED
 }
 
+enum HousingListingStatus {
+  DRAFT
+  PENDING
+  PAYMENT_PENDING
+  PENDING_REVIEW
+  PUBLISHED
+  ARCHIVED
+}
+
+enum HousingListingType {
+  APARTMENT
+  HOUSE
+  DEVELOPMENT
+}
+
+enum HousingStayType {
+  SHORT_STAY
+  LONG_STAY
+  FLEXIBLE
+}
+
+enum HousingInquiryStatus {
+  NEW
+  REVIEWED
+  CLOSED
+}
+
+enum HousingPurchaseStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+model AdminAccount {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  passwordHash String
+  active       Boolean  @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([active, email])
+}
+
 model Lead {
   id               String      @id @default(cuid())
   email            String      @unique
@@ -76,4 +123,107 @@ model CommunityAccessGrant {
 
   @@index([status, requestedAt])
   @@index([source, createdAt])
+}
+
+model HousingListing {
+  id                   String               @id @default(cuid())
+  ownerSupabaseUserId  String?
+  ownerEmail           String?
+  ownerName            String?
+  ownerPhone           String?
+  title                String
+  slug                 String               @unique
+  summary              String
+  description          String
+  listingType          HousingListingType
+  stayType             HousingStayType
+  priceAmount          Int?
+  currency             String               @default("USD")
+  pricePeriod          String?
+  location             String
+  neighborhood         String?
+  bedrooms             Int?
+  bathrooms            Int?
+  furnished            Boolean              @default(false)
+  familyFriendly       Boolean              @default(false)
+  availabilityText     String?
+  contactMethod        String?
+  inquiryDestination   String?
+  providerName         String?
+  diasporaFriendlyNotes String?
+  featured             Boolean              @default(false)
+  status               HousingListingStatus @default(DRAFT)
+  createdByEmail       String?
+  updatedByEmail       String?
+  moderationNotes      String?
+  stripeCheckoutSessionId String?           @unique
+  submittedAt          DateTime?
+  paidAt               DateTime?
+  publishedAt          DateTime?
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+  images               HousingListingImage[]
+  inquiries            HousingInquiry[]
+  payments             HousingListingPayment[]
+
+  @@index([status, featured, publishedAt])
+  @@index([ownerSupabaseUserId, createdAt])
+  @@index([ownerEmail, createdAt])
+  @@index([listingType, stayType])
+  @@index([location, neighborhood])
+  @@index([familyFriendly, furnished])
+}
+
+model HousingListingImage {
+  id        String         @id @default(cuid())
+  listingId String
+  url       String
+  storagePath String?
+  alt       String?
+  sortOrder Int            @default(0)
+  createdAt DateTime       @default(now())
+  listing   HousingListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@index([listingId, sortOrder])
+}
+
+model HousingInquiry {
+  id             String              @id @default(cuid())
+  listingId      String
+  supabaseUserId String?
+  requesterEmail String
+  requesterName  String?
+  requesterPhone String?
+  moveTimeline   String?
+  message        String
+  status         HousingInquiryStatus @default(NEW)
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  listing        HousingListing      @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@index([listingId, createdAt])
+  @@index([requesterEmail, createdAt])
+  @@index([status, createdAt])
+}
+
+model HousingListingPayment {
+  id                    String                @id @default(cuid())
+  listingId             String
+  stripeSessionId       String                @unique
+  stripePaymentIntentId String?
+  stripeCustomerId      String?
+  ownerSupabaseUserId   String?
+  ownerEmail            String
+  amountTotal           Int?
+  currency              String?
+  status                HousingPurchaseStatus @default(PENDING)
+  source                String?
+  paidAt                DateTime?
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  listing               HousingListing        @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@index([listingId, status, createdAt])
+  @@index([ownerEmail, status, createdAt])
+  @@index([ownerSupabaseUserId, createdAt])
 }

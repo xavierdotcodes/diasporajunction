@@ -7,9 +7,32 @@ const log = scopedLogger('email.resend');
 
 let resend;
 
-function getEmailDomain(value) {
+function stripWrappingQuotes(value) {
+	if (typeof value !== 'string') return value;
+
+	const trimmed = value.trim();
+
+	if (
+		(trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+		(trimmed.startsWith("'") && trimmed.endsWith("'"))
+	) {
+		return trimmed.slice(1, -1).trim();
+	}
+
+	return trimmed;
+}
+
+function extractEmailAddress(value) {
 	if (typeof value !== 'string') return null;
-	return value.split('@')[1] || null;
+
+	const normalized = stripWrappingQuotes(value);
+	const match = normalized.match(/<([^>]+)>/);
+	return (match ? match[1] : normalized).trim() || null;
+}
+
+function getEmailDomain(value) {
+	const email = extractEmailAddress(value);
+	return email?.split('@')[1] || null;
 }
 
 function getRecipientDomains(to) {
@@ -39,7 +62,23 @@ export function getResendClient() {
 }
 
 export function getResendFromAddress() {
-    return env.RESEND_FROM_EMAIL || 'DiasporaJunxion <hello@diasporajunxion.com>';
+	const from = stripWrappingQuotes(env.RESEND_FROM_EMAIL);
+
+	if (!from) {
+		throw new Error(
+			'Missing RESEND_FROM_EMAIL in environment. Set it to a verified sender, e.g. "DiasporaJunxion <hello@diasporajunxion.com>".'
+		);
+	}
+
+	const emailAddress = extractEmailAddress(from);
+	const hasNameFormat = /^[^<>]+<[^<>@]+@[^<>@]+>$/.test(from);
+	const hasEmailOnlyFormat = /^[^<>\s@]+@[^<>\s@]+$/.test(from);
+
+	if (!emailAddress?.includes('@') || (!hasNameFormat && !hasEmailOnlyFormat)) {
+		throw new Error(`Invalid RESEND_FROM_EMAIL value: ${from}`);
+	}
+
+	return from;
 }
 
 export async function sendResendEmail({ to, subject, html, text, tags = [] }) {
@@ -81,13 +120,15 @@ export async function sendResendEmail({ to, subject, html, text, tags = [] }) {
 
 	if (result?.error) {
 		const resendError = new Error(result.error.message || 'Resend email send failed');
+		resendError.cause = result.error;
 		log.error({
 			op: 'send_email',
 			phase: 'provider_error',
 			fromDomain: getEmailDomain(from),
 			toDomains: getRecipientDomains(to),
 			subject,
-			error: serializeError(result.error)
+			error: serializeError(result.error),
+			providerResponse: result
 		});
 		throw resendError;
 	}

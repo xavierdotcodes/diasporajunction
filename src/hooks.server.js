@@ -1,6 +1,7 @@
 import prisma from '$lib/server/prisma';
 import { applyOriginCacheHeaders } from '$lib/server/cache';
 import { getRedis } from '$lib/server/redis';
+import { createSupabaseServerClient, hasSupabaseConfig } from '$lib/supabase/server';
 import { fileLogger, serializeError } from '$lib/utils/logger';
 
 const log = fileLogger('src/hooks.server.js');
@@ -9,6 +10,12 @@ export async function handle({ event, resolve }) {
 	const startedAt = Date.now();
 	const url = new URL(event.request.url);
 	event.locals.requestId = crypto.randomUUID();
+	event.locals.supabase = createSupabaseServerClient(event);
+	event.locals.supabaseConfigured = hasSupabaseConfig();
+	event.locals.user = null;
+	event.locals.adminAccount = null;
+	event.locals.supabaseUser = null;
+	event.locals.supabaseSession = null;
 
 	log.info({
 		phase: 'request_started',
@@ -19,9 +26,39 @@ export async function handle({ event, resolve }) {
 	});
 
 	try {
+		if (event.locals.supabase) {
+			try {
+				const {
+					data: { user },
+					error: userError
+				} = await event.locals.supabase.auth.getUser();
+
+				if (!userError && user) {
+					const {
+						data: { session }
+					} = await event.locals.supabase.auth.getSession();
+
+					event.locals.supabaseUser = user;
+					event.locals.supabaseSession = session ?? null;
+
+					log.info({
+						phase: 'supabase_session_restored',
+						requestId: event.locals.requestId,
+						supabaseUserId: user.id
+					});
+				}
+			} catch (error) {
+				log.error({
+					phase: 'supabase_session_failed',
+					requestId: event.locals.requestId,
+					error: serializeError(error)
+				});
+			}
+		}
+
 		const sessionId = event.cookies.get('session');
 
-		if (sessionId) {
+		if (sessionId && typeof prisma.user?.findUnique === 'function') {
 			log.debug({
 				phase: 'session_lookup_started',
 				requestId: event.locals.requestId
@@ -31,9 +68,33 @@ export async function handle({ event, resolve }) {
 			const rawSession = await redis.get(`session:${sessionId}`);
 			if (rawSession) {
 				const session = JSON.parse(rawSession);
-				if (session?.id) {
+				const sessionUserId = session?.userId ?? session?.id;
+				const sessionAdminAccountId = session?.adminAccountId;
+
+				if (sessionAdminAccountId && typeof prisma.adminAccount?.findUnique === 'function') {
+					const adminAccount = await prisma.adminAccount.findUnique({
+						where: { id: sessionAdminAccountId }
+					});
+
+					if (adminAccount?.active) {
+						event.locals.adminAccount = adminAccount;
+						event.locals.user = {
+							id: adminAccount.id,
+							email: adminAccount.email,
+							name: adminAccount.name,
+							subscribed: false,
+							roles: [{ role: 'ADMIN' }]
+						};
+
+						log.info({
+							phase: 'admin_session_restored',
+							requestId: event.locals.requestId,
+							adminAccountId: adminAccount.id
+						});
+					}
+				} else if (sessionUserId && typeof prisma.user?.findUnique === 'function') {
 					const user = await prisma.user.findUnique({
-						where: { id: session.id },
+						where: { id: sessionUserId },
 						include: { roles: true }
 					});
 					if (user) {
@@ -48,14 +109,18 @@ export async function handle({ event, resolve }) {
 						log.warn({
 							phase: 'session_user_missing',
 							requestId: event.locals.requestId,
-							sessionUserId: session.id
+							sessionUserId
 						});
 					}
 				}
 			}
 		}
 
-		const response = await resolve(event);
+		const response = await resolve(event, {
+			filterSerializedResponseHeaders(name) {
+				return name === 'content-range' || name === 'x-supabase-api-version';
+			}
+		});
 		const finalResponse = applyOriginCacheHeaders(response, event.request);
 
 		log.info({
@@ -65,7 +130,8 @@ export async function handle({ event, resolve }) {
 			path: url.pathname,
 			status: finalResponse.status,
 			durationMs: Date.now() - startedAt,
-			authenticated: Boolean(event.locals.user)
+			authenticated: Boolean(event.locals.user),
+			supabaseAuthenticated: Boolean(event.locals.supabaseUser)
 		});
 
 		return finalResponse;

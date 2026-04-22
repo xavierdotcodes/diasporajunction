@@ -168,7 +168,7 @@ export async function captureLeadSignup(input) {
 		}
 	});
 
-	const leadCapturedAt = lead.subscribedAt || lead.createdAt || new Date();
+	const leadCapturedAt = new Date();
 	const eventName = 'app/lead.captured';
 	const eventId = `app-lead-captured:${lead.id}:${leadCapturedAt.toISOString()}`;
 	log.info({

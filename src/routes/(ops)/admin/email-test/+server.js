@@ -67,6 +67,14 @@ export async function POST(event) {
 			phase: 'error',
 			error: serializeError(error)
 		});
-		return json({ error: 'Failed to send test email' }, { status: 500 });
+
+		const message =
+			dev || canSendTestEmail(event.locals)
+				? error instanceof Error
+					? error.message
+					: 'Failed to send test email'
+				: 'Failed to send test email';
+
+		return json({ error: message }, { status: 500 });
 	}
 }

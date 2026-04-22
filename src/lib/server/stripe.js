@@ -7,11 +7,16 @@ const log = fileLogger('src/lib/server/stripe.js');
 
 let stripe;
 
+function normalizeSecret(value) {
+	if (typeof value !== 'string') return value;
+	return value.trim().replace(/^['"]|['"]$/g, '');
+}
+
 export function getStripe() {
 	if (!stripe) {
 		const isDev = process.env.NODE_ENV !== 'production';
 
-		const secretKey = isDev ? env.STRIPE_TEST_SECRET_KEY : env.STRIPE_SECRET_KEY;
+		const secretKey = normalizeSecret(isDev ? env.STRIPE_TEST_SECRET_KEY : env.STRIPE_SECRET_KEY);
 
 		if (!secretKey) {
 			throw new Error(`Missing Stripe secret key for ${isDev ? 'test' : 'live'} mode`);

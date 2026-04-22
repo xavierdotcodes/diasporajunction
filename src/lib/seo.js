@@ -20,6 +20,8 @@ export const INDEXABLE_PATHS = [
 	'/ebook',
 	'/FAQ',
 	'/founder',
+	'/housing',
+	'/housing/list-your-property',
 	'/invest',
 	'/ndgo',
 	'/ndgo/learn',
@@ -78,6 +80,16 @@ const PATH_METADATA = {
 		title: 'Community Portal | DiasporaJunxion',
 		description:
 			'The member-only DiasporaJunxion workspace for premium content, tools, resources, and deeper support.'
+	},
+	'/housing': {
+		title: 'Housing in Ghana | DiasporaJunxion',
+		description:
+			'Explore a cleaner, diaspora-focused housing layer for Ghana with more relocation context, less listing noise, and a more grounded inquiry path.'
+	},
+	'/housing/list-your-property': {
+		title: 'List Your Property | DiasporaJunxion',
+		description:
+			'Submit a Ghana property listing to DiasporaJunxion for diaspora-facing review and publication through a simple owner portal.'
 	},
 	'/contact': {
 		title: 'Contact | DiasporaJunxion',
