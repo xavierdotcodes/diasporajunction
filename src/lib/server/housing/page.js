@@ -1,4 +1,4 @@
-import { error } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 import { HOUSING_OWNER_LISTING_FEE_USD } from '$lib/server/housing/config';
 import { getHousingViewer, requireHousingIdentity, requireOwnerListingAccess } from '$lib/server/housing/access';
 import { getHousingListingBySlug, getOwnerHousingListing, listHousingListings, listHousingPreviews, listOwnerHousingListings, listRelatedHousingListings, parseHousingFilters } from '$lib/server/housing/listings';
@@ -71,8 +71,25 @@ export async function loadHousingListingPage(event) {
 }
 
 export async function loadHousingOwnerDashboard(event) {
+	const log = requestLogger('housing.owner.dashboard.page', event);
 	const viewer = await requireHousingIdentity(event);
-	const listings = await listOwnerHousingListings(viewer);
+
+	if (viewer.isOperator && !viewer.signedIn) {
+		throw redirect(303, '/admin/housing');
+	}
+
+	let listings = [];
+
+	try {
+		listings = await listOwnerHousingListings(viewer);
+	} catch (listingsError) {
+		log.error({
+			op: 'load_owner_listings',
+			phase: 'error',
+			supabaseUserId: viewer.supabaseUserId,
+			error: serializeError(listingsError)
+		});
+	}
 
 	return {
 		housingViewer: viewer,
