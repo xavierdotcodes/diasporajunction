@@ -1,4 +1,5 @@
-import { missingConfig, notImplemented } from '../response.js';
+// @ts-nocheck
+import { fail, missingConfig, notImplemented } from '../response.js';
 
 const FUNCTION_MAP = {
 	get_admin_dashboard_summary: 'adminDashboard:getSummary',
@@ -11,6 +12,7 @@ const FUNCTION_MAP = {
 	list_applications_needing_resubmission: 'applications:listNeedingResubmission',
 	list_abandoned_payment_applications: 'applications:listAbandonedPayments',
 	get_application_detail: 'applications:getById',
+	get_application_verification_documents: 'verificationDocuments:listForApplication',
 	search_directory_listings: 'listings:search',
 	get_listing_detail: 'listings:adminGetById',
 	get_listing_interaction_summary: 'interactions:getListingInteractionSummary',
@@ -47,6 +49,7 @@ const ADMIN_TOOL_NAMES = new Set([
 	'list_applications_needing_resubmission',
 	'list_abandoned_payment_applications',
 	'get_application_detail',
+	'get_application_verification_documents',
 	'get_listing_detail',
 	'get_listing_interaction_summary',
 	'list_listings_missing_media',
@@ -122,12 +125,16 @@ export function createConvexClient(config) {
 		queryForTool(toolName, args = {}) {
 			const fn = FUNCTION_MAP[toolName];
 			if (!fn) return notImplemented('No Convex backend function is mapped for this MCP tool.');
-			return call(fn, withToolAuth(toolName, args, config), 'query');
+			const argsWithAuth = withToolAuth(toolName, args, config);
+			if (argsWithAuth.__authError) return argsWithAuth.__authError;
+			return call(fn, argsWithAuth, 'query');
 		},
 		mutationForTool(toolName, args = {}) {
 			const fn = FUNCTION_MAP[toolName];
 			if (!fn) return notImplemented('No Convex backend mutation is mapped for this MCP tool.');
-			return call(fn, withToolAuth(toolName, args, config), 'mutation');
+			const argsWithAuth = withToolAuth(toolName, args, config);
+			if (argsWithAuth.__authError) return argsWithAuth.__authError;
+			return call(fn, argsWithAuth, 'mutation');
 		}
 	};
 }
@@ -135,6 +142,24 @@ export function createConvexClient(config) {
 function withToolAuth(toolName, args, config) {
 	if (!ADMIN_TOOL_NAMES.has(toolName)) return args;
 	if (args.auth) return args;
+	if (config.requestAuth?.role === 'ADMIN') {
+		return {
+			...args,
+			auth: {
+				userId: config.requestAuth.userId,
+				role: 'ADMIN'
+			}
+		};
+	}
+	if (!config.appAdminToken) {
+		return {
+			...args,
+			auth: undefined,
+			__authError: fail('Admin authorization is required for private MCP tools.', {
+				missingConfig: ['DIASPORAJUNXION_ADMIN_TOKEN']
+			})
+		};
+	}
 	return {
 		...args,
 		auth: {

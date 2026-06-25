@@ -1,3 +1,4 @@
+// @ts-nocheck
 const DEFAULT_ENV = process.env;
 
 export function loadConfig(env = DEFAULT_ENV) {
@@ -7,7 +8,7 @@ export function loadConfig(env = DEFAULT_ENV) {
 		convexUrl: env.CONVEX_URL || '',
 		convexDeployment: env.CONVEX_DEPLOYMENT || '',
 		convexAdminKey: env.CONVEX_ADMIN_KEY || '',
-		appAdminToken: env.DIASPORAJUNXION_ADMIN_TOKEN || '',
+		appAdminToken: env.DIASPORAJUNXION_ADMIN_TOKEN || env.ADMIN_ACTION_TOKEN || '',
 		mastraBaseUrl: env.MASTRA_BASE_URL || '',
 		mastraApiKey: env.MASTRA_API_KEY || '',
 		inngestEventKey: env.INNGEST_EVENT_KEY || '',

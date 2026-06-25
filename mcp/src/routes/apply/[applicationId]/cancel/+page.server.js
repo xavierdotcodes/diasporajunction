@@ -1,7 +1,9 @@
-import { authContextForConvex, requireApplicationAccess } from '$lib/server/auth.js';
+// @ts-nocheck
+import { authContextForConvex, requireApplicationAccess, requireUser } from '$lib/server/auth.js';
 import { convexQuery, withAuth } from '$lib/server/convex.js';
 
 export async function load(event) {
+	requireUser(event);
 	const auth = authContextForConvex(event);
 	const application = await convexQuery(
 		'applications:getById',

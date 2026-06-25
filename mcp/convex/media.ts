@@ -1,7 +1,7 @@
 import { mutation, query } from './_generated/server';
 import { v } from 'convex/values';
 import { now } from './_shared';
-import { requireAdminAuth, requireOwnedRecord } from './_auth';
+import { requireAdminAuth, requireOwnedRecord, requireSignedInAuth } from './_auth';
 
 const mediaType = v.union(
 	v.literal('LOGO'),
@@ -20,7 +20,10 @@ const authArg = v.optional(
 
 export const generateUploadUrl = mutation({
 	args: { auth: authArg },
-	handler: async (ctx) => await ctx.storage.generateUploadUrl()
+	handler: async (ctx, { auth }) => {
+		requireSignedInAuth(auth);
+		return await ctx.storage.generateUploadUrl();
+	}
 });
 
 export const saveApplicationMedia = mutation({

@@ -25,7 +25,7 @@ export const actions = {
 		const form = await request.formData();
 		const listingId = String(form.get('listingId') ?? '');
 		const type = String(form.get('type') ?? '');
-		if (!listingId || !['WHATSAPP_CLICK', 'PHONE_CLICK', 'EMAIL_CLICK', 'WEBSITE_CLICK'].includes(type)) {
+		if (!listingId || !['WHATSAPP_CLICK', 'PHONE_CLICK', 'EMAIL_CLICK', 'WEBSITE_CLICK', 'QUOTE_REQUEST'].includes(type)) {
 			return fail(400, { message: 'Invalid contact action.' });
 		}
 		await convexMutation('interactions:log', {

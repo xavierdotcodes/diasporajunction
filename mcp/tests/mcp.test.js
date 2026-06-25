@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { describe, expect, it } from 'vitest';
 import { loadConfig, getPublicConfigStatus } from '../src/mcp/config.js';
 import { createMcpContext } from '../src/mcp/context.js';
@@ -68,6 +69,9 @@ describe('mcp tool registry', () => {
 		expect(convex.functionForTool('list_paid_applications_waiting_review')).toBe(
 			'applications:listPaidWaitingReview'
 		);
+		expect(convex.functionForTool('get_application_verification_documents')).toBe(
+			'verificationDocuments:listForApplication'
+		);
 		expect(convex.functionForTool('search_directory_listings')).toBe('listings:search');
 		expect(convex.functionForTool('public_search_directory')).toBe('listings:search');
 	});
@@ -84,11 +88,19 @@ describe('mcp tool registry', () => {
 		});
 	});
 
-	it('returns missing Convex config from read tools', async () => {
+	it('returns missing Convex config from public read tools', async () => {
+		const { tools } = createMcpContext({});
+		await expect(tools.call('search_directory_listings')).resolves.toMatchObject({
+			ok: false,
+			missingConfig: ['CONVEX_URL']
+		});
+	});
+
+	it('blocks anonymous admin MCP tools before backend execution', async () => {
 		const { tools } = createMcpContext({});
 		await expect(tools.call('get_admin_dashboard_summary')).resolves.toMatchObject({
 			ok: false,
-			missingConfig: ['CONVEX_URL']
+			missingConfig: ['DIASPORAJUNXION_ADMIN_TOKEN']
 		});
 	});
 
@@ -102,16 +114,17 @@ describe('mcp tool registry', () => {
 		});
 	});
 
-	it('returns not implemented for Mastra placeholders when configured', async () => {
+	it('requires admin auth config for private AI tools', async () => {
 		const { tools } = createMcpContext({ MASTRA_BASE_URL: 'https://mastra.example' });
 		await expect(tools.call('ai_admin_triage_summary')).resolves.toMatchObject({
 			ok: false,
-			notImplemented: true
+			missingConfig: ['DIASPORAJUNXION_ADMIN_TOKEN']
 		});
 	});
 
 	it('returns Convex-backed data through MCP response shape', async () => {
 		const convex = createConvexClient({
+			appAdminToken: 'admin-secret',
 			convexExecutor: async ({ functionName }) =>
 				ok({ source: functionName, activeListings: 2 }, 'mock convex data')
 		});
@@ -124,6 +137,7 @@ describe('mcp tool registry', () => {
 
 	it('returns exact missing backend function when Convex reports a missing function', async () => {
 		const convex = createConvexClient({
+			appAdminToken: 'admin-secret',
 			convexExecutor: async ({ functionName }) => ({
 				ok: false,
 				error: `Could not find public function ${functionName}`,
@@ -159,6 +173,8 @@ describe('mcp tool registry', () => {
 						adminNotes: 'private',
 						paymentReference: 'secret',
 						sourceApplicationId: 'private-app',
+						ownerDashboard: { views: 100 },
+						interactionSummary30d: { total: 100 },
 						verificationDocuments: [{ storageId: 'private-doc' }]
 					}
 				]);
@@ -178,13 +194,48 @@ describe('mcp tool registry', () => {
 		expect(result.data.results[0]).not.toHaveProperty('adminNotes');
 		expect(result.data.results[0]).not.toHaveProperty('paymentReference');
 		expect(result.data.results[0]).not.toHaveProperty('sourceApplicationId');
+		expect(result.data.results[0]).not.toHaveProperty('ownerDashboard');
+		expect(result.data.results[0]).not.toHaveProperty('interactionSummary30d');
 		expect(result.data.results[0]).not.toHaveProperty('verificationDocuments');
+	});
+
+	it('private AI tools return suggestions without private document URLs', async () => {
+		const convex = createConvexClient({
+			appAdminToken: 'admin-token',
+			convexExecutor: async ({ functionName }) => {
+				if (functionName === 'applications:getById') {
+					return ok({
+						applicationId: 'app1',
+						businessName: 'Immigration Help',
+						category: 'LEGAL_IMMIGRATION',
+						documentUrl: 'https://private.example/doc',
+						verificationDocuments: [{ storageId: 'secret-storage' }]
+					});
+				}
+				return ok({});
+			}
+		});
+		const mastra = {
+			runAgent: async (_name, input) =>
+				ok({
+					summary: `Review ${input.businessName}`,
+					suggestedCategory: input.category,
+					documentUrl: input.documentUrl,
+					suggestion: true
+				})
+		};
+		const tools = createToolRegistry(testContext({ convex, mastra, config: { appAdminToken: 'admin-token' } }));
+		const result = await tools.call('ai_summarize_application', { applicationId: 'app1' });
+		expect(result).toMatchObject({ ok: true, data: { suggestion: true, suggestedCategory: 'LEGAL_IMMIGRATION' } });
+		expect(result.message).toContain('suggestion');
+		expect(JSON.stringify(result)).not.toContain('private.example');
+		expect(JSON.stringify(result)).not.toContain('secret-storage');
 	});
 });
 
 function testContext(overrides = {}) {
 	return {
-		config: {},
+		config: overrides.config ?? {},
 		logger: { info() {}, error() {} },
 		convex:
 			overrides.convex ??

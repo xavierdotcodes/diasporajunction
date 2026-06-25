@@ -41,12 +41,18 @@ function discoveryTool(name, description, convex, mastra, options = {}) {
 		handler: async (input = {}) => {
 			const fallbackFilters = buildDiscoveryFilters({ ...input, ...options.force }, options.intent);
 			let aiRewrite;
+			let aiInterpretation;
 			if (input.query || input.need) {
 				const aiResult = await mastra.runAgent('ai_rewrite_directory_search', {
 					query: input.query ?? input.need,
+					location: input.location ?? input.city,
+					targetAudience: input.targetAudience,
 					biasIntent: options.intent
 				});
-				if (aiResult.ok && aiResult.data?.filters) aiRewrite = aiResult.data.filters;
+				if (aiResult.ok && aiResult.data) {
+					aiInterpretation = publicAiInterpretation(aiResult.data);
+					aiRewrite = filtersFromAi(aiResult.data);
+				}
 			}
 			const filters = { ...fallbackFilters, ...(aiRewrite ?? {}) };
 			const result = await convex.queryForTool('public_search_directory', filters);
@@ -56,6 +62,7 @@ function discoveryTool(name, description, convex, mastra, options = {}) {
 					intent: filters.intent,
 					filters,
 					aiRewriteUsed: Boolean(aiRewrite),
+					aiInterpretation,
 					results: result.ok ? asArray(result.data).map(sanitizePublicListing) : []
 				},
 				message: result.ok
@@ -63,6 +70,30 @@ function discoveryTool(name, description, convex, mastra, options = {}) {
 					: `${result.message} AI rewrite is optional; deterministic filters were used.`
 			};
 		}
+	};
+}
+
+function filtersFromAi(ai = {}) {
+	return {
+		category: ai.category,
+		location: ai.location,
+		targetAudience: ai.targetAudience,
+		keywords: ai.serviceKeywords,
+		remoteAvailable: ai.remoteOrInPerson === 'REMOTE' ? true : undefined,
+		inPersonAvailable: ai.remoteOrInPerson === 'IN_PERSON' ? true : undefined
+	};
+}
+
+function publicAiInterpretation(ai = {}) {
+	return {
+		intent: ai.intent,
+		category: ai.category,
+		location: ai.location,
+		targetAudience: ai.targetAudience,
+		serviceKeywords: ai.serviceKeywords ?? [],
+		urgency: ai.urgency,
+		remoteOrInPerson: ai.remoteOrInPerson,
+		explanation: ai.explanation
 	};
 }
 

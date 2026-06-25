@@ -6,6 +6,10 @@ export async function load(event) {
 	const auth = adminAuthContextForConvex(event);
 	return {
 		listing: await convexQuery('listings:adminGetById', withAuth({ listingId: event.params.id }, auth)),
-		media: await convexQuery('media:listListingMedia', withAuth({ listingId: event.params.id }, auth))
+		media: await convexQuery('media:listListingMedia', withAuth({ listingId: event.params.id }, auth)),
+		profileCompleteness: await convexQuery(
+			'ownerDashboard:getListingProfileCompleteness',
+			withAuth({ listingId: event.params.id }, auth)
+		)
 	};
 }

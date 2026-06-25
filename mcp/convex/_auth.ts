@@ -24,6 +24,12 @@ export function isAdminAuth(auth?: AuthContext) {
 	}
 }
 
+export function requireSignedInAuth(auth?: AuthContext) {
+	if (auth?.userId && ['USER', 'LISTING_OWNER', 'ADMIN'].includes(auth.role ?? 'USER')) return true;
+	if (isAdminAuth(auth)) return true;
+	throw new Error('Sign in is required.');
+}
+
 export function canViewOwnedRecord(auth: AuthContext | undefined, ownerUserId?: unknown) {
 	if (!ownerUserId) return true;
 	if (isAdminAuth(auth)) return true;

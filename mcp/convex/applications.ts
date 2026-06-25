@@ -462,6 +462,12 @@ export const adminApproveAndConvertApplication = mutation({
 			createdAt: timestamp,
 			updatedAt: timestamp
 		});
+		if (application.applicantUserId) {
+			const owner = await ctx.db.get(application.applicantUserId);
+			if (owner && owner.role === 'USER') {
+				await ctx.db.patch(application.applicantUserId, { role: 'LISTING_OWNER', updatedAt: timestamp });
+			}
+		}
 		await ctx.db.patch(applicationId, {
 			status: 'CONVERTED',
 			convertedListingId: listingId,

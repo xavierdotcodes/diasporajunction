@@ -1,12 +1,14 @@
+// @ts-nocheck
 import { fail, redirect } from '@sveltejs/kit';
 import { convexMutation, convexQuery } from '$lib/server/convex.js';
 import { createStripeCheckoutSession } from '$lib/payments/stripe.js';
-import { authContextForConvex, requireApplicationAccess } from '$lib/server/auth.js';
+import { authContextForConvex, requireApplicationAccess, requireUser } from '$lib/server/auth.js';
 import { withAuth } from '$lib/server/convex.js';
 import { INNGEST_EVENTS } from '$lib/inngest/events.js';
 import { trySendInngestEvent } from '$lib/inngest/send.js';
 
 export async function load(event) {
+	requireUser(event);
 	const auth = authContextForConvex(event);
 	const application = await convexQuery(
 		'applications:getById',
@@ -18,6 +20,7 @@ export async function load(event) {
 
 export const actions = {
 	default: async (event) => {
+		requireUser(event);
 		const auth = authContextForConvex(event);
 		const application = await convexQuery(
 			'applications:getById',

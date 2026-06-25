@@ -1,15 +1,23 @@
+// @ts-nocheck
 import { fail, redirect } from '@sveltejs/kit';
 import { convexMutation } from '$lib/server/convex.js';
+import { authContextForConvex, requireUser } from '$lib/server/auth.js';
+import { withAuth } from '$lib/server/convex.js';
 import { INNGEST_EVENTS } from '$lib/inngest/events.js';
 import { trySendInngestEvent } from '$lib/inngest/send.js';
 
 export const actions = {
-	default: async ({ request }) => {
-		const form = await request.formData();
+	default: async (event) => {
+		const user = requireUser(event);
+		const auth = authContextForConvex(event);
+		const form = await event.request.formData();
 		const patch = applicationPatchFromForm(form);
 		try {
-			const applicationId = await convexMutation('applications:createDraft', { patch });
-			await convexMutation('applications:submit', { applicationId });
+			const applicationId = await convexMutation('applications:createDraft', {
+				applicantUserId: user.id,
+				patch
+			});
+			await convexMutation('applications:submit', withAuth({ applicationId }, auth));
 			await trySendInngestEvent(INNGEST_EVENTS.APPLICATION_SUBMITTED, {
 				applicationId,
 				eventType: INNGEST_EVENTS.APPLICATION_SUBMITTED

@@ -5,7 +5,8 @@ import {
 	applicationApprovedFollowUps,
 	leadDigestEventsForTopListings,
 	paymentSucceededFollowUps,
-	shouldMarkPaymentAbandoned
+	shouldMarkPaymentAbandoned,
+	aiJobExecutionPlan
 } from '../src/lib/inngest/functions/lifecycle.js';
 
 describe('inngest event safety', () => {
@@ -67,6 +68,16 @@ describe('inngest workflow planning', () => {
 				name: INNGEST_EVENTS.AI_LEAD_DIGEST_REQUESTED,
 				data: { listingId: 'listing1', interactionType: 'WHATSAPP_CLICK' }
 			}
+		]);
+	});
+
+	it('plans AI job execution steps without authority side effects', () => {
+		expect(aiJobExecutionPlan('LISTING_SUMMARY', { listingId: 'listing1' }).map((item) => item.step)).toEqual([
+			'create-or-load-ai-job',
+			'mark-running',
+			'load-safe-source-data',
+			'call-ai-service',
+			'mark-completed-or-failed'
 		]);
 	});
 });

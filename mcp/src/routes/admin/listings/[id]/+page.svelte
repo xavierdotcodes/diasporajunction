@@ -9,6 +9,7 @@
 		<p>Status: {listing?.isActive ? 'Active' : 'Inactive'}</p>
 		<p>Featured: {listing?.isFeatured ? 'Yes' : 'No'}</p>
 		<p>Verification: {listing?.verificationStatus}</p>
+		<p>Profile completeness: {data.profileCompleteness?.score ?? 0}%</p>
 		<p>{listing?.description}</p>
 	</section>
 	<section class="panel">

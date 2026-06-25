@@ -47,6 +47,11 @@
 					<button class="button secondary" type="submit">Website</button>
 				</form>
 			{/if}
+			<form method="POST" action="?/contact">
+				<input type="hidden" name="listingId" value={listing.id} />
+				<input type="hidden" name="type" value="QUOTE_REQUEST" />
+				<button class="button secondary" type="submit">Request quote</button>
+			</form>
 		</div>
 		{#if listing.gallery?.length}
 			<section>

@@ -14,17 +14,27 @@ type OllamaConfig = {
 };
 
 export function createOllamaCloudProvider(config: OllamaConfig = {}): AiProvider {
-	const apiKey = config.apiKey ?? process.env.OLLAMA_API_KEY;
-	const baseUrl = (config.baseUrl ?? process.env.OLLAMA_BASE_URL ?? 'https://ollama.com/api').replace(
-		/\/$/,
-		''
-	);
-	const model = config.model ?? process.env.OLLAMA_MODEL ?? 'gpt-oss:20b';
+	const apiKey = config.apiKey ?? process.env.OLLAMA_API_KEY ?? process.env.OLLAMA_CLOUD_API_KEY;
+	const baseUrl = (config.baseUrl ?? process.env.OLLAMA_BASE_URL ?? '').replace(/\/$/, '');
+	const model = config.model ?? process.env.OLLAMA_MODEL ?? '';
 	const fetchImpl = config.fetchImpl ?? fetch;
 
+	function getMissingConfig(): string[] {
+		return [
+			apiKey ? undefined : 'OLLAMA_API_KEY',
+			baseUrl ? undefined : 'OLLAMA_BASE_URL',
+			model ? undefined : 'OLLAMA_MODEL'
+		].filter(Boolean) as string[];
+	}
+
+	function isConfigured(): boolean {
+		return getMissingConfig().length === 0;
+	}
+
 	async function generateText(input: GenerateTextInput): Promise<GenerateTextResult> {
-		if (!apiKey) {
-			throw new Error('OLLAMA_API_KEY is required for Ollama Cloud calls.');
+		const missingConfig = getMissingConfig();
+		if (missingConfig.length) {
+			throw new Error(`${missingConfig.join(', ')} required for Ollama Cloud calls.`);
 		}
 
 		const prompt = [input.system, input.prompt].filter(Boolean).join('\n\n');
@@ -58,16 +68,23 @@ export function createOllamaCloudProvider(config: OllamaConfig = {}): AiProvider
 		};
 	}
 
-	async function generateObject<T = unknown>(
+	async function generateJson<T = unknown>(
 		input: GenerateObjectInput
 	): Promise<GenerateObjectResult<T>> {
 		const result = await generateText({
 			...input,
-			system: `${input.system ?? ''}\nReturn only valid JSON. Do not include markdown fences.`
+			system: [
+				input.system,
+				'Return only valid JSON. Do not include markdown fences.',
+				input.schemaHint ? `Schema hint: ${input.schemaHint}` : undefined
+			]
+				.filter(Boolean)
+				.join('\n')
 		});
 
 		try {
 			return {
+				ok: true,
 				object: JSON.parse(result.text) as T,
 				model: result.model,
 				provider: result.provider,
@@ -80,7 +97,10 @@ export function createOllamaCloudProvider(config: OllamaConfig = {}): AiProvider
 
 	return {
 		generateText,
-		generateObject,
-		classify: generateObject
+		generateObject: generateJson,
+		generateJson,
+		isConfigured,
+		getMissingConfig,
+		classify: generateJson
 	};
 }

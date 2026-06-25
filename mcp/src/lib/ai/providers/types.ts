@@ -7,6 +7,7 @@ export type GenerateTextInput = {
 
 export type GenerateObjectInput = GenerateTextInput & {
 	schema?: unknown;
+	schemaHint?: string;
 };
 
 export type GenerateTextResult = {
@@ -17,6 +18,7 @@ export type GenerateTextResult = {
 };
 
 export type GenerateObjectResult<T = unknown> = {
+	ok?: boolean;
 	object: T;
 	model: string;
 	provider: string;
@@ -26,6 +28,9 @@ export type GenerateObjectResult<T = unknown> = {
 export interface AiProvider {
 	generateText(input: GenerateTextInput): Promise<GenerateTextResult>;
 	generateObject<T = unknown>(input: GenerateObjectInput): Promise<GenerateObjectResult<T>>;
+	generateJson<T = unknown>(input: GenerateObjectInput): Promise<GenerateObjectResult<T>>;
+	isConfigured(): boolean;
+	getMissingConfig(): string[];
 	embedText?(input: { text: string }): Promise<{ embedding: number[]; model: string; provider: string }>;
 	classify?<T = unknown>(input: GenerateObjectInput): Promise<GenerateObjectResult<T>>;
 }

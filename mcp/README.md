@@ -10,7 +10,7 @@ The MCP server is read-first. Write tools are present only as guarded interfaces
 - Entrypoint: `src/mcp/server.js`
 - Tool registry: `src/mcp/tools`
 - Convex client wrapper: `src/mcp/clients/convex.js`
-- Mastra placeholder client: `src/mcp/clients/mastra.js`
+- AI/Mastra compatibility client: `src/mcp/clients/mastra.js`
 - Inngest placeholder client: `src/mcp/clients/inngest.js`
 - SvelteKit HTTP bridge: `src/routes/api/mcp/+server.js`
 
@@ -38,6 +38,16 @@ Required for real Convex-backed tools:
 
 - `CONVEX_URL`
 - `CONVEX_DEPLOYMENT` if the deployment requires it
+
+Required for live Ollama Cloud AI execution:
+
+- `OLLAMA_API_KEY` or `OLLAMA_CLOUD_API_KEY`
+- `OLLAMA_BASE_URL`
+- `OLLAMA_MODEL`
+
+Optional future AI env:
+
+- `OLLAMA_EMBED_MODEL` for embeddings when semantic search is added
 - `CONVEX_ADMIN_KEY` or a narrower service token if the final auth design requires it
 - `DIASPORAJUNXION_ADMIN_TOKEN` if app-level admin auth is added
 
@@ -103,18 +113,51 @@ Handled Stripe events:
 
 Webhook idempotency is tracked in Convex with `paymentWebhookEvents` keyed by provider and Stripe event id.
 
-## Admin Review Guard
+## Auth Architecture
 
-Current auth status: this `mcp/` package does not yet have production login/session auth or Convex Auth. It has centralized server auth helpers in `src/lib/server/auth.js` that support:
+The `mcp/` app now has scoped email/password session auth backed by Convex users and sessions.
 
-- `locals.user` when a future SvelteKit auth hook is connected
-- a base64url JSON `dj_user` cookie for development/session bridging
-- optional trusted dev headers only when `DJ_TRUST_DEV_AUTH_HEADERS=true`
-- temporary admin token guard with `DIASPORAJUNXION_ADMIN_TOKEN` or `ADMIN_ACTION_TOKEN`
+Auth routes:
 
-Until real authentication/authorization is wired and confirmed, admin review actions require:
+- `POST /auth/register`
+- `POST /auth/login`
+- `POST /auth/logout`
+- `GET /auth/me`
+- `POST /auth/forgot-password` placeholder only
 
-- `DIASPORAJUNXION_ADMIN_TOKEN` or `ADMIN_ACTION_TOKEN`
+Session behavior:
+
+- The browser receives an opaque `dj_mcp_session` cookie.
+- Cookie options are `httpOnly`, `sameSite=lax`, `path=/`, and `secure` in production.
+- Convex stores only the SHA-256 hash of the session token in `sessions`.
+- Passwords are stored as salted Node `scrypt` hashes in `users.passwordHash`.
+- Passwords, hashes, raw session tokens, and admin tokens must not be logged or returned by API responses.
+- Server-only password-hash lookup and session creation require `MCP_AUTH_INTERNAL_SECRET`; if it is not set, the server falls back to `DIASPORAJUNXION_ADMIN_TOKEN` or `ADMIN_ACTION_TOKEN`.
+
+User model:
+
+- `users.email`
+- `users.name`
+- `users.passwordHash`
+- `users.role`: `USER`, `LISTING_OWNER`, or `ADMIN`
+- `users.emailVerifiedAt`
+- `users.isDeleted`
+- `users.createdAt` / `users.updatedAt`
+
+Role behavior:
+
+- New registrations start as `USER`.
+- Application creation sets `directoryApplications.applicantUserId` from the authenticated Convex user.
+- Admin conversion sets `directoryListings.ownerUserId` from the application applicant and promotes `USER` to `LISTING_OWNER`.
+- Owner dashboard queries compare the session Convex user ID to `directoryListings.ownerUserId`.
+- Admin checks prefer real session users with `role: ADMIN`.
+
+Temporary admin fallback:
+
+- `DIASPORAJUNXION_ADMIN_TOKEN` or `ADMIN_ACTION_TOKEN` still works for admin routes/tools while real admin sessions are being verified.
+- The fallback is centralized in `src/lib/server/auth.js` and Convex `_auth.ts`.
+- Do not remove this fallback until a real admin user can log in and complete all admin review actions.
+- The fallback does not create a fake persistent Convex user.
 
 Admin actions currently exposed in the simple UI:
 
@@ -125,15 +168,28 @@ Admin actions currently exposed in the simple UI:
 
 The UI does not expose rejection, automatic approval, or payment success override.
 
-The temporary token guard remains in place even when an admin user is present. It is centralized and should be replaced by real session/Convex Auth once the production auth provider is chosen.
+First admin in development:
+
+1. Register normally with `POST /auth/register`.
+2. Use the temporary admin token to call `users:setRole` with `role: ADMIN`, or patch the user role directly in Convex dashboard for local development.
+3. Log in with `POST /auth/login`.
+4. Confirm `/auth/me` returns `role: ADMIN`.
+
+Remaining auth gaps:
+
+- No password reset email flow yet.
+- No email verification delivery yet; `emailVerifiedAt` is schema-supported.
+- No OAuth/social auth is implemented in this app scope.
+- Temporary admin token fallback remains intentionally enabled.
 
 ## Access Matrix
 
 Routes:
 
 - Public: `/directory`, `/directory/ghana`, `/directory/ghana/[category]`, `/directory/[city]`, `/directory/[city]/[category]`, `/directory/profile/[slug]`, `/guides`, `/guides/[slug]`
-- Public start: `/apply`
+- Authenticated start: `/apply`
 - Application owner or admin: `/apply/[applicationId]`, `/apply/[applicationId]/payment`, `/apply/[applicationId]/success`, `/apply/[applicationId]/cancel`
+- Listing owner or admin: `/dashboard`, `/dashboard/listings`, `/dashboard/listings/[id]`, `/dashboard/listings/[id]/edit`, `/dashboard/listings/[id]/analytics`
 - Admin only: `/admin`, `/admin/applications`, `/admin/applications/[id]`, `/admin/listings`, `/admin/listings/[id]`
 
 Convex functions:
@@ -164,18 +220,107 @@ Required deployment config:
 - `CONVEX_URL`
 - `CONVEX_DEPLOYMENT` if required by the deployment
 - `CONVEX_ADMIN_KEY` or a narrower server token if admin server calls require it
+- `MCP_AUTH_INTERNAL_SECRET` for server-only auth lookups and session creation
 - `DIASPORAJUNXION_ADMIN_TOKEN` or production admin session auth
 - `STRIPE_WEBHOOK_SECRET` for webhook-only payment success mutations
 
 If Convex is not linked locally, do not treat mocked MCP tests as deployment validation. They verify wrapper behavior, not a live Convex deployment.
 
-Remaining auth work:
+Check command caveat:
 
-- connect production session auth or Convex Auth
-- replace dev cookie/header support with signed sessions
-- map authenticated app users to Convex `users`
-- remove temporary admin-token fallback only after admin sessions are confirmed
-- add owner dashboard editing screens for limited listing profile fields
+- `bun run test`, `bun run lint`, `bun run typecheck`, `bun run build`, and `bunx convex dev --once` should pass for this package.
+- `bun run check` may still fail on pre-existing project-wide JavaScript typing issues; do not treat unrelated historical check noise as an auth regression unless it touches this scope.
+
+## Provider Dashboard And Analytics
+
+Provider/listing owner routes:
+
+- `/dashboard`
+- `/dashboard/listings`
+- `/dashboard/listings/[id]`
+- `/dashboard/listings/[id]/edit`
+- `/dashboard/listings/[id]/analytics`
+
+Owner dashboard Convex functions:
+
+- `ownerDashboard:getMyListings`
+- `ownerDashboard:getListingDashboard`
+- `ownerDashboard:getListingInteractionSummary`
+- `ownerDashboard:getListingRecentInteractions`
+- `ownerDashboard:getListingLeadDigest`
+- `ownerDashboard:getListingImprovementSuggestions`
+- `ownerDashboard:getListingProfileCompleteness`
+- `ownerDashboard:updateListingPublicProfile`
+- `ownerDashboard:requestListingImprovementSuggestions`
+- `ownerDashboard:requestListingLeadDigest`
+
+Provider analytics include:
+
+- listing/profile views
+- search result appearances
+- WhatsApp, phone, email, and website clicks
+- quote requests
+- 7 day, 30 day, and all-time periods
+- recent interaction timeline
+- top interaction types
+
+Profile completeness checks:
+
+- has logo
+- has cover image
+- has at least 3 gallery or portfolio images
+- has short description
+- has full description
+- has services offered
+- has location or service area
+- has WhatsApp or phone
+- has target audience
+- has verification status
+- has at least one admin-controlled trust signal
+
+Owner-editable public fields:
+
+- `description`
+- `shortDescription`
+- `servicesOffered`
+- `keywords`
+- `phone`
+- `whatsapp`
+- `email`
+- `website`
+- `serviceArea`
+- `languages`
+- `priceRange`
+- `remoteAvailable`
+- `inPersonAvailable`
+- `whatsappAvailable`
+
+Protected fields owners cannot edit:
+
+- `verificationStatus`
+- `verificationLevel`
+- `trustSignals`
+- `isFeatured`
+- `featuredUntil`
+- payment status
+- `ownerUserId`
+- `sourceApplicationId`
+- admin notes
+- private verification documents
+
+AI suggestions and lead digests:
+
+- dashboard pages show latest completed `aiJobs` output where available
+- owners/admins can queue new listing suggestion and lead digest jobs for listings they can access
+- pages fall back to deterministic summaries when AI output is missing or unavailable
+- AI output is labeled as a suggestion and does not change verification, payments, or admin decisions
+
+Remaining dashboard gaps:
+
+- no owner media uploader/editor yet
+- no provider email digest sending yet
+- no self-serve paid upgrade controls yet
+- direct Mastra runtime wiring remains future work
 
 ## Storage, Media, And Documents
 
@@ -232,7 +377,7 @@ Remaining storage/media gaps:
 
 ## Inngest Workflows
 
-Inngest is the durable workflow layer for lifecycle side effects. It is used for retries, delays, scheduled jobs, and future AI/Mastra handoffs. Primary app actions should continue even if Inngest is not configured; event sends are non-blocking and log a safe warning when `INNGEST_EVENT_KEY` is missing.
+Inngest is the durable workflow layer for lifecycle side effects. It is used for retries, delays, scheduled jobs, and AI job execution handoffs. Primary app actions continue even if Inngest is not configured; event sends are non-blocking and log a safe warning when `INNGEST_EVENT_KEY` is missing.
 
 Entrypoints:
 
@@ -290,6 +435,20 @@ Workflow functions:
 - `onContactClicked`
 - `weeklyLeadDigest`
 - `dailyAdminTriage`
+- `runListingSummaryJob`
+- `runApplicationSummaryJob`
+- `runAdminTriageJob`
+- `runLeadDigestJob`
+
+AI job flow:
+
+1. Lifecycle code queues an `aiJobs` row or emits an AI request event.
+2. The Inngest AI function creates or loads the queued job.
+3. The job is marked `RUNNING`.
+4. Safe source data is loaded from Convex.
+5. The AI service calls the configured provider inside an Inngest step.
+6. The output is stored on `aiJobs` and the job is marked `COMPLETED`.
+7. Provider or source failures are stored as safe `FAILED` errors and do not block primary app flows.
 
 Safety boundaries:
 
@@ -299,7 +458,9 @@ Safety boundaries:
 - no Stripe secrets or full provider metadata
 - no AI approval/rejection
 - no payment-success override
-- Mastra jobs are queued as placeholders in `aiJobs`; live Mastra/Ollama execution is still future work
+- AI outputs are suggestions only
+- AI does not override admin decisions
+- `aiJobs` inputs, outputs, and errors are sanitized before storage
 
 If Inngest is not configured, primary user actions continue and `trySendInngestEvent` returns a skipped/missing-config result.
 
@@ -400,6 +561,20 @@ AI:
 - `ai_generate_listing_improvement_suggestions`
 - `ai_generate_lead_digest`
 
+Public AI tools:
+
+- `ai_search_directory`
+- `ai_rewrite_directory_search`
+
+Admin-only AI tools:
+
+- `ai_summarize_application`
+- `ai_suggest_application_category`
+- `ai_admin_triage_summary`
+- `ai_generate_listing_improvement_suggestions`
+- `ai_generate_lead_digest`
+- `summarize_application_for_review`
+
 Support/debug:
 
 - `get_application_activity`
@@ -432,7 +607,34 @@ MCP v1 intentionally does not include:
 
 AI outputs are suggestions. They do not approve, reject, publish, charge, refund, or alter payment state.
 
-Public search uses deterministic filters first. If Mastra/Ollama search rewrite is available, it can refine intent, category, location, audience, urgency, and remote/in-person preference. If AI is missing or fails, public discovery still falls back to deterministic search.
+## AI Provider Architecture
+
+All model calls go through the provider adapter layer:
+
+- `src/lib/ai/providers/types.js`
+- `src/lib/ai/providers/ollamaCloud.js`
+- `src/lib/ai/provider.js`
+- `src/lib/ai/service.js`
+
+The Ollama Cloud adapter exposes:
+
+- `generateText({ system, prompt, temperature, maxTokens })`
+- `generateJson({ system, prompt, schemaHint, temperature, maxTokens })`
+- `isConfigured()`
+- `getMissingConfig()`
+
+The service layer implements the current agent-compatible functions:
+
+- `rewriteDirectorySearch`
+- `summarizeApplicationForReview`
+- `generateListingSummary`
+- `generateAdminTriageSummary`
+- `generateListingImprovementSuggestions`
+- `generateLeadDigest`
+
+`src/mcp/clients/mastra.js` is now a Mastra compatibility boundary that maps existing MCP tool names to these service functions. A direct Mastra runtime or HTTP agent endpoint is not wired yet; that is the remaining Mastra setup. The provider adapter is intentionally swappable for local Ollama, OpenAI, or Anthropic later.
+
+Public search uses deterministic filters first. If Ollama search rewrite is configured and succeeds, it can refine intent, category, location, audience, urgency, and remote/in-person preference and returns a small `aiInterpretation` object. If AI is missing or fails, public discovery falls back to deterministic search and never exposes provider prompts or raw responses.
 
 Discovery intents currently used by MCP:
 
@@ -487,13 +689,31 @@ The MCP registry is shaped around these safe backend functions. The current mile
 - `payments:listFailed`
 - `payments:listAbandoned`
 - `payments:getSummary`
+- `aiJobs:createQueued`
+- `aiJobs:getQueued`
+- `aiJobs:getById`
+- `aiJobs:markRunning`
+- `aiJobs:markCompleted`
+- `aiJobs:markFailed`
+- `aiJobs:listRecent`
+- `aiJobs:listFailed`
+- `ownerDashboard:getMyListings`
+- `ownerDashboard:getListingDashboard`
+- `ownerDashboard:getListingInteractionSummary`
+- `ownerDashboard:getListingRecentInteractions`
+- `ownerDashboard:getListingLeadDigest`
+- `ownerDashboard:getListingImprovementSuggestions`
+- `ownerDashboard:getListingProfileCompleteness`
+- `ownerDashboard:updateListingPublicProfile`
+- `ownerDashboard:requestListingImprovementSuggestions`
+- `ownerDashboard:requestListingLeadDigest`
 
 Backend functions intentionally guarded or pending:
 
 - `applications:adminUpdateApplicationStatus` remains a generic internal mutation; MCP/admin UI use narrower mutations instead.
 - `listings:setFeaturedListing` and `listings:setListingActiveStatus` exist, but MCP access remains guarded by explicit confirmation and should be paired with real admin auth before production use.
 
-Mastra agent adapters needed:
+Mastra-compatible agent names currently mapped:
 
 - `directorySearchAgent`
 - `applicationReviewAssistAgent`
@@ -502,11 +722,11 @@ Mastra agent adapters needed:
 - `listingSummaryAgent`
 - `leadDigestAgent`
 
-Inngest event wrappers planned:
+Remaining placeholders:
 
-- `ai/admin.triage.requested`
-- `ai/application.summary.requested`
-- `ai/lead.digest.requested`
+- direct Mastra runtime/HTTP adapter setup
+- embeddings and semantic retrieval via `OLLAMA_EMBED_MODEL`
+- optional provider adapters for local Ollama, OpenAI, and Anthropic
 - `directory/payment.audit.requested`
 
 ## Example ChatGPT Prompts

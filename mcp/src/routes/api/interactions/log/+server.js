@@ -4,11 +4,14 @@ import { INNGEST_EVENTS } from '$lib/inngest/events.js';
 import { trySendInngestEvent } from '$lib/inngest/send.js';
 
 const allowedTypes = new Set([
+	'SEARCH_RESULT_SHOWN',
 	'LISTING_PROFILE_VIEWED',
+	'VIEW',
 	'WHATSAPP_CLICK',
 	'PHONE_CLICK',
 	'EMAIL_CLICK',
-	'WEBSITE_CLICK'
+	'WEBSITE_CLICK',
+	'QUOTE_REQUEST'
 ]);
 
 export async function POST({ request }) {
@@ -30,5 +33,7 @@ export async function POST({ request }) {
 }
 
 function eventNameForInteraction(type) {
-	return type === 'LISTING_PROFILE_VIEWED' ? INNGEST_EVENTS.LISTING_VIEWED : INNGEST_EVENTS.CONTACT_CLICKED;
+	return ['SEARCH_RESULT_SHOWN', 'LISTING_PROFILE_VIEWED', 'VIEW'].includes(type)
+		? INNGEST_EVENTS.LISTING_VIEWED
+		: INNGEST_EVENTS.CONTACT_CLICKED;
 }

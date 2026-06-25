@@ -18,7 +18,9 @@ import type * as devSeed from "../devSeed.js";
 import type * as interactions from "../interactions.js";
 import type * as listings from "../listings.js";
 import type * as media from "../media.js";
+import type * as ownerDashboard from "../ownerDashboard.js";
 import type * as payments from "../payments.js";
+import type * as users from "../users.js";
 import type * as verificationDocuments from "../verificationDocuments.js";
 
 import type {
@@ -38,7 +40,9 @@ declare const fullApi: ApiFromModules<{
   interactions: typeof interactions;
   listings: typeof listings;
   media: typeof media;
+  ownerDashboard: typeof ownerDashboard;
   payments: typeof payments;
+  users: typeof users;
   verificationDocuments: typeof verificationDocuments;
 }>;
 

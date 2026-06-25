@@ -89,6 +89,7 @@ export default defineSchema({
 	users: defineTable({
 		name: v.optional(v.string()),
 		email: v.string(),
+		passwordHash: v.optional(v.string()),
 		role: userRole,
 		phone: v.optional(v.string()),
 		image: v.optional(v.string()),
@@ -97,6 +98,16 @@ export default defineSchema({
 		createdAt: v.number(),
 		updatedAt: v.number()
 	}).index('by_email', ['email']),
+	sessions: defineTable({
+		userId: v.id('users'),
+		tokenHash: v.string(),
+		expiresAt: v.number(),
+		createdAt: v.number(),
+		updatedAt: v.number(),
+		revokedAt: v.optional(v.number())
+	})
+		.index('by_token_hash', ['tokenHash'])
+		.index('by_user', ['userId']),
 	directoryApplications: defineTable({
 		applicantUserId: v.optional(v.id('users')),
 		businessName: v.string(),

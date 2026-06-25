@@ -1,6 +1,7 @@
 import { inngest } from '../client.js';
 import { INNGEST_EVENTS, safeEventPayload } from '../events.js';
 import { workflowMutation, workflowQuery } from '../convex.js';
+import { createAiService } from '../../ai/service.js';
 
 const paymentAbandonDelay = process.env.PAYMENT_ABANDON_DELAY || '30m';
 
@@ -221,6 +222,100 @@ export const dailyAdminTriage = inngest.createFunction(
 	}
 );
 
+export const runListingSummaryJob = inngest.createFunction(
+	{ id: 'directory-ai-listing-summary' },
+	{ event: INNGEST_EVENTS.AI_LISTING_SUMMARY_REQUESTED },
+	async ({ event, step }) => {
+		await runAiJob({
+			step,
+			type: 'LISTING_SUMMARY',
+			relatedListingId: event.data.listingId,
+			input: safeEventPayload(event.data),
+			loadSource: async () => {
+				const listing = await workflowQuery('listings:adminGetById', { listingId: event.data.listingId });
+				return { listing };
+			},
+			execute: async (service, source) => ({
+				...(await service.generateListingSummary(source.listing)),
+				improvementSuggestions: await service.generateListingImprovementSuggestions(source.listing)
+			})
+		});
+	}
+);
+
+export const runApplicationSummaryJob = inngest.createFunction(
+	{ id: 'directory-ai-application-summary' },
+	{ event: INNGEST_EVENTS.AI_APPLICATION_SUMMARY_REQUESTED },
+	async ({ event, step }) => {
+		await runAiJob({
+			step,
+			type: 'APPLICATION_REVIEW_ASSIST',
+			relatedApplicationId: event.data.applicationId,
+			input: safeEventPayload(event.data),
+			loadSource: async () => {
+				const [application, documents] = await Promise.all([
+					workflowQuery('applications:getById', { applicationId: event.data.applicationId }),
+					workflowQuery('verificationDocuments:listForApplication', { applicationId: event.data.applicationId })
+				]);
+				return { ...application, documentStatusSummary: summarizeDocumentStatuses(documents) };
+			},
+			execute: async (service, source) => await service.summarizeApplicationForReview(source)
+		});
+	}
+);
+
+export const runAdminTriageJob = inngest.createFunction(
+	{ id: 'directory-ai-admin-triage' },
+	{ event: INNGEST_EVENTS.AI_ADMIN_TRIAGE_REQUESTED },
+	async ({ event, step }) => {
+		await runAiJob({
+			step,
+			type: 'ADMIN_TRIAGE_SUMMARY',
+			input: safeEventPayload(event.data),
+			loadSource: async () => {
+				const [needsAttention, recentActivity, paymentSummary] = await Promise.all([
+					workflowQuery('adminDashboard:getNeedsAttention', {}),
+					workflowQuery('adminDashboard:getRecentActivity', { limit: 20 }),
+					workflowQuery('adminDashboard:getPaymentSummary', {})
+				]);
+				return { needsAttentionSummary: needsAttention, recentActivitySummary: recentActivity, paymentSummary };
+			},
+			execute: async (service, source) => await service.generateAdminTriageSummary(source)
+		});
+	}
+);
+
+export const runLeadDigestJob = inngest.createFunction(
+	{ id: 'directory-ai-lead-digest' },
+	{ event: INNGEST_EVENTS.AI_LEAD_DIGEST_REQUESTED },
+	async ({ event, step }) => {
+		await runAiJob({
+			step,
+			type: 'LEAD_DIGEST',
+			relatedListingId: event.data.listingId,
+			input: safeEventPayload(event.data),
+			loadSource: async () => {
+				const [listing, interactionSummary] = await Promise.all([
+					workflowQuery('listings:adminGetById', { listingId: event.data.listingId }),
+					workflowQuery('interactions:getListingInteractionSummary', { listingId: event.data.listingId, days: 7 })
+				]);
+				return { listing, interactionSummary, period: 'last 7 days' };
+			},
+			execute: async (service, source) => await service.generateLeadDigest(source)
+		});
+	}
+);
+
+export function aiJobExecutionPlan(type, data = {}) {
+	return [
+		'create-or-load-ai-job',
+		'mark-running',
+		'load-safe-source-data',
+		'call-ai-service',
+		'mark-completed-or-failed'
+	].map((stepName) => ({ type, step: stepName, relatedListingId: data.listingId, relatedApplicationId: data.applicationId }));
+}
+
 export const lifecycleFunctions = [
 	onApplicationSubmitted,
 	onPaymentInitiated,
@@ -232,5 +327,66 @@ export const lifecycleFunctions = [
 	onListingViewed,
 	onContactClicked,
 	weeklyLeadDigest,
-	dailyAdminTriage
+	dailyAdminTriage,
+	runListingSummaryJob,
+	runApplicationSummaryJob,
+	runAdminTriageJob,
+	runLeadDigestJob
 ];
+
+async function runAiJob({ step, type, relatedApplicationId, relatedListingId, input, loadSource, execute }) {
+	const aiJobId = await step.run('create-or-load-ai-job', async () => {
+		const queued = await workflowQuery('aiJobs:getQueued', {
+			type,
+			relatedApplicationId,
+			relatedListingId,
+			limit: 1
+		});
+		if (queued?.[0]?._id) return queued[0]._id;
+		return await workflowMutation('aiJobs:createQueued', {
+			type,
+			relatedApplicationId,
+			relatedListingId,
+			input
+		});
+	});
+
+	try {
+		await step.run('mark-running', async () => {
+			await workflowMutation('aiJobs:markRunning', { aiJobId });
+		});
+		const source = await step.run('load-safe-source-data', loadSource);
+		const output = await step.run('call-ai-service', async () => {
+			const service = createAiService();
+			if (!service.isConfigured()) {
+				throw new Error(`AI provider missing config: ${service.getMissingConfig().join(', ')}`);
+			}
+			return await execute(service, source);
+		});
+		await step.run('mark-completed', async () => {
+			await workflowMutation('aiJobs:markCompleted', { aiJobId, output });
+		});
+		return { aiJobId, output };
+	} catch (error) {
+		await step.run('mark-failed', async () => {
+			await workflowMutation('aiJobs:markFailed', { aiJobId, error: safeAiJobError(error) });
+		});
+		return { aiJobId, failed: true };
+	}
+}
+
+function summarizeDocumentStatuses(documents = []) {
+	return documents.reduce(
+		(acc, document) => ({
+			...acc,
+			total: acc.total + 1,
+			byStatus: { ...acc.byStatus, [document.status]: (acc.byStatus[document.status] ?? 0) + 1 },
+			byType: { ...acc.byType, [document.type]: (acc.byType[document.type] ?? 0) + 1 }
+		}),
+		{ total: 0, byStatus: {}, byType: {} }
+	);
+}
+
+function safeAiJobError(error) {
+	return error instanceof Error ? error.message.slice(0, 500) : 'AI job failed.';
+}
