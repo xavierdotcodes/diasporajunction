@@ -1,8 +1,30 @@
 <script>
+	import { captureAnalyticsEvent } from '$lib/client/analytics';
+
 	let { filters } = $props();
+
+	function handleSubmit(event) {
+		const formData = new FormData(event.currentTarget);
+
+		captureAnalyticsEvent('housing_filters_applied', {
+			has_location: Boolean(String(formData.get('location') || '').trim()),
+			listing_type: formData.get('listingType') || undefined,
+			stay_type: formData.get('stayType') || undefined,
+			has_min_price: Boolean(String(formData.get('minPrice') || '').trim()),
+			has_max_price: Boolean(String(formData.get('maxPrice') || '').trim()),
+			furnished: formData.get('furnished') === '1',
+			family_friendly: formData.get('familyFriendly') === '1'
+		});
+	}
 </script>
 
-<form class="filters" method="GET">
+<form
+	class="filters"
+	method="GET"
+	data-analytics-event="housing_filters_submitted"
+	data-analytics-id="housing_filters"
+	onsubmit={handleSubmit}
+>
 	<label>
 		<span>Location</span>
 		<input name="location" value={filters.location} placeholder="Accra, East Legon, Cantonments..." />
@@ -50,7 +72,13 @@
 
 	<div class="actions">
 		<button type="submit">Apply</button>
-		<a href="/housing/listings">Reset</a>
+		<a
+			href="/housing/listings"
+			data-analytics-event="housing_filters_reset"
+			data-analytics-area="housing_filters"
+		>
+			Reset
+		</a>
 	</div>
 </form>
 

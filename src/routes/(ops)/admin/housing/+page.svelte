@@ -1,4 +1,5 @@
 <script>
+	import { resolve } from '$app/paths';
 	import { fileLogger } from '$lib/utils/logger';
 
 	fileLogger('admin.housing.page');
@@ -35,6 +36,13 @@
 			}
 		)
 	);
+
+	const inquiryMetrics = $derived({
+		total: data.inquiries.length,
+		newCount: data.inquiries.filter((inquiry) => inquiry.status === 'NEW').length,
+		reviewedCount: data.inquiries.filter((inquiry) => inquiry.status === 'REVIEWED').length,
+		closedCount: data.inquiries.filter((inquiry) => inquiry.status === 'CLOSED').length
+	});
 </script>
 
 <section class="housing-admin-page">
@@ -77,12 +85,20 @@
 				<p class="card-kicker">Inquiry Snapshot</p>
 				<div class="metric-grid">
 					<div>
-						<strong>{data.inquiries.length}</strong>
+						<strong>{inquiryMetrics.total}</strong>
 						<span>Recent inquiries</span>
 					</div>
 					<div>
-						<strong>{data.inquiries.filter((inquiry) => inquiry.moveTimeline).length}</strong>
-						<span>With move timeline</span>
+						<strong>{inquiryMetrics.newCount}</strong>
+						<span>New</span>
+					</div>
+					<div>
+						<strong>{inquiryMetrics.reviewedCount}</strong>
+						<span>Reviewed</span>
+					</div>
+					<div>
+						<strong>{inquiryMetrics.closedCount}</strong>
+						<span>Closed</span>
 					</div>
 				</div>
 				<p class="overview-copy">
@@ -113,7 +129,7 @@
 					{#if data.listings.length === 0}
 						<p class="muted">No housing listings yet.</p>
 					{:else}
-						{#each data.listings as listing}
+						{#each data.listings as listing (listing.id)}
 							<details class="listing-item">
 								<summary>
 									<div class="summary-copy">
@@ -170,11 +186,11 @@
 
 									<div class="link-row">
 										{#if listing.slug}
-											<a href={`/housing/listings/${listing.slug}`} target="_blank" rel="noreferrer">
+											<a href={resolve(`/housing/listings/${listing.slug}`)} target="_blank" rel="noreferrer">
 												Open public listing
 											</a>
 										{/if}
-										<a href={`/housing/owners/listings/${listing.id}`} target="_blank" rel="noreferrer">
+										<a href={resolve(`/housing/owners/listings/${listing.id}`)} target="_blank" rel="noreferrer">
 											Open owner draft
 										</a>
 									</div>
@@ -227,7 +243,7 @@
 					{#if data.inquiries.length === 0}
 						<p class="muted">No housing inquiries yet.</p>
 					{:else}
-						{#each data.inquiries as inquiry}
+						{#each data.inquiries as inquiry (inquiry.id)}
 							<article class="inquiry-item">
 								<div class="inquiry-head">
 									<div>
@@ -241,6 +257,7 @@
 								</div>
 
 								<div class="inquiry-meta">
+									<p><strong>Status:</strong> {formatStatus(inquiry.status)}</p>
 									{#if inquiry.requesterName}
 										<p><strong>Name:</strong> {inquiry.requesterName}</p>
 									{/if}
@@ -259,10 +276,23 @@
 								</div>
 
 								<div class="link-row">
-									<a href={`/housing/listings/${inquiry.listing.slug}`} target="_blank" rel="noreferrer">
+									<a href={resolve(`/housing/listings/${inquiry.listing.slug}`)} target="_blank" rel="noreferrer">
 										Open listing
 									</a>
 								</div>
+
+								<form method="POST" action="?/updateInquiry" class="inquiry-status-form">
+									<input type="hidden" name="id" value={inquiry.id} />
+									<label>
+										<span>Status</span>
+										<select name="status" value={inquiry.status}>
+											<option value="NEW">New</option>
+											<option value="REVIEWED">Reviewed</option>
+											<option value="CLOSED">Closed</option>
+										</select>
+									</label>
+									<button type="submit">Update Inquiry</button>
+								</form>
 							</article>
 						{/each}
 					{/if}
@@ -336,6 +366,7 @@
 	.overview-grid,
 	.admin-grid,
 	.moderation-form,
+	.inquiry-status-form,
 	.metric-grid,
 	.detail-grid,
 	.inquiry-meta {
@@ -528,6 +559,23 @@
 		justify-content: space-between;
 		gap: 1rem;
 		align-items: start;
+	}
+
+	.inquiry-status-form {
+		margin-top: 1rem;
+		grid-template-columns: minmax(0, 1fr) max-content;
+		align-items: end;
+	}
+
+	.inquiry-status-form button {
+		min-height: 3rem;
+		border-radius: 999px;
+		border: 0;
+		background: #111111;
+		color: white;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.12em;
 	}
 
 	@media (min-width: 960px) {

@@ -6,6 +6,7 @@
 	import {
 		initPostHog,
 		capturePageview,
+		initializeEngagementTracking,
 		identifyPostHogUser,
 		resetPostHogUser
 	} from '$lib/client/analytics';
@@ -27,6 +28,7 @@
 	/** @type {Props} */
 	let { children, data } = $props();
 	let skipInitialAfterNavigate = true;
+	let currentPostHogUserId = $state(null);
 	const seo = $derived(
 		resolvePageSeo({
 			pathname: page.url.pathname,
@@ -53,18 +55,33 @@
 		persistLeadAttribution(window.location);
 
 		if (!initPostHog()) return;
-
+		initializeEngagementTracking();
 		if (data?.user?.id) {
+			currentPostHogUserId = data.user.id;
 			identifyPostHogUser(data.user.id, {
-				email: data.user.email ?? undefined,
-				name: data.user.name ?? undefined,
+				authenticated: true,
+				subscribed: Boolean(data.user.subscribed),
 				roles: data.user.roles ?? []
 			});
-		} else {
+		}
+		capturePageview(window.location);
+	});
+
+	$effect(() => {
+		if (!browser) return;
+
+		const user = data?.user;
+		if (user?.id && currentPostHogUserId !== user.id) {
+			currentPostHogUserId = user.id;
+			identifyPostHogUser(user.id, {
+				authenticated: true,
+				subscribed: Boolean(user.subscribed),
+				roles: user.roles ?? []
+			});
+		} else if (!user?.id && currentPostHogUserId) {
+			currentPostHogUserId = null;
 			resetPostHogUser();
 		}
-
-		capturePageview(window.location);
 	});
 </script>
 
@@ -98,11 +115,6 @@
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 	<meta name="apple-mobile-web-app-title" content="DiasporaJunxion" />
 	<link rel="manifest" href="/site.webmanifest" />
-	<script
-		defer
-		src="https://cloud.umami.is/script.js"
-		data-website-id="b4bcbb63-1d88-41da-8000-cfc37f06b1ba"
-	></script>
 </svelte:head>
 
 <div class="flex flex-col min-h-screen">

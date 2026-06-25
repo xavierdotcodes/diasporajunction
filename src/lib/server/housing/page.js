@@ -1,7 +1,16 @@
 import { error, redirect } from '@sveltejs/kit';
 import { HOUSING_OWNER_LISTING_FEE_USD } from '$lib/server/housing/config';
 import { getHousingViewer, requireHousingIdentity, requireOwnerListingAccess } from '$lib/server/housing/access';
-import { getHousingListingBySlug, getOwnerHousingListing, listHousingListings, listHousingPreviews, listOwnerHousingListings, listRelatedHousingListings, parseHousingFilters } from '$lib/server/housing/listings';
+import {
+	getHousingListingBySlug,
+	getOwnerHousingListing,
+	listHousingListings,
+	listHousingPreviews,
+	listOwnerHousingListings,
+	listRelatedHousingListings,
+	markListingPaymentCanceled,
+	parseHousingFilters
+} from '$lib/server/housing/listings';
 import { syncHousingListingSubmissionFromCheckoutSession } from '$lib/server/housing/payments';
 import { getStripe } from '$lib/server/stripe';
 import { requestLogger, serializeError } from '$lib/utils/logger';
@@ -101,7 +110,7 @@ export async function loadHousingOwnerDashboard(event) {
 export async function loadHousingOwnerListingEditor(event) {
 	const log = requestLogger('housing.owner.editor.page', event);
 	const viewer = await requireHousingIdentity(event);
-	const listing = await getOwnerHousingListing(event.params.id);
+	let listing = await getOwnerHousingListing(event.params.id);
 	await requireOwnerListingAccess(event, listing);
 
 	const checkoutSessionId = event.url.searchParams.get('listing_checkout_session_id');
@@ -112,14 +121,24 @@ export async function loadHousingOwnerListingEditor(event) {
 		try {
 			const stripe = getStripe();
 			const session = await stripe.checkout.sessions.retrieve(checkoutSessionId);
-			const syncResult = await syncHousingListingSubmissionFromCheckoutSession(
-				session,
-				'housing_listing_checkout_return'
-			);
+			const sessionMatchesListing =
+				session.id === listing.stripeCheckoutSessionId &&
+				session.metadata?.listingId === listing.id &&
+				session.metadata?.kind === 'housing_listing_submission';
+			const syncResult = sessionMatchesListing
+				? await syncHousingListingSubmissionFromCheckoutSession(
+						session,
+						'housing_listing_checkout_return'
+					)
+				: { ok: false, reason: 'session_mismatch' };
 
 			checkoutResult = syncResult.ok
 				? { status: 'success' }
 				: { status: 'error' };
+
+			if (syncResult.ok) {
+				listing = await getOwnerHousingListing(event.params.id);
+			}
 		} catch (checkoutError) {
 			log.error({
 				op: 'checkout_return',
@@ -131,6 +150,11 @@ export async function loadHousingOwnerListingEditor(event) {
 			checkoutResult = { status: 'error' };
 		}
 	} else if (checkoutCanceled) {
+		if (listing.stripeCheckoutSessionId) {
+			await markListingPaymentCanceled(listing.id, listing.stripeCheckoutSessionId);
+			listing = await getOwnerHousingListing(event.params.id);
+		}
+
 		checkoutResult = { status: 'canceled' };
 	}
 

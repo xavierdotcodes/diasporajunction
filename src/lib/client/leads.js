@@ -1,10 +1,19 @@
 import { DEFAULT_LEAD_MAGNET_NAME } from '$lib/lead/constants';
+import { captureAnalyticsEvent } from '$lib/client/analytics';
 import { fileLogger, serializeError } from '$lib/utils/logger';
 
 const log = fileLogger('src/lib/client/leads.js');
 
 export async function captureLead(payload) {
 	try {
+		captureAnalyticsEvent('lead_capture_started', {
+			source: payload?.source,
+			leadMagnet: payload?.leadMagnet,
+			entryPage: payload?.entryPage,
+			has_first_name: Boolean(payload?.firstName),
+			email_domain: payload?.email?.split('@')[1]
+		});
+
 		log.info({
 			op: 'captureLead',
 			phase: 'start',
@@ -30,6 +39,13 @@ export async function captureLead(payload) {
 			leadId: data.leadId,
 			created: data.created
 		});
+		captureAnalyticsEvent('lead_capture_completed', {
+			source: payload?.source,
+			leadMagnet: payload?.leadMagnet,
+			entryPage: payload?.entryPage,
+			created: Boolean(data.created),
+			lead_id: data.leadId
+		});
 
 		return data;
 	} catch (error) {
@@ -37,6 +53,12 @@ export async function captureLead(payload) {
 			op: 'captureLead',
 			phase: 'error',
 			error: serializeError(error)
+		});
+		captureAnalyticsEvent('lead_capture_failed', {
+			source: payload?.source,
+			leadMagnet: payload?.leadMagnet,
+			entryPage: payload?.entryPage,
+			error: error.message
 		});
 		throw error;
 	}

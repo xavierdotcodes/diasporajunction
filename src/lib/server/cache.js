@@ -23,6 +23,15 @@ const PUBLIC_MARKETING_PATHS = new Set([
 const SEMI_CACHEABLE_PREFIXES = ['/blog/', '/tours'];
 const NEVER_CACHE_PREFIXES = ['/api/', '/admin', '/ndgo/portal', '/unsubscribe', '/thank-you'];
 const REDIRECT_PREFIXES = ['/go/'];
+const IMMUTABLE_ASSET_PREFIXES = ['/_app/immutable/'];
+const STATIC_ASSET_PREFIXES = ['/images/', '/videos/', '/fonts/'];
+const STATIC_ASSET_PATHS = new Set([
+	'/favicon.ico',
+	'/favicon.svg',
+	'/favicon-96x96.png',
+	'/apple-touch-icon.png',
+	'/site.webmanifest'
+]);
 
 function hasPrefix(pathname, prefixes) {
 	return prefixes.some((prefix) => pathname === prefix || pathname.startsWith(prefix));
@@ -35,6 +44,26 @@ export function getOriginCachePolicy({ pathname, method, contentType }) {
 
 	if (hasPrefix(pathname, NEVER_CACHE_PREFIXES)) {
 		return 'no-store';
+	}
+
+	if (hasPrefix(pathname, IMMUTABLE_ASSET_PREFIXES)) {
+		return 'public, max-age=31536000, immutable';
+	}
+
+	if (
+		hasPrefix(pathname, STATIC_ASSET_PREFIXES) ||
+		STATIC_ASSET_PATHS.has(pathname) ||
+		pathname.startsWith('/web-app-manifest-')
+	) {
+		return 'public, max-age=86400, s-maxage=2592000, stale-while-revalidate=604800';
+	}
+
+	if (
+		contentType.startsWith('image/') ||
+		contentType.startsWith('video/') ||
+		contentType.startsWith('font/')
+	) {
+		return 'public, max-age=86400, s-maxage=2592000, stale-while-revalidate=604800';
 	}
 
 	if (hasPrefix(pathname, REDIRECT_PREFIXES)) {

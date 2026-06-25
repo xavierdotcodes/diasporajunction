@@ -1,9 +1,16 @@
 import { fileLogger, serializeError } from '$lib/utils/logger';
+import { captureAnalyticsEvent } from '$lib/client/analytics';
 
 const log = fileLogger('src/lib/client/ebook.js');
 
 export async function startEbookCheckout(payload) {
 	try {
+		captureAnalyticsEvent('checkout_started', {
+			product: 'ebook',
+			source: payload?.source,
+			email_domain: payload?.email?.split('@')[1]
+		});
+
 		log.info({
 			op: 'startEbookCheckout',
 			phase: 'start',
@@ -24,6 +31,11 @@ export async function startEbookCheckout(payload) {
 			phase: 'success',
 			sessionId: data?.sessionId
 		});
+		captureAnalyticsEvent('checkout_session_created', {
+			product: 'ebook',
+			source: payload?.source,
+			session_id: data?.sessionId
+		});
 
 		return data;
 	} catch (error) {
@@ -31,6 +43,11 @@ export async function startEbookCheckout(payload) {
 			op: 'startEbookCheckout',
 			phase: 'error',
 			error: serializeError(error)
+		});
+		captureAnalyticsEvent('checkout_failed', {
+			product: 'ebook',
+			source: payload?.source,
+			error: error.message
 		});
 		throw error;
 	}

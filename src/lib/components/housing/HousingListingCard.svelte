@@ -1,5 +1,6 @@
 <script>
 	import Button from '$lib/components/ui/Button.svelte';
+	import { captureAnalyticsEvent } from '$lib/client/analytics';
 
 	let {
 		listing,
@@ -14,6 +15,18 @@
 			? `${listing.currency} ${listing.priceAmount.toLocaleString()}${listing.pricePeriod ? ` / ${listing.pricePeriod}` : ''}`
 			: 'Pricing shared after inquiry'
 	);
+
+	function trackListingAction(action) {
+		captureAnalyticsEvent('housing_listing_action_clicked', {
+			action,
+			listing_id: listing.id,
+			listing_slug: listing.slug,
+			listing_type: listing.listingType,
+			stay_type: listing.stayType,
+			location: listing.location,
+			locked
+		});
+	}
 </script>
 
 <article class="listing-card">
@@ -40,9 +53,27 @@
 
 		<div class="actions">
 			{#if locked}
-				<Button href="/housing#unlock" variant="brand" size="sm">Unlock Listings</Button>
+				<Button
+					href="/housing#unlock"
+					variant="brand"
+					size="sm"
+					data-analytics-event="housing_unlock_clicked"
+					data-analytics-area="housing_listing_card"
+					onclick={() => trackListingAction('unlock')}
+				>
+					Unlock Listings
+				</Button>
 			{:else}
-				<Button href={detailHref} variant="brand" size="sm">View Details</Button>
+				<Button
+					href={detailHref}
+					variant="brand"
+					size="sm"
+					data-analytics-event="housing_listing_detail_clicked"
+					data-analytics-area="housing_listing_card"
+					onclick={() => trackListingAction('view_details')}
+				>
+					View Details
+				</Button>
 			{/if}
 		</div>
 	</div>

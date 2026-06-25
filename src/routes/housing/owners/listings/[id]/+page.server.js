@@ -1,7 +1,13 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { requireOwnerListingAccess } from '$lib/server/housing/access';
 import { createHousingListingCheckoutSession } from '$lib/server/housing/payments';
-import { getOwnerHousingListing, getOwnerListingInput, saveOwnerHousingListing, validateOwnerListingInput } from '$lib/server/housing/listings';
+import {
+	getOwnerHousingListing,
+	getOwnerListingInput,
+	saveOwnerHousingListing,
+	validateOwnerListingImages,
+	validateOwnerListingInput
+} from '$lib/server/housing/listings';
 import { loadHousingOwnerListingEditor } from '$lib/server/housing/page';
 import { requestLogger, serializeError } from '$lib/utils/logger';
 
@@ -20,11 +26,18 @@ export const actions = {
 			const formData = await event.request.formData();
 			const input = getOwnerListingInput(formData, viewer);
 
+			if (
+				!viewer.isOperator &&
+				['PAYMENT_PENDING', 'PENDING_REVIEW', 'PUBLISHED', 'ARCHIVED'].includes(listing.status)
+			) {
+				return fail(400, {
+					error:
+						'This listing has moved past draft editing. Contact support if you need to change it.'
+				});
+			}
+
 			await saveOwnerHousingListing(listing.id, input, viewer, {
-				status:
-					listing.status === 'PUBLISHED' || listing.status === 'ARCHIVED'
-						? listing.status
-						: 'DRAFT'
+				status: 'DRAFT'
 			});
 
 			return {
@@ -51,16 +64,21 @@ export const actions = {
 			const formData = await event.request.formData();
 			const input = getOwnerListingInput(formData, viewer);
 			const validationError = validateOwnerListingInput(input, { forSubmission: true });
+			const imageValidationError =
+				validationError || validateOwnerListingImages(input, { listingId: listing.id, viewer });
 
-			if (validationError) {
+			if (imageValidationError) {
 				return fail(400, {
-					error: validationError
+					error: imageValidationError
 				});
 			}
 
-			if (listing.status === 'PENDING_REVIEW' || listing.status === 'PUBLISHED') {
+			if (['PAYMENT_PENDING', 'PENDING_REVIEW', 'PUBLISHED', 'ARCHIVED'].includes(listing.status)) {
 				return fail(400, {
-					error: 'This listing has already been submitted and does not need another payment.'
+					error:
+						listing.status === 'PAYMENT_PENDING'
+							? 'Checkout has already been started for this listing. Finish or contact support before starting a new payment.'
+							: 'This listing has already been submitted and does not need another payment.'
 				});
 			}
 

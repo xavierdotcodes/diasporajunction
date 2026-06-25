@@ -1,10 +1,46 @@
 import prisma from '$lib/server/prisma';
-import { HOUSING_OWNER_LISTING_FEE_CENTS, HOUSING_OWNER_LISTING_PRODUCT_DESCRIPTION, HOUSING_OWNER_LISTING_PRODUCT_NAME } from '$lib/server/housing/config';
-import { markListingPaymentPending, markListingSubmittedFromPayment } from '$lib/server/housing/listings';
+import { env } from '$env/dynamic/private';
+import {
+	HOUSING_OWNER_LISTING_FEE_CENTS,
+	HOUSING_OWNER_LISTING_PRODUCT_DESCRIPTION,
+	HOUSING_OWNER_LISTING_PRODUCT_NAME
+} from '$lib/server/housing/config';
+import {
+	getHousingListingForCheckoutSession,
+	markListingPaymentPending,
+	markListingSubmittedFromPayment
+} from '$lib/server/housing/listings';
 import { getStripe } from '$lib/server/stripe';
 import { scopedLogger, serializeError } from '$lib/utils/logger';
 
 const log = scopedLogger('housing.payments');
+
+function getHousingListingPriceId() {
+	return env.STRIPE_HOUSING_LISTING_PRICE_ID?.trim() || null;
+}
+
+function getLineItem() {
+	const price = getHousingListingPriceId();
+
+	if (price) {
+		return {
+			price,
+			quantity: 1
+		};
+	}
+
+	return {
+		price_data: {
+			currency: 'usd',
+			unit_amount: HOUSING_OWNER_LISTING_FEE_CENTS,
+			product_data: {
+				name: HOUSING_OWNER_LISTING_PRODUCT_NAME,
+				description: HOUSING_OWNER_LISTING_PRODUCT_DESCRIPTION
+			}
+		},
+		quantity: 1
+	};
+}
 
 export async function createHousingListingCheckoutSession({ event, listing, viewer }) {
 	const stripe = getStripe();
@@ -16,20 +52,8 @@ export async function createHousingListingCheckoutSession({ event, listing, view
 		customer_creation: 'always',
 		success_url: `${origin}/housing/owners/listings/${listing.id}?listing_checkout_session_id={CHECKOUT_SESSION_ID}`,
 		cancel_url: `${origin}/housing/owners/listings/${listing.id}?checkout=canceled`,
-		allow_promotion_codes: true,
-		line_items: [
-			{
-				price_data: {
-					currency: 'usd',
-					unit_amount: HOUSING_OWNER_LISTING_FEE_CENTS,
-					product_data: {
-						name: HOUSING_OWNER_LISTING_PRODUCT_NAME,
-						description: HOUSING_OWNER_LISTING_PRODUCT_DESCRIPTION
-					}
-				},
-				quantity: 1
-			}
-		],
+		allow_promotion_codes: false,
+		line_items: [getLineItem()],
 		metadata: {
 			kind: 'housing_listing_submission',
 			listingId: listing.id,
@@ -59,13 +83,23 @@ export async function syncHousingListingSubmissionFromCheckoutSession(
 		const metadata = session.metadata ?? {};
 		const listingId = metadata.listingId;
 		const ownerEmail = session.customer_details?.email || metadata.ownerEmail || null;
+		const listing = listingId ? await getHousingListingForCheckoutSession(listingId) : null;
 
 		if (
 			session.payment_status !== 'paid' ||
 			!listingId ||
-			metadata.kind !== 'housing_listing_submission'
+			metadata.kind !== 'housing_listing_submission' ||
+			!ownerEmail
 		) {
 			return { ok: false, reason: 'not_eligible' };
+		}
+
+		if (!listing || listing.stripeCheckoutSessionId !== session.id) {
+			return { ok: false, reason: 'session_mismatch' };
+		}
+
+		if (session.amount_total !== null && session.amount_total < HOUSING_OWNER_LISTING_FEE_CENTS) {
+			return { ok: false, reason: 'amount_mismatch' };
 		}
 
 		const paidAt = new Date();
@@ -103,7 +137,7 @@ export async function syncHousingListingSubmissionFromCheckoutSession(
 			}
 		});
 
-		const listing = await markListingSubmittedFromPayment({
+		const updatedListing = await markListingSubmittedFromPayment({
 			listingId,
 			stripeCheckoutSessionId: session.id,
 			paidAt,
@@ -114,7 +148,7 @@ export async function syncHousingListingSubmissionFromCheckoutSession(
 		return {
 			ok: true,
 			payment,
-			listing
+			listing: updatedListing
 		};
 	} catch (error) {
 		log.error({

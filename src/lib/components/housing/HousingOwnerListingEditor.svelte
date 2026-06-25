@@ -1,4 +1,5 @@
 <script>
+	import { resolve } from '$app/paths';
 	import HousingOwnerListingPreview from '$lib/components/housing/HousingOwnerListingPreview.svelte';
 	import { uploadHousingImages } from '$lib/client/housing';
 	import Button from '$lib/components/ui/Button.svelte';
@@ -85,7 +86,10 @@
 	]);
 
 	const readyCount = $derived(readinessChecks.filter((check) => check.complete).length);
-	const submitDisabled = $derived(listing.status === 'PENDING_REVIEW' || listing.status === 'PUBLISHED');
+	const editingLocked = $derived(
+		!viewer.isOperator && ['PAYMENT_PENDING', 'PENDING_REVIEW', 'PUBLISHED', 'ARCHIVED'].includes(listing.status)
+	);
+	const submitDisabled = $derived(editingLocked);
 	const isReadyToSubmit = $derived(readyCount === readinessChecks.length);
 
 	const previewListing = $derived({
@@ -160,7 +164,7 @@
 <div class="editor-grid">
 	<form method="POST" class="editor-card">
 		<div class="topbar">
-			<a class="back-link" href="/housing/owners">Back to Owner Portal</a>
+			<a class="back-link" href={resolve('/housing/owners')}>Back to Owner Portal</a>
 			<div class="status-chip">{listing.status.replaceAll('_', ' ')}</div>
 		</div>
 
@@ -172,6 +176,11 @@
 					Build the listing first. When it reads clearly, pay the small submission fee and send it for
 					review.
 				</p>
+				{#if editingLocked}
+					<p class="status notice">
+						This listing has moved past draft editing. Contact support if you need to change it.
+					</p>
+				{/if}
 			</div>
 		</div>
 
@@ -204,7 +213,7 @@
 			</div>
 
 			<div class="checklist">
-				{#each readinessChecks as check}
+				{#each readinessChecks as check (check.label)}
 					<div class:complete={check.complete} class="check-row">
 						<span>{check.complete ? 'Done' : 'Pending'}</span>
 						<strong>{check.label}</strong>
@@ -309,7 +318,7 @@
 					<p class="muted">No images uploaded yet.</p>
 				{:else}
 					<div class="image-stack">
-						{#each images as image, index}
+						{#each images as image, index (image.storagePath || image.url)}
 							<div class="image-row">
 								<img src={image.url} alt={image.alt || title || 'Listing image'} />
 								<div class="image-copy">
@@ -342,7 +351,7 @@
 				</p>
 			</div>
 
-			<Button type="submit" formaction="?/save" variant="outline" size="lg">Save Draft</Button>
+			<Button type="submit" formaction="?/save" variant="outline" size="lg" disabled={editingLocked}>Save Draft</Button>
 			<Button
 				type="submit"
 				formaction="?/payAndSubmit"
@@ -655,6 +664,10 @@
 
 	.status.success {
 		color: #026b1d;
+	}
+
+	.status.notice {
+		color: #735c00;
 	}
 
 	.status.error {

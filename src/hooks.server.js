@@ -1,12 +1,16 @@
+import { sequence } from '@sveltejs/kit/hooks';
+import { handleErrorWithSentry, sentryHandle } from '@sentry/sveltekit';
 import prisma from '$lib/server/prisma';
 import { applyOriginCacheHeaders } from '$lib/server/cache';
+import { safeEnforceRateLimit } from '$lib/server/rate-limit';
 import { getRedis } from '$lib/server/redis';
+import { applySecurityHeaders } from '$lib/server/security-headers';
 import { createSupabaseServerClient, hasSupabaseConfig } from '$lib/supabase/server';
 import { fileLogger, serializeError } from '$lib/utils/logger';
 
 const log = fileLogger('src/hooks.server.js');
 
-export async function handle({ event, resolve }) {
+async function appHandle({ event, resolve }) {
 	const startedAt = Date.now();
 	const url = new URL(event.request.url);
 	event.locals.requestId = crypto.randomUUID();
@@ -26,6 +30,11 @@ export async function handle({ event, resolve }) {
 	});
 
 	try {
+		const rateLimitResponse = await safeEnforceRateLimit(event);
+		if (rateLimitResponse) {
+			return applySecurityHeaders(rateLimitResponse);
+		}
+
 		if (event.locals.supabase) {
 			try {
 				const {
@@ -134,7 +143,7 @@ export async function handle({ event, resolve }) {
 			supabaseAuthenticated: Boolean(event.locals.supabaseUser)
 		});
 
-		return finalResponse;
+		return applySecurityHeaders(finalResponse);
 	} catch (error) {
 		log.error({
 			phase: 'request_failed',
@@ -147,3 +156,6 @@ export async function handle({ event, resolve }) {
 		throw error;
 	}
 }
+
+export const handle = sequence(sentryHandle(), appHandle);
+export const handleError = handleErrorWithSentry();

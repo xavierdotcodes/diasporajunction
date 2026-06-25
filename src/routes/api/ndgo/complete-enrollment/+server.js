@@ -1,4 +1,5 @@
-import { fileLogger } from '$lib/utils/logger';
+import { json } from '@sveltejs/kit';
 
-fileLogger('src/routes/api/ndgo/complete-enrollment/+server.js');
-
+export async function POST() {
+	return json({ error: 'The NDGO paid enrollment completion API is no longer active.' }, { status: 410 });
+}

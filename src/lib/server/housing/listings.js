@@ -174,8 +174,49 @@ export function validateOwnerListingInput(input, { forSubmission = false } = {})
 		return 'Add at least one image before submitting the listing.';
 	}
 
+	if (forSubmission && !String(input.priceAmount || '').trim()) {
+		return 'Add the listing price before submitting.';
+	}
+
+	if (forSubmission && !String(input.pricePeriod || '').trim()) {
+		return 'Add the listing price period before submitting.';
+	}
+
+	if (forSubmission && !String(input.ownerPhone || '').trim()) {
+		return 'Add an owner phone or WhatsApp number before submitting.';
+	}
+
+	if (input.priceAmount && maybeInt(input.priceAmount) === null) {
+		return 'Enter a valid whole-number listing price.';
+	}
+
+	if (input.bedrooms && maybeInt(input.bedrooms) === null) {
+		return 'Enter a valid number of bedrooms.';
+	}
+
+	if (input.bathrooms && maybeInt(input.bathrooms) === null) {
+		return 'Enter a valid number of bathrooms.';
+	}
+
 	if (input.images.length > MAX_HOUSING_IMAGES) {
 		return `Add no more than ${MAX_HOUSING_IMAGES} images.`;
+	}
+
+	return null;
+}
+
+export function validateOwnerListingImages(input, { listingId, viewer } = {}) {
+	if (!listingId || !viewer?.supabaseUserId) {
+		return 'Listing image ownership could not be verified.';
+	}
+
+	const expectedPrefix = `${viewer.supabaseUserId}/${listingId}/`;
+	const invalidImage = input.images.find(
+		(image) => !image.storagePath || !image.storagePath.startsWith(expectedPrefix)
+	);
+
+	if (invalidImage) {
+		return 'Upload listing images through this owner portal before submitting.';
 	}
 
 	return null;
@@ -334,6 +375,12 @@ export async function listOwnerHousingListings(viewer) {
 				select: {
 					inquiries: true
 				}
+			},
+			inquiries: {
+				orderBy: {
+					createdAt: 'desc'
+				},
+				take: 5
 			}
 		}
 	});
@@ -358,6 +405,13 @@ export async function saveOwnerHousingListing(id, input, viewer, { status } = {}
 
 	if (!listing) {
 		throw new Error('Housing listing not found');
+	}
+
+	if (
+		!viewer.isOperator &&
+		['PAYMENT_PENDING', 'PENDING_REVIEW', 'PUBLISHED', 'ARCHIVED'].includes(listing.status)
+	) {
+		throw new Error('Submitted listings cannot be edited from the owner portal.');
 	}
 
 	const nextStatus = status ?? listing.status ?? 'DRAFT';
@@ -388,6 +442,39 @@ export async function markListingPaymentPending(id, stripeCheckoutSessionId) {
 			stripeCheckoutSessionId,
 			submittedAt: null,
 			paidAt: null
+		}
+	});
+}
+
+export async function markListingPaymentCanceled(id, stripeCheckoutSessionId) {
+	const listing = await getHousingListingForCheckoutSession(id);
+
+	if (!listing || listing.stripeCheckoutSessionId !== stripeCheckoutSessionId) {
+		return null;
+	}
+
+	if (listing.status !== 'PAYMENT_PENDING') {
+		return listing;
+	}
+
+	return prisma.housingListing.update({
+		where: { id },
+		data: {
+			status: 'DRAFT',
+			stripeCheckoutSessionId: null
+		}
+	});
+}
+
+export async function getHousingListingForCheckoutSession(id) {
+	return prisma.housingListing.findUnique({
+		where: { id },
+		select: {
+			id: true,
+			status: true,
+			stripeCheckoutSessionId: true,
+			ownerSupabaseUserId: true,
+			ownerEmail: true
 		}
 	});
 }
@@ -441,6 +528,19 @@ export async function listAdminHousingInquiries() {
 					ownerEmail: true
 				}
 			}
+		}
+	});
+}
+
+export async function updateHousingInquiryStatus(id, status) {
+	if (!['NEW', 'REVIEWED', 'CLOSED'].includes(status)) {
+		throw new Error('Choose a valid inquiry status.');
+	}
+
+	return prisma.housingInquiry.update({
+		where: { id },
+		data: {
+			status
 		}
 	});
 }

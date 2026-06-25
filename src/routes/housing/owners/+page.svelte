@@ -79,7 +79,7 @@
 				<p class="card-kicker">How Owner Submission Works</p>
 				<h2>One lean flow from draft to review.</h2>
 				<ol class="step-list">
-					{#each ownerSteps as step}
+					{#each ownerSteps as step (step)}
 						<li>{step}</li>
 					{/each}
 				</ol>
@@ -114,7 +114,7 @@
 				<h2>Make the listing easy for a diaspora renter to understand quickly.</h2>
 			</div>
 			<div class="guide-grid">
-				{#each statusGuide as item}
+				{#each statusGuide as item (item.label)}
 					<article>
 						<h3>{item.label}</h3>
 						<p>{item.copy}</p>
@@ -146,7 +146,7 @@
 			</div>
 
 			<div class="listing-grid">
-				{#each data.listings as listing}
+				{#each data.listings as listing (listing.id)}
 					<article class="listing-card">
 						<img src={listing.images?.[0]?.url || '/images/keys.jpg'} alt={listing.title} />
 						<div class="listing-body">
@@ -167,6 +167,19 @@
 									<span>Paid</span>
 								{/if}
 							</div>
+
+							{#if listing.inquiries?.length}
+								<div class="owner-inquiries">
+									<p class="card-kicker">Recent inquiries</p>
+									{#each listing.inquiries as inquiry (inquiry.id)}
+										<div class="owner-inquiry">
+											<strong>{inquiry.requesterName || inquiry.requesterEmail}</strong>
+											<span>{formatStatus(inquiry.status)}</span>
+											<p>{inquiry.message}</p>
+										</div>
+									{/each}
+								</div>
+							{/if}
 
 							<Button href={`/housing/owners/listings/${listing.id}`} variant="outline" size="lg">
 								Open Draft
@@ -352,6 +365,35 @@
 	.facts {
 		display: flex;
 		flex-wrap: wrap;
+	}
+
+	.owner-inquiries {
+		display: grid;
+		gap: 0.65rem;
+		padding: 0.9rem;
+		border-radius: 1.2rem;
+		background: rgba(3, 140, 37, 0.08);
+	}
+
+	.owner-inquiry {
+		display: grid;
+		gap: 0.25rem;
+	}
+
+	.owner-inquiry span {
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: rgba(17, 17, 17, 0.58);
+	}
+
+	.owner-inquiry p {
+		display: -webkit-box;
+		line-clamp: 2;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
 	}
 
 	@media (min-width: 768px) {

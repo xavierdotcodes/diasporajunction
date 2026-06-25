@@ -1,4 +1,5 @@
-import { fileLogger } from '$lib/utils/logger';
+import { json } from '@sveltejs/kit';
 
-fileLogger('src/routes/api/tours/complete-booking/+server.js');
-
+export async function POST() {
+	return json({ error: 'The tours booking completion API is no longer active.' }, { status: 410 });
+}

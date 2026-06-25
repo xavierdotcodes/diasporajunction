@@ -15,6 +15,10 @@ The origin now sends cache headers for HTML and dynamic routes through the Svelt
 
 Current origin behavior:
 
+- Immutable SvelteKit build assets:
+  - `Cache-Control: public, max-age=31536000, immutable`
+- Static media and site assets:
+  - `Cache-Control: public, max-age=86400, s-maxage=2592000, stale-while-revalidate=604800`
 - Public marketing HTML pages:
   - `Cache-Control: public, max-age=0, s-maxage=600, stale-while-revalidate=86400`
 - Semi-cacheable public pages with some server involvement:
@@ -26,6 +30,17 @@ Current origin behavior:
   - `Cache-Control: public, max-age=0, s-maxage=86400, stale-while-revalidate=604800`
 
 This gives Cloudflare a clear signal without caching forms, APIs, or user-sensitive routes.
+
+The app also sends baseline security headers from `src/lib/server/security-headers.js`:
+
+- `Strict-Transport-Security`
+- `Content-Security-Policy`
+- `X-Content-Type-Options`
+- `X-Frame-Options`
+- `Referrer-Policy`
+- `Permissions-Policy`
+
+Sensitive mutation endpoints are also rate limited at origin with Redis in `src/lib/server/rate-limit.js`. Keep Cloudflare WAF/rate limiting enabled too; the origin limiter is a fallback and gives consistent protection if a request reaches Railway.
 
 ## Route Strategy
 
@@ -109,24 +124,20 @@ Specific dynamic endpoints in this repo include:
 - `/api/contact`
 - `/api/leads`
 - `/api/subscribe`
-- `/api/space/create-payment-intent`
-- `/api/space/complete-order`
-- `/api/space/cancel-payment-intent`
-- `/api/ndgo/create-payment-intent`
-- `/api/ndgo/complete-enrollment`
-- `/api/ndgo/cancel-payment-intent`
+- `/api/ebook/checkout-session`
+- `/api/community/stripe-webhook`
 - `/api/ndgo/enroll`
-- `/api/tours/create-payment-intent`
-- `/api/tours/complete-booking`
-- `/api/tours/cancel-payment-intent`
 - `/api/tours/reserve`
 - all admin mutation endpoints under `/admin/.../+server`
+
+Legacy `space`, `tours`, `ndgo`, and community membership payment endpoints now return `410 Gone`.
+See `docs/stripe-transaction-map.md` for the current Stripe surface.
 
 Why:
 
 - lead capture
 - contact form
-- payment intent creation/completion/cancellation
+- active Stripe Checkout and webhook fulfillment
 - booking and enrollment flows
 - admin mutations
 - authenticated portal behavior
@@ -147,78 +158,136 @@ You do not need to bypass them.
 
 Use Cache Rules in Cloudflare Free tier.
 
-### Rule 1: Cache immutable build assets
+Create these in order, with bypass rules above cache rules.
 
-If request URI path starts with:
+### Rule 0: Bypass dynamic and sensitive routes
 
-- `/_app/immutable/`
+Expression:
 
-Then:
+```txt
+(http.request.uri.path starts_with "/api/") or
+(http.request.uri.path starts_with "/admin") or
+(http.request.uri.path starts_with "/ndgo/portal") or
+(http.request.uri.path starts_with "/unsubscribe") or
+(http.request.uri.path starts_with "/thank-you")
+```
 
-- Cache eligibility: Eligible for cache
-- Edge TTL: a month or more
-- Browser TTL: respect origin or set a long TTL
-
-### Rule 2: Cache static media and site assets
-
-If request URI path starts with any of:
-
-- `/images/`
-- `/videos/`
-- `/fonts/`
-
-Or matches:
-
-- `/favicon*`
-- `/apple-touch-icon.png`
-- `/site.webmanifest`
-- `/web-app-manifest-*`
-
-Then:
-
-- Cache eligibility: Eligible for cache
-- Edge TTL: 1 month or more
-
-### Rule 3: Bypass dynamic routes
-
-If request URI path starts with any of:
-
-- `/api/`
-- `/admin`
-- `/ndgo/portal`
-- `/unsubscribe`
-- `/thank-you`
-
-Then:
+Settings:
 
 - Cache eligibility: Bypass cache
 
-### Rule 4: Optional HTML caching for public marketing pages
+### Rule 1: Cache immutable build assets
 
-If request URI path equals or starts with:
+Expression:
 
-- `/`
-- `/start-here`
-- `/relocate`
-- `/guides`
-- `/invest`
-- `/community`
-- `/about`
-- `/blog`
-- `/contact`
-- `/FAQ`
-- `/founder`
-- `/support`
-- `/team`
-- `/privacy-policy`
-- `/terms-of-service`
+```txt
+http.request.uri.path starts_with "/_app/immutable/"
+```
 
-Then:
+Settings:
 
 - Cache eligibility: Eligible for cache
-- Respect origin cache headers
+- Edge TTL: one year
+- Browser TTL: respect origin
+
+### Rule 2: Cache static media and site assets
+
+Expression:
+
+```txt
+(http.request.uri.path starts_with "/images/") or
+(http.request.uri.path starts_with "/videos/") or
+(http.request.uri.path starts_with "/fonts/") or
+(http.request.uri.path starts_with "/favicon") or
+(http.request.uri.path eq "/apple-touch-icon.png") or
+(http.request.uri.path eq "/site.webmanifest") or
+(http.request.uri.path starts_with "/web-app-manifest-")
+```
+
+Settings:
+
+- Cache eligibility: Eligible for cache
+- Edge TTL: one month
+- Browser TTL: respect origin
+
+### Rule 3: Optional HTML caching for public marketing pages
+
+Expression:
+
+```txt
+(http.request.uri.path eq "/") or
+(http.request.uri.path eq "/start-here") or
+(http.request.uri.path eq "/relocate") or
+(http.request.uri.path starts_with "/guides") or
+(http.request.uri.path eq "/invest") or
+(http.request.uri.path eq "/community") or
+(http.request.uri.path eq "/about") or
+(http.request.uri.path starts_with "/blog") or
+(http.request.uri.path eq "/contact") or
+(http.request.uri.path eq "/FAQ") or
+(http.request.uri.path eq "/founder") or
+(http.request.uri.path eq "/support") or
+(http.request.uri.path eq "/team") or
+(http.request.uri.path eq "/privacy-policy") or
+(http.request.uri.path eq "/terms-of-service")
+```
+
+Settings:
+
+- Cache eligibility: Eligible for cache
+- Edge TTL: respect origin
+- Browser TTL: respect origin
 
 Do this only for public pages. Do not apply it globally.
+
+## Recommended Cloudflare Security Rules
+
+Add WAF custom rules or rate limiting rules for public mutation endpoints:
+
+### API mutation rate limit
+
+Expression:
+
+```txt
+(http.request.method in {"POST" "PUT" "PATCH" "DELETE"} and http.request.uri.path starts_with "/api/")
+```
+
+Suggested action:
+
+- Rate limit or managed challenge after abnormal bursts from the same IP
+- Always bypass cache
+
+### Admin hardening
+
+Expression:
+
+```txt
+http.request.uri.path starts_with "/admin"
+```
+
+Suggested action:
+
+- Bypass cache
+- Add a managed challenge for suspicious/bot traffic
+- If admin users have stable countries or IPs, add tighter allow/challenge logic
+
+### Lead and checkout protection
+
+Expression:
+
+```txt
+(http.request.uri.path eq "/api/leads") or
+(http.request.uri.path eq "/api/contact") or
+(http.request.uri.path eq "/api/subscribe") or
+(http.request.uri.path contains "/checkout-session") or
+(http.request.uri.path contains "payment-intent")
+```
+
+Suggested action:
+
+- Rate limit by IP
+- Consider Managed Challenge when Cloudflare bot score/signals look suspicious
+- Add Turnstile to the forms if spam appears despite rate limits
 
 ## Notes On HTML Caching
 
