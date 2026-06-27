@@ -188,3 +188,35 @@ export const listAdmin = query({
 		return users.map(publicUser).filter(Boolean);
 	}
 });
+export const markEmailVerified = mutation({
+	args: {
+		userId: v.id('users'),
+		internalAuthSecret: v.string()
+	},
+	handler: async (ctx, { userId, internalAuthSecret }) => {
+		requireInternalAuth(internalAuthSecret);
+		const timestamp = now();
+		await ctx.db.patch(userId, { emailVerifiedAt: timestamp, updatedAt: timestamp });
+		return true;
+	}
+});
+
+export const updatePasswordAndRevokeSessions = mutation({
+	args: {
+		userId: v.id('users'),
+		passwordHash: v.string(),
+		internalAuthSecret: v.string()
+	},
+	handler: async (ctx, { userId, passwordHash, internalAuthSecret }) => {
+		requireInternalAuth(internalAuthSecret);
+		const timestamp = now();
+		await ctx.db.patch(userId, { passwordHash, updatedAt: timestamp });
+		const sessions = await ctx.db
+			.query('sessions')
+			.withIndex('by_user', (q) => q.eq('userId', userId))
+			.collect();
+		const activeSessions = sessions.filter((session) => !session.revokedAt);
+		await Promise.all(activeSessions.map((session) => ctx.db.patch(session._id, { revokedAt: timestamp })));
+		return { ok: true, revokedSessions: activeSessions.length };
+	}
+});

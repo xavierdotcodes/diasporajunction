@@ -9,7 +9,7 @@ import {
 import { categoryDisplayName } from '../src/lib/directory/constants.js';
 import { summarizeInteractions } from '../src/lib/directory/interactions.js';
 import { assertPaymentTransition, mapPaymentToApplicationStatus } from '../src/lib/directory/payments.js';
-import { buildSearchFilters, listingMatchesFilters, sortFeaturedFirst } from '../src/lib/directory/search.js';
+import { buildSearchFilters, isFeaturedActive, listingMatchesFilters, sortFeaturedFirst } from '../src/lib/directory/search.js';
 
 const baseApplication = {
 	_id: 'app123',
@@ -92,6 +92,17 @@ describe('payments, search, and interactions', () => {
 			{ businessName: 'B', isFeatured: true, createdAt: 1 }
 		].sort(sortFeaturedFirst);
 		expect(listings[0].businessName).toBe('B');
+	});
+
+	it('does not keep expired featured listings boosted', () => {
+		const now = Date.UTC(2026, 5, 25);
+		expect(isFeaturedActive({ isFeatured: true, featuredUntil: now + 1000 }, now)).toBe(true);
+		expect(isFeaturedActive({ isFeatured: true, featuredUntil: now - 1000 }, now)).toBe(false);
+		const listings = [
+			{ businessName: 'Expired', isFeatured: true, featuredUntil: 1, createdAt: 1 },
+			{ businessName: 'Fresh', isFeatured: false, createdAt: 3 }
+		].sort(sortFeaturedFirst);
+		expect(listings[0].businessName).toBe('Fresh');
 	});
 
 	it('summarizes interaction counts', () => {

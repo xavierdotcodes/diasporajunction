@@ -3,11 +3,13 @@ export const INNGEST_EVENTS = {
 	APPLICATION_PAYMENT_INITIATED: 'directory/application.payment_initiated',
 	PAYMENT_SUCCEEDED: 'directory/payment.succeeded',
 	PAYMENT_FAILED: 'directory/payment.failed',
+	APPLICATION_RESUBMISSION_REQUESTED: 'directory/application.resubmission_requested',
 	PAYMENT_ABANDONED: 'directory/payment.abandoned',
 	APPLICATION_UNDER_REVIEW: 'directory/application.under_review',
 	APPLICATION_NEEDS_RESUBMISSION: 'directory/application.needs_resubmission',
 	APPLICATION_APPROVED: 'directory/application.approved',
 	LISTING_PUBLISHED: 'directory/listing.published',
+	FEATURED_UPGRADE_ACTIVE: 'directory/listing.featured_upgrade_active',
 	MEDIA_UPLOADED: 'directory/media.uploaded',
 	VERIFICATION_DOCUMENT_UPLOADED: 'directory/verification_document.uploaded',
 	VERIFICATION_DOCUMENT_STATUS_CHANGED: 'directory/verification_document.status_changed',
@@ -16,7 +18,12 @@ export const INNGEST_EVENTS = {
 	AI_LISTING_SUMMARY_REQUESTED: 'ai/listing.summary.requested',
 	AI_APPLICATION_SUMMARY_REQUESTED: 'ai/application.summary.requested',
 	AI_ADMIN_TRIAGE_REQUESTED: 'ai/admin.triage.requested',
-	AI_LEAD_DIGEST_REQUESTED: 'ai/lead.digest.requested'
+	AI_LEAD_DIGEST_REQUESTED: 'ai/lead.digest.requested',
+	APPLICATION_EMAIL_REQUESTED: 'directory/email.application.requested',
+	PAYMENT_EMAIL_REQUESTED: 'directory/email.payment.requested',
+	LISTING_EMAIL_REQUESTED: 'directory/email.listing.requested',
+	LEAD_DIGEST_EMAIL_REQUESTED: 'directory/email.lead_digest.requested',
+	FEATURED_EXPIRY_REMINDER_REQUESTED: 'directory/email.featured_expiry.requested'
 };
 
 const allowedKeys = new Set([

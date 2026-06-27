@@ -12,10 +12,14 @@
 	<header class="topline">
 		<div>
 			<h1>{listing.businessName}</h1>
-			<p class="muted">{listing.isActive ? 'Active' : 'Inactive'} · {listing.verificationStatus} · {listing.isFeatured ? 'Featured' : 'Standard'}</p>
+			<p class="muted">
+				{listing.isActive ? 'Active' : 'Inactive'} · {listing.verificationStatus} · {listing.plan ?? 'BASIC'} · {listing.isFeatured ? 'Featured' : 'Standard'}
+			</p>
 		</div>
 		<div class="actions">
 			<a class="button secondary" href={listing.profileUrl}>Public profile</a>
+			<a class="button secondary" href={`/dashboard/listings/${listing.id}/media`}>Manage media</a>
+			<a class="button secondary" href={`/dashboard/listings/${listing.id}/upgrade`}>Upgrade</a>
 			<a class="button" href={`/dashboard/listings/${listing.id}/edit`}>Edit profile</a>
 		</div>
 	</header>
@@ -27,6 +31,17 @@
 		<div class="card metric"><span>Search appearances</span><strong>{counts.searchResultShown ?? 0}</strong></div>
 		<div class="card metric"><span>Profile views</span><strong>{counts.profileViews ?? 0}</strong></div>
 		<div class="card metric"><span>Contact clicks</span><strong>{(counts.whatsappClicks ?? 0) + (counts.phoneClicks ?? 0) + (counts.emailClicks ?? 0) + (counts.websiteClicks ?? 0)}</strong></div>
+	</section>
+
+	<section class="card">
+		<div class="topline">
+			<div>
+				<h2>Plan and visibility</h2>
+				<p>{listing.plan ?? 'BASIC'} · {listing.planStatus ?? 'ACTIVE'} · {listing.isFeatured ? 'Featured' : 'Not featured'}</p>
+				{#if listing.featuredUntil}<p class="muted">Featured until {new Date(listing.featuredUntil).toLocaleDateString()}</p>{/if}
+			</div>
+			<a class="button secondary" href={`/dashboard/listings/${listing.id}/upgrade`}>Manage upgrade</a>
+		</div>
 	</section>
 
 	<section class="grid two">
@@ -65,6 +80,8 @@
 
 	<nav class="actions">
 		<a class="button" href={`/dashboard/listings/${listing.id}/analytics`}>View analytics</a>
+		<a class="button secondary" href={`/dashboard/listings/${listing.id}/media`}>Manage media</a>
+		<a class="button secondary" href={`/dashboard/listings/${listing.id}/upgrade`}>Upgrade listing</a>
 	</nav>
 </main>
 

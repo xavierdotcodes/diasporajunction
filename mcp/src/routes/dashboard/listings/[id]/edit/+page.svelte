@@ -30,6 +30,7 @@
 		</div>
 		<div class="actions">
 			<button class="button" type="submit">Save public profile</button>
+			<a class="button secondary" href={`/dashboard/listings/${listing.id}/media`}>Manage media</a>
 			<a class="button secondary" href={`/dashboard/listings/${listing.id}`}>Back</a>
 		</div>
 	</form>

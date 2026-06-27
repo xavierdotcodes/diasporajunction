@@ -340,8 +340,40 @@ async function markSuccessPayment(ctx: any, args: any) {
 			updatedAt: now()
 		});
 	}
+	if (payment.listingId) {
+		await applySuccessfulListingUpgrade(ctx, payment);
+	}
 	await logPaymentEvent(ctx, payment, payment.purpose === 'SUBSCRIPTION' ? 'directory/subscription.started' : 'directory/payment.succeeded');
 	return payment._id;
+}
+
+async function applySuccessfulListingUpgrade(ctx: any, payment: any) {
+	if (payment.purpose !== 'FEATURED_LISTING') return;
+	const timestamp = now();
+	await ctx.db.patch(payment.listingId, {
+		...buildFeaturedListingUpgradePatch(timestamp),
+		upgradeSourcePaymentId: payment._id,
+		lastUpgradeAt: timestamp
+	});
+	await ctx.db.insert('activityEvents', {
+		listingId: payment.listingId,
+		eventType: 'listing.plan_activated',
+		metadata: { purpose: payment.purpose, plan: 'FEATURED', paymentId: payment._id },
+		createdAt: timestamp
+	});
+}
+
+export function buildFeaturedListingUpgradePatch(timestamp = now()) {
+	const featuredUntil = timestamp + 30 * 24 * 60 * 60 * 1000;
+	return {
+		plan: 'FEATURED',
+		planStatus: 'ACTIVE',
+		planStartedAt: timestamp,
+		planExpiresAt: featuredUntil,
+		isFeatured: true,
+		featuredUntil,
+		updatedAt: timestamp
+	};
 }
 
 async function markTerminalPayment(ctx: any, args: any, nextStatus: 'FAILED' | 'ABANDONED', eventType: string, providerMetadata?: any) {

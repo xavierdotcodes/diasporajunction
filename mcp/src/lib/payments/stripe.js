@@ -5,19 +5,21 @@ export const STRIPE_API_VERSION = '2026-03-25.dahlia';
 const priceEnvByPurpose = {
 	LISTING_APPLICATION_FEE: 'STRIPE_APPLICATION_FEE_PRICE_ID',
 	VERIFICATION_FEE: 'STRIPE_VERIFICATION_FEE_PRICE_ID',
-	FEATURED_LISTING: 'STRIPE_FEATURED_LISTING_PRICE_ID'
+	FEATURED_LISTING: 'STRIPE_FEATURED_LISTING_PRICE_ID',
+	SUBSCRIPTION: 'STRIPE_SUBSCRIPTION_PRICE_ID'
 };
 
 export function getStripeConfig(env = process.env) {
 	return {
-		secretKey: env.STRIPE_SECRET_KEY || '',
-		webhookSecret: env.STRIPE_WEBHOOK_SECRET || '',
-		appBaseUrl: env.APP_BASE_URL || env.PUBLIC_APP_URL || 'http://localhost:5173',
+		secretKey: env.STRIPE_SECRET_KEY,
+		appBaseUrl: env.APP_BASE_URL ?? env.PUBLIC_APP_URL ?? 'http://localhost:5173',
 		priceIds: {
-			LISTING_APPLICATION_FEE: env.STRIPE_APPLICATION_FEE_PRICE_ID || '',
-			VERIFICATION_FEE: env.STRIPE_VERIFICATION_FEE_PRICE_ID || '',
-			FEATURED_LISTING: env.STRIPE_FEATURED_LISTING_PRICE_ID || ''
-		}
+			LISTING_APPLICATION_FEE: env.STRIPE_APPLICATION_FEE_PRICE_ID,
+			VERIFICATION_FEE: env.STRIPE_VERIFICATION_FEE_PRICE_ID,
+			FEATURED_LISTING: env.STRIPE_FEATURED_LISTING_PRICE_ID,
+			SUBSCRIPTION: env.STRIPE_SUBSCRIPTION_PRICE_ID
+		},
+		webhookSecret: env.STRIPE_WEBHOOK_SECRET
 	};
 }
 
@@ -27,7 +29,7 @@ export function assertStripeReadyForCheckout(purpose, env = process.env) {
 	if (!config.secretKey) missing.push('STRIPE_SECRET_KEY');
 	const priceEnv = priceEnvByPurpose[purpose];
 	if (!priceEnv) throw new Error(`Stripe checkout is not configured for purpose ${purpose}.`);
-	if (!env[priceEnv]) missing.push(priceEnv);
+	if (!config.priceIds[purpose]) missing.push(priceEnv);
 	if (missing.length) {
 		const error = new Error(`Missing Stripe checkout config: ${missing.join(', ')}`);
 		error.missingConfig = missing;
@@ -46,31 +48,34 @@ export async function createStripeCheckoutSession(input, env = process.env) {
 	const stripe = input.stripe ?? createStripeClient(config.secretKey);
 	const price = config.priceIds[input.purpose];
 	const successUrl =
-		input.successUrl ?? `${config.appBaseUrl}/apply/${input.applicationId ?? 'payment'}/success?session_id={CHECKOUT_SESSION_ID}`;
-	const cancelUrl = input.cancelUrl ?? `${config.appBaseUrl}/apply/${input.applicationId ?? 'payment'}/cancel`;
-
-	return await stripe.checkout.sessions.create({
-		mode: 'payment',
+		input.successUrl ??
+		(input.applicationId
+			? `${config.appBaseUrl}/apply/${input.applicationId}/success?session_id={CHECKOUT_SESSION_ID}`
+			: `${config.appBaseUrl}/dashboard/listings/${input.listingId}/upgrade?checkout=success&session_id={CHECKOUT_SESSION_ID}`);
+	const cancelUrl =
+		input.cancelUrl ??
+		(input.applicationId
+			? `${config.appBaseUrl}/apply/${input.applicationId}/cancel`
+			: `${config.appBaseUrl}/dashboard/listings/${input.listingId}/upgrade?checkout=cancel`);
+	const session = await stripe.checkout.sessions.create({
+		mode: input.purpose === 'SUBSCRIPTION' ? 'subscription' : 'payment',
 		line_items: [{ price, quantity: 1 }],
 		success_url: successUrl,
 		cancel_url: cancelUrl,
+		client_reference_id: input.reference,
 		customer_email: input.customerEmail,
-		metadata: {
+		metadata: compact({
 			reference: input.reference,
 			purpose: input.purpose,
-			applicationId: input.applicationId ?? '',
-			listingId: input.listingId ?? '',
-			userId: input.userId ?? ''
-		},
-		payment_intent_data: {
-			metadata: {
-				reference: input.reference,
-				purpose: input.purpose,
-				applicationId: input.applicationId ?? '',
-				listingId: input.listingId ?? ''
-			}
-		}
+			applicationId: input.applicationId,
+			listingId: input.listingId,
+			userId: input.userId
+		})
 	});
+	return {
+		url: session.url,
+		providerSessionId: session.id
+	};
 }
 
 export function verifyStripeWebhook({ body, signature, env = process.env, stripe }) {
@@ -80,46 +85,44 @@ export function verifyStripeWebhook({ body, signature, env = process.env, stripe
 		error.missingConfig = ['STRIPE_WEBHOOK_SECRET'];
 		throw error;
 	}
-	return (stripe ?? createStripeClient(config.secretKey)).webhooks.constructEvent(
-		body,
-		signature,
-		config.webhookSecret
-	);
+	const client = stripe ?? createStripeClient(config.secretKey);
+	return client.webhooks.constructEvent(body, signature, config.webhookSecret);
 }
 
 export function normalizeStripeEvent(event) {
 	const object = event.data?.object ?? {};
-	const metadata = object.metadata ?? {};
-	const reference = metadata.reference;
-	const providerSessionId = object.object === 'checkout.session' ? object.id : undefined;
-	const providerPaymentId =
-		typeof object.payment_intent === 'string'
-			? object.payment_intent
-			: object.payment_intent?.id ?? (object.object === 'payment_intent' ? object.id : undefined);
-
 	return {
-		stripeEventId: event.id,
+		eventId: event.id,
 		type: event.type,
-		reference,
-		applicationId: metadata.applicationId || undefined,
-		listingId: metadata.listingId || undefined,
-		providerSessionId,
-		providerPaymentId,
-		providerCustomerId: typeof object.customer === 'string' ? object.customer : object.customer?.id,
-		providerMetadata: {
-			stripeEventType: event.type,
+		reference: object.metadata?.reference ?? object.client_reference_id,
+		applicationId: object.metadata?.applicationId,
+		listingId: object.metadata?.listingId,
+		providerSessionId: object.id,
+		providerPaymentId: object.id,
+		providerCustomerId: object.customer,
+		paymentStatus: object.payment_status ?? object.status,
+		providerMetadata: compact({
+			eventType: event.type,
 			stripeObjectId: object.id,
+			paymentIntentId: object.payment_intent,
+			reference: object.metadata?.reference ?? object.client_reference_id,
 			paymentStatus: object.payment_status ?? object.status,
-			metadata
-		}
+			applicationId: object.metadata?.applicationId,
+			listingId: object.metadata?.listingId,
+			purpose: object.metadata?.purpose
+		})
 	};
 }
 
 export function stripeEventToConvexMutation(event) {
-	if (['checkout.session.completed', 'payment_intent.succeeded'].includes(event.type)) {
+	if (['checkout.session.completed', 'payment_intent.succeeded', 'invoice.paid'].includes(event.type)) {
 		return 'payments:markSucceededFromWebhook';
 	}
 	if (event.type === 'payment_intent.payment_failed') return 'payments:markFailedFromWebhook';
 	if (event.type === 'checkout.session.expired') return 'payments:markAbandoned';
 	return null;
+}
+
+function compact(value) {
+	return Object.fromEntries(Object.entries(value).filter(([, item]) => item !== undefined && item !== ''));
 }

@@ -14,6 +14,7 @@
 	<a class="brand" href="/directory">DiasporaJunxion</a>
 	<nav aria-label="Primary">
 		<a href="/directory">Directory</a>
+		<a href="/providers">For providers</a>
 		<a href="/apply">Apply</a>
 		<a href="/dashboard/listings">Dashboard</a>
 		<a href="/admin">Admin</a>

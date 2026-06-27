@@ -3,6 +3,7 @@ import { v } from 'convex/values';
 import { now } from './_shared';
 import { requireAdminAuth } from './_auth';
 
+const PUBLIC_MEDIA_TYPES = new Set(['LOGO', 'COVER', 'GALLERY', 'PORTFOLIO']);
 const category = v.optional(v.string());
 const targetAudience = v.optional(v.union(v.literal('LOCAL'), v.literal('DIASPORA'), v.literal('BOTH')));
 const authArg = v.optional(
@@ -98,7 +99,9 @@ export const listFeatured = query({
 	args: { limit: v.optional(v.number()), auth: authArg },
 	handler: async (ctx, { limit = 50, auth }) => {
 		requireAdminAuth(auth);
-		return await ctx.db.query('directoryListings').withIndex('by_featured', (q) => q.eq('isFeatured', true)).take(limit);
+		return (await ctx.db.query('directoryListings').withIndex('by_featured', (q) => q.eq('isFeatured', true)).take(limit * 2))
+			.filter((listing) => isFeaturedActive(listing))
+			.slice(0, limit);
 	}
 });
 
@@ -180,7 +183,9 @@ function listingMatches(listing: any, args: any) {
 }
 
 function featuredFirst(a: any, b: any) {
-	if (a.isFeatured !== b.isFeatured) return a.isFeatured ? -1 : 1;
+	const aFeatured = isFeaturedActive(a);
+	const bFeatured = isFeaturedActive(b);
+	if (aFeatured !== bFeatured) return aFeatured ? -1 : 1;
 	if (a.verificationStatus !== b.verificationStatus) return a.verificationStatus === 'VERIFIED' ? -1 : 1;
 	return (b.updatedAt ?? b.createdAt ?? 0) - (a.updatedAt ?? a.createdAt ?? 0);
 }
@@ -211,7 +216,7 @@ async function publicListing(ctx: any, listing: any) {
 		lastVerifiedAt: listing.lastVerifiedAt,
 		verificationLevel: listing.verificationLevel,
 		verificationStatus: listing.verificationStatus,
-		isFeatured: listing.isFeatured,
+		isFeatured: isFeaturedActive(listing),
 		featuredUntil: listing.featuredUntil,
 		contactOptions: {
 			phone: listing.phone ? { available: true, value: listing.phone } : { available: false },
@@ -223,14 +228,21 @@ async function publicListing(ctx: any, listing: any) {
 		media,
 		logoUrl: media.find((item: any) => item.type === 'LOGO')?.url,
 		coverUrl: media.find((item: any) => item.type === 'COVER')?.url,
-		gallery: media.filter((item: any) => ['GALLERY', 'PORTFOLIO', 'BUSINESS_PROOF'].includes(item.type))
+		gallery: media.filter((item: any) => ['GALLERY', 'PORTFOLIO'].includes(item.type))
 	};
+}
+
+export function isFeaturedActive(listing: any, currentTime = now()) {
+	if (!listing?.isFeatured) return false;
+	if (!listing.featuredUntil) return true;
+	return listing.featuredUntil > currentTime;
 }
 
 async function getPublicMedia(ctx: any, listingId: any) {
 	const rows = await ctx.db.query('listingMedia').withIndex('by_listing', (q: any) => q.eq('listingId', listingId)).collect();
 	return await Promise.all(
 		rows
+			.filter((row: any) => PUBLIC_MEDIA_TYPES.has(row.type))
 			.sort((a: any, b: any) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
 			.map(async (row: any) => ({
 				type: row.type,

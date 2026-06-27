@@ -51,6 +51,18 @@ const verificationStatus = v.union(
 	v.literal('REJECTED'),
 	v.literal('NEEDS_RESUBMISSION')
 );
+const listingPlan = v.union(
+	v.literal('BASIC'),
+	v.literal('VERIFIED'),
+	v.literal('FEATURED'),
+	v.literal('FOUNDING')
+);
+const listingPlanStatus = v.union(
+	v.literal('ACTIVE'),
+	v.literal('INACTIVE'),
+	v.literal('EXPIRED'),
+	v.literal('CANCELLED')
+);
 const paymentPurpose = v.union(
 	v.literal('LISTING_APPLICATION_FEE'),
 	v.literal('VERIFICATION_FEE'),
@@ -108,6 +120,17 @@ export default defineSchema({
 	})
 		.index('by_token_hash', ['tokenHash'])
 		.index('by_user', ['userId']),
+	authTokens: defineTable({
+		userId: v.id('users'),
+		type: v.union(v.literal('EMAIL_VERIFICATION'), v.literal('PASSWORD_RESET')),
+		tokenHash: v.string(),
+		expiresAt: v.number(),
+		usedAt: v.optional(v.number()),
+		createdAt: v.number(),
+		metadata: v.optional(v.any())
+	})
+		.index('by_token_hash', ['tokenHash'])
+		.index('by_user_type', ['userId', 'type']),
 	directoryApplications: defineTable({
 		applicantUserId: v.optional(v.id('users')),
 		businessName: v.string(),
@@ -180,9 +203,15 @@ export default defineSchema({
 		logoFileId: v.optional(v.id('listingMedia')),
 		coverFileId: v.optional(v.id('listingMedia')),
 		verificationStatus,
+		plan: v.optional(listingPlan),
+		planStatus: v.optional(listingPlanStatus),
+		planStartedAt: v.optional(v.number()),
+		planExpiresAt: v.optional(v.number()),
 		isActive: v.boolean(),
 		isFeatured: v.boolean(),
 		featuredUntil: v.optional(v.number()),
+		upgradeSourcePaymentId: v.optional(v.id('payments')),
+		lastUpgradeAt: v.optional(v.number()),
 		referralCode: v.optional(v.string()),
 		createdAt: v.number(),
 		updatedAt: v.number()

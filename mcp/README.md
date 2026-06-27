@@ -67,6 +67,10 @@ Payment env belongs to the application layer, not MCP responses:
 - `STRIPE_APPLICATION_FEE_PRICE_ID`
 - `STRIPE_VERIFICATION_FEE_PRICE_ID`
 - `STRIPE_FEATURED_LISTING_PRICE_ID`
+- `STRIPE_FEATURED_LISTING_AMOUNT_CENTS` optional ledger display amount
+- `STRIPE_FEATURED_LISTING_CURRENCY` optional ledger currency
+- `STRIPE_VERIFIED_LISTING_PRICE_ID` optional future verified-listing price
+- `STRIPE_FOUNDING_LISTING_PRICE_ID` optional future founding-offer price
 - `PUBLIC_STRIPE_PUBLISHABLE_KEY`
 - `APP_BASE_URL` or `PUBLIC_APP_URL`
 - `STRIPE_APPLICATION_FEE_AMOUNT_CENTS` optional ledger display amount
@@ -186,10 +190,10 @@ Remaining auth gaps:
 
 Routes:
 
-- Public: `/directory`, `/directory/ghana`, `/directory/ghana/[category]`, `/directory/[city]`, `/directory/[city]/[category]`, `/directory/profile/[slug]`, `/guides`, `/guides/[slug]`
+- Public: `/directory`, `/directory/ghana`, `/directory/ghana/[category]`, `/directory/[city]`, `/directory/[city]/[category]`, `/directory/profile/[slug]`, `/guides`, `/guides/[slug]`, `/providers`
 - Authenticated start: `/apply`
 - Application owner or admin: `/apply/[applicationId]`, `/apply/[applicationId]/payment`, `/apply/[applicationId]/success`, `/apply/[applicationId]/cancel`
-- Listing owner or admin: `/dashboard`, `/dashboard/listings`, `/dashboard/listings/[id]`, `/dashboard/listings/[id]/edit`, `/dashboard/listings/[id]/analytics`
+- Listing owner or admin: `/dashboard`, `/dashboard/listings`, `/dashboard/listings/[id]`, `/dashboard/listings/[id]/edit`, `/dashboard/listings/[id]/media`, `/dashboard/listings/[id]/upgrade`, `/dashboard/listings/[id]/analytics`
 - Admin only: `/admin`, `/admin/applications`, `/admin/applications/[id]`, `/admin/listings`, `/admin/listings/[id]`
 
 Convex functions:
@@ -200,6 +204,96 @@ Convex functions:
 - Webhook only: `payments:markSucceededFromWebhook`, `payments:markFailedFromWebhook`, `payments:markAbandoned`, `payments:handleStripeWebhook`
 
 Payment success remains webhook-only. Client routes can create checkout and mark payment initiated, but they cannot mark payment successful.
+
+## Provider Landing And Supply-Side Offer
+
+Provider landing route:
+
+- `/providers`
+
+Primary offer:
+
+- Founding AI-searchable verified profile for Ghana-based service providers.
+- Verified public profile with category and location visibility.
+- WhatsApp, phone, email, and website contact buttons.
+- Logo, cover image, gallery, and portfolio media.
+- Profile completeness guidance and AI-powered profile suggestions.
+- Lead/contact tracking in the owner dashboard.
+- Early featured visibility while the platform grows.
+- Profile structure prepared for ChatGPT-style discovery.
+
+Honest positioning:
+
+- DiasporaJunxion does not guarantee instant customers, traffic, bookings, or ChatGPT placement.
+- The provider promise is to make a business easier to trust, easier to find, and easier to contact by diaspora customers and people searching for Ghana-based services.
+- Payment remains tied to the existing application, verification, and listing review flow; this milestone does not change Stripe or payment lifecycle behavior.
+
+AI-searchable explanation:
+
+- Most directories depend on exact category browsing.
+- DiasporaJunxion structures provider profiles so people can describe needs in plain English, such as “I need a reliable driver in Accra” or “I need housing help for a diaspora visitor.”
+- The platform can use structured profile data to recommend relevant verified listings.
+- Copy may say “built to support ChatGPT-style discovery” or “preparing listings for AI-powered search,” but must not claim guaranteed ChatGPT placement or guaranteed traffic.
+
+Provider sales talking points:
+
+- “Get a verified, diaspora-facing public profile.”
+- “Show customers your services, location, contact options, and portfolio media.”
+- “Use your dashboard to improve completeness and see contact activity.”
+- “Prepare your profile for AI-powered search without overpromising outcomes.”
+- “Founding providers receive early visibility while the directory grows.”
+
+Remaining marketing gaps:
+
+- Pricing table is static copy, not yet backed by CMS/config.
+- No provider case studies or testimonials yet.
+- No visual brand/media assets for the landing page beyond text-first copy.
+- No email nurture sequence after application submission.
+- No A/B testing or conversion analytics for the provider funnel.
+
+## Provider Plans And Paid Upgrades
+
+Simple listing plan fields:
+
+- `plan`: `BASIC`, `VERIFIED`, `FEATURED`, or `FOUNDING`
+- `planStatus`: `ACTIVE`, `INACTIVE`, `EXPIRED`, or `CANCELLED`
+- `planStartedAt`
+- `planExpiresAt`
+- `isFeatured`
+- `featuredUntil`
+- `upgradeSourcePaymentId`
+- `lastUpgradeAt`
+
+Current plan model:
+
+- Founding Verified Listing: handled through the existing application, payment, verification, and listing review flow. Approved listings get the provider dashboard, media tools, profile completeness, AI suggestions, and lead/contact tracking.
+- Featured Listing: one-time Stripe Checkout upgrade from `/dashboard/listings/[id]/upgrade`. Webhook-confirmed success activates `plan: FEATURED`, `planStatus: ACTIVE`, `isFeatured: true`, and a 30-day `featuredUntil`.
+- Future Growth Plan / Subscription: documented as coming soon. No recurring subscription lifecycle is active in this milestone.
+
+Featured listing rules:
+
+- Owners cannot directly set `isFeatured`, `featuredUntil`, `plan`, or `planStatus`.
+- Featured state is activated only by an admin-safe operation or trusted Stripe webhook success.
+- Public search sorts active featured listings above standard listings.
+- Expired `featuredUntil` values are treated as not featured for public display/sorting.
+- Public listing output exposes only featured status, not payment records or payment references.
+- Featured placement increases visibility within DiasporaJunxion surfaces only. It does not guarantee customers, external traffic, or ChatGPT placement.
+
+Owner upgrade flow:
+
+1. Listing owner opens `/dashboard/listings/[id]/upgrade`.
+2. The page shows current plan, plan status, verification status, featured status, and honest expectations.
+3. The owner starts Stripe Checkout for `FEATURED_LISTING`.
+4. The app creates a pending payment record and marks it initiated with the Stripe Checkout session ID.
+5. Stripe webhook verifies success and applies the featured plan.
+6. The client success return page only says payment is being verified; it never marks success.
+
+Remaining upgrade/subscription gaps:
+
+- No recurring subscription billing UX yet.
+- No renewal reminders for expiring featured listings.
+- No coupon/referral pricing logic.
+- No automated downgrade job for expired featured records; public display and sorting already ignore expired featured dates.
 
 ## Convex Validation
 
@@ -239,6 +333,8 @@ Provider/listing owner routes:
 - `/dashboard/listings`
 - `/dashboard/listings/[id]`
 - `/dashboard/listings/[id]/edit`
+- `/dashboard/listings/[id]/media`
+- `/dashboard/listings/[id]/upgrade`
 - `/dashboard/listings/[id]/analytics`
 
 Owner dashboard Convex functions:
@@ -253,6 +349,23 @@ Owner dashboard Convex functions:
 - `ownerDashboard:updateListingPublicProfile`
 - `ownerDashboard:requestListingImprovementSuggestions`
 - `ownerDashboard:requestListingLeadDigest`
+
+Owner media editor:
+
+- Listing owners manage public listing media at `/dashboard/listings/[id]/media`.
+- Allowed owner media types are `LOGO`, `COVER`, `GALLERY`, and `PORTFOLIO`.
+- Verification documents are stored separately in `verificationDocuments`; owners cannot upload, view, edit, delete, or reorder them from the media dashboard.
+- Owner media mutations are listing-scoped. Owners can manage only their own listings; admins can manage any listing through the same guarded Convex functions.
+- Public listing profiles and public MCP discovery expose media URLs, captions, sort order, type, and created time only. They do not expose raw Convex storage IDs, verification document records, admin notes, payment state, owner IDs, or private document paths.
+- Profile completeness counts logo, cover image, and at least three gallery or portfolio images.
+- Deleting owner media removes the `listingMedia` record and attempts Convex storage deletion. If hard storage deletion is unavailable, the metadata is still removed and the response reports that stored file cleanup was not completed.
+
+Remaining media gaps:
+
+- Image resizing and transcoding are not implemented.
+- Hard file size and file type enforcement is not complete beyond browser accept hints and storage upload behavior.
+- Virus scanning and moderation are not implemented.
+- A fullscreen admin media viewer is still pending.
 
 Provider analytics include:
 
@@ -742,3 +855,26 @@ Remaining placeholders:
 - “Show listings missing photos.”
 - “Which listings got the most WhatsApp clicks this week?”
 - “Generate a lead digest for LISTING_ID.”
+## Transactional Email And Notifications
+
+Transactional email uses a swappable adapter in `src/lib/email/provider.js`. The first provider implementation is Resend (`src/lib/email/resend.js`), but auth and workflow code call only the adapter interface:
+
+- `EMAIL_PROVIDER=resend`
+- `RESEND_API_KEY`
+- `EMAIL_FROM`
+- `APP_BASE_URL` or `PUBLIC_APP_URL`
+- optional `EMAIL_REPLY_TO`
+
+When email config is missing, sends return a structured skipped result with `missingConfig`. Registration, password reset requests, application workflows, payment workflows, and listing workflows continue to work without crashing. Tests mock the provider and never send real email.
+
+Email verification and password reset links use `authTokens` in Convex. The browser receives a raw token only in the emailed link; Convex stores only the SHA-256 `tokenHash`. Tokens expire and are single-use. Password reset responses are neutral and do not reveal whether an email exists. Successful password resets update the existing scrypt password hash and revoke existing sessions.
+
+Lifecycle notifications are routed through Inngest functions. The foundation covers application submitted, payment received, under review, resubmission requested, approved/published, listing published, featured upgrade active, lead digest email, and featured expiry reminders. Email audit events are stored in `activityEvents` with safe metadata only; raw reset/verification tokens and private verification document details are not logged.
+
+Lead digest email support uses the existing digest metrics shape and falls back to a deterministic profile-completeness suggestion when AI output is missing. Featured expiry reminders use a daily Inngest scan for active featured listings expiring soon. Duplicate reminder suppression is not yet persisted; add a reminder marker table or metadata field before enabling high-volume production reminders.
+
+Remaining email gaps:
+
+- Add production scheduler policy and duplicate suppression for featured expiry reminders.
+- Expand lifecycle event payloads to include recipient emails everywhere they are emitted.
+- Add richer branded HTML once deliverability and provider settings are finalized.

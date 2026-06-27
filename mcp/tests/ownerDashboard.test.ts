@@ -5,6 +5,13 @@ import {
 	filterInteractionsByPeriod,
 	sanitizeOwnerListingPatch
 } from '../convex/ownerDashboard';
+import {
+	canManageOwnerListingMedia,
+	isOwnerPublicMediaType,
+	sanitizeOwnerMediaUpdate
+} from '../convex/media';
+import { buildFeaturedListingUpgradePatch } from '../convex/payments';
+import { isFeaturedActive } from '../convex/listings';
 
 describe('owner dashboard access rules', () => {
 	const listing = { ownerUserId: 'owner1' };
@@ -76,9 +83,76 @@ describe('owner listing edit sanitizer', () => {
 			sourceApplicationId: 'app1',
 			adminNotes: 'private',
 			paymentStatus: 'SUCCESS',
+			plan: 'FEATURED',
+			planStatus: 'ACTIVE',
+			planExpiresAt: 999,
+			lastUpgradeAt: 999,
 			description: 'Allowed'
 		});
 		expect(patch).toEqual({ description: 'Allowed' });
+	});
+});
+
+describe('listing plan and featured upgrade rules', () => {
+	it('builds a webhook-only featured upgrade patch', () => {
+		const now = Date.UTC(2026, 5, 25);
+		const patch = buildFeaturedListingUpgradePatch(now);
+		expect(patch).toMatchObject({
+			plan: 'FEATURED',
+			planStatus: 'ACTIVE',
+			isFeatured: true,
+			planStartedAt: now,
+			updatedAt: now
+		});
+		expect(patch.featuredUntil).toBe(now + 30 * 24 * 60 * 60 * 1000);
+		expect(patch.planExpiresAt).toBe(patch.featuredUntil);
+	});
+
+	it('does not treat expired featured listings as active', () => {
+		const now = Date.UTC(2026, 5, 25);
+		expect(isFeaturedActive({ isFeatured: true, featuredUntil: now + 1000 }, now)).toBe(true);
+		expect(isFeaturedActive({ isFeatured: true, featuredUntil: now - 1000 }, now)).toBe(false);
+		expect(isFeaturedActive({ isFeatured: false }, now)).toBe(false);
+	});
+});
+
+describe('owner listing media rules', () => {
+	const listing = { ownerUserId: 'owner1' };
+
+	it('allows owners to manage their own listing media', () => {
+		expect(canManageOwnerListingMedia({ userId: 'owner1', role: 'LISTING_OWNER' }, listing)).toBe(true);
+	});
+
+	it('blocks owners from another listing media', () => {
+		expect(canManageOwnerListingMedia({ userId: 'owner2', role: 'LISTING_OWNER' }, listing)).toBe(false);
+	});
+
+	it('allows admins to manage any listing media', () => {
+		expect(canManageOwnerListingMedia({ userId: 'admin1', role: 'ADMIN' }, listing)).toBe(true);
+	});
+
+	it('blocks public users from owner media functions', () => {
+		expect(canManageOwnerListingMedia(undefined, listing)).toBe(false);
+		expect(canManageOwnerListingMedia({ role: 'USER' }, listing)).toBe(false);
+	});
+
+	it('allows only public listing media types for owners', () => {
+		expect(isOwnerPublicMediaType('LOGO')).toBe(true);
+		expect(isOwnerPublicMediaType('COVER')).toBe(true);
+		expect(isOwnerPublicMediaType('GALLERY')).toBe(true);
+		expect(isOwnerPublicMediaType('PORTFOLIO')).toBe(true);
+		expect(isOwnerPublicMediaType('BUSINESS_PROOF')).toBe(false);
+		expect(isOwnerPublicMediaType('ID_FRONT')).toBe(false);
+	});
+
+	it('rejects verification document and proof-style types from owner updates', () => {
+		expect(() => sanitizeOwnerMediaUpdate({ type: 'BUSINESS_PROOF' })).toThrow(/Only public listing media/);
+		expect(() => sanitizeOwnerMediaUpdate({ type: 'ID_FRONT' })).toThrow(/Only public listing media/);
+	});
+
+	it('sanitizes media captions and sort order', () => {
+		const result = sanitizeOwnerMediaUpdate({ type: 'GALLERY', caption: '  Team photo  ', sortOrder: '3' });
+		expect(result).toEqual({ type: 'GALLERY', caption: 'Team photo', sortOrder: 3 });
 	});
 });
 
@@ -113,6 +187,31 @@ describe('profile completeness and analytics periods', () => {
 		expect(result.score).toBeLessThan(50);
 		expect(result.missingItems).toContain('has logo');
 		expect(result.recommendedNextActions.length).toBeGreaterThan(0);
+	});
+
+	it('improves completeness when logo, cover, and gallery media exist', () => {
+		const sparse = {
+			shortDescription: 'Short',
+			description: 'Full',
+			servicesOffered: ['Driver'],
+			city: 'Accra',
+			phone: '+233',
+			targetAudience: 'DIASPORA',
+			verificationStatus: 'UNVERIFIED',
+			trustSignals: []
+		};
+		const withoutMedia = calculateProfileCompleteness(sparse, []);
+		const withMedia = calculateProfileCompleteness(sparse, [
+			{ type: 'LOGO' },
+			{ type: 'COVER' },
+			{ type: 'GALLERY' },
+			{ type: 'GALLERY' },
+			{ type: 'PORTFOLIO' }
+		]);
+		expect(withMedia.score).toBeGreaterThan(withoutMedia.score);
+		expect(withMedia.missingItems).not.toContain('has logo');
+		expect(withMedia.missingItems).not.toContain('has cover image');
+		expect(withMedia.missingItems).not.toContain('has at least 3 gallery or portfolio images');
 	});
 
 	it('filters interactions by 7 days, 30 days, and all time', () => {

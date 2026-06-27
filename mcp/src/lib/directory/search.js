@@ -33,6 +33,14 @@ export function listingMatchesFilters(listing, filters = {}) {
 }
 
 export function sortFeaturedFirst(a, b) {
-	if (a.isFeatured !== b.isFeatured) return a.isFeatured ? -1 : 1;
+	const aFeatured = isFeaturedActive(a);
+	const bFeatured = isFeaturedActive(b);
+	if (aFeatured !== bFeatured) return aFeatured ? -1 : 1;
 	return (b.createdAt ?? 0) - (a.createdAt ?? 0);
+}
+
+export function isFeaturedActive(listing, currentTime = Date.now()) {
+	if (!listing?.isFeatured) return false;
+	if (!listing.featuredUntil) return true;
+	return listing.featuredUntil > currentTime;
 }

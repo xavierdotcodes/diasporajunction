@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { json } from '@sveltejs/kit';
 import { convexMutation, convexQuery } from '$lib/server/convex.js';
+import { sendEmailVerificationForUser } from '$lib/server/email/authEmails.js';
 import {
 	createUserSession,
 	hashPassword,
@@ -30,7 +31,8 @@ export async function POST(event) {
 	const user = await convexQuery('users:getCurrentBySessionUser', { userId });
 	const session = await createUserSession({ userId });
 	event.cookies.set(SESSION_COOKIE_NAME, session.token, sessionCookieOptions());
-	return json({ ok: true, user });
+	const emailVerification = await sendEmailVerificationForUser(user);
+	return json({ ok: true, user, emailVerification });
 }
 
 async function readAuthInput(request) {

@@ -12,7 +12,10 @@
 		{#if listing.logoUrl}
 			<img class="logo" src={listing.logoUrl} alt={`${listing.businessName} logo`} />
 		{/if}
-		<p class="badge">{listing.verificationStatus}</p>
+		<div class="badges">
+			<p class="badge">{listing.verificationStatus}</p>
+			{#if listing.isFeatured}<p class="badge featured">Featured</p>{/if}
+		</div>
 		<p>{listing.shortDescription}</p>
 		<p>{listing.description}</p>
 		<p>{listing.city}, {listing.region}, {listing.country}</p>
@@ -75,6 +78,8 @@
 	.error { color: #a33020; }
 	.cover { width:100%; max-height:340px; object-fit:cover; border-radius:.5rem; border:1px solid #d8d3c8; }
 	.logo { width:96px; height:96px; object-fit:cover; border-radius:.5rem; border:1px solid #d8d3c8; }
+	.badges { display:flex; gap:.5rem; flex-wrap:wrap; }
+	.featured { background:#243b2a; color:#fff; }
 	.gallery { display:grid; gap:1rem; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); }
 	.gallery img { width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:.5rem; border:1px solid #d8d3c8; }
 </style>
